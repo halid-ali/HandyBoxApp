@@ -47,6 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CurrencyService\ICurrencyService.cs" />
+    <Compile Include="CurrencyService\Types\EurTryCurrency.cs" />
+    <Compile Include="CurrencyService\Types\EurUsdCurrency.cs" />
+    <Compile Include="CurrencyService\Types\UsdEurCurrency.cs" />
     <Compile Include="CustomApplicationContext.cs" />
     <Compile Include="CustomComponents\Buttons\SwitchImageButton.cs">
       <SubType>Component</SubType>

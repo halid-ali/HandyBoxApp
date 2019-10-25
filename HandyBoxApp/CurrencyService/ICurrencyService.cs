@@ -1,4 +1,6 @@
-﻿namespace HandyBoxApp.CurrencyService
+﻿using System.Security.Policy;
+
+namespace HandyBoxApp.CurrencyService
 {
     internal interface ICurrencyService
     {
@@ -6,6 +8,6 @@
 
         string Tag { get; }
 
-        string SourceUrl { get; }
+        Url SourceUrl { get; }
     }
 }
