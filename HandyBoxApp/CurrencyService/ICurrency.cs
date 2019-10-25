@@ -2,7 +2,7 @@
 
 namespace HandyBoxApp.CurrencyService
 {
-    internal interface ICurrencyService
+    internal interface ICurrency
     {
         string Name { get; }
 

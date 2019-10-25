@@ -2,7 +2,7 @@
 
 namespace HandyBoxApp.CurrencyService.Types
 {
-    internal struct EurUsdCurrency : ICurrencyService
+    internal struct EurUsdCurrency : ICurrency
     {
         //################################################################################
         #region Fields
@@ -24,11 +24,11 @@ namespace HandyBoxApp.CurrencyService.Types
         //################################################################################
         #region ICurrencyService Members
 
-        string ICurrencyService.Name => "EUR/USD";
+        string ICurrency.Name => "EUR/USD";
 
-        string ICurrencyService.Tag => "EURUSD";
+        string ICurrency.Tag => "EURUSD";
 
-        Url ICurrencyService.SourceUrl => m_SourceUrl;
+        Url ICurrency.SourceUrl => m_SourceUrl;
 
         #endregion
     }

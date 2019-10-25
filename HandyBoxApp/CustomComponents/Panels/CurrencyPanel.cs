@@ -22,11 +22,11 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Constructor
 
-        public CurrencyPanel(ICurrencyService currencyService, Control parentControl) : this(currencyService, parentControl, 1000)
+        public CurrencyPanel(ICurrency currencyService, Control parentControl) : this(currencyService, parentControl, 1000)
         {
         }
 
-        public CurrencyPanel(ICurrencyService currencyService, Control parentControl, int refreshRate) : base(parentControl)
+        public CurrencyPanel(ICurrency currencyService, Control parentControl, int refreshRate) : base(parentControl)
         {
             CurrencyService = currencyService;
             RefreshRate = refreshRate;
@@ -41,7 +41,7 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Properties
 
-        private ICurrencyService CurrencyService { get; set; }
+        private ICurrency CurrencyService { get; set; }
 
         private int RefreshRate { get; set; }
 
