@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HandyBoxApp.EventArgs;
+
+using System;
 
 namespace HandyBoxApp.CurrencyService
 {
     interface ICurrencyService
     {
+        event EventHandler<CurrencyUpdatedEventArgs> OnCurrencyUpdated;
 
+        void GetUpdatedRateData();
     }
 }

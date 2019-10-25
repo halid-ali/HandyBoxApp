@@ -1,4 +1,6 @@
-﻿using HandyBoxApp.CustomComponents.Panels;
+﻿using HandyBoxApp.CurrencyService;
+using HandyBoxApp.CurrencyService.Types;
+using HandyBoxApp.CustomComponents.Panels;
 
 using System.Drawing;
 using System.Windows.Forms;
@@ -54,7 +56,8 @@ namespace HandyBoxApp
             ContainerPanel.BackColor = Color.Brown;
             ContainerPanel.Visible = true;
 
-            EuroCurrencyPanel = new CurrencyPanel(null, ContainerPanel);
+            EuroCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), ContainerPanel);
+            EuroCurrencyPanel.AutoSize = true;
             EuroCurrencyPanel.BackColor = Color.Crimson;
             EuroCurrencyPanel.Visible = true;
 
@@ -65,10 +68,21 @@ namespace HandyBoxApp
 
         private void SetContainerPanelDimensions()
         {
+            var width = 0;
+            var height = 0;
+
             foreach (Control panelControl in ContainerPanel.Controls)
             {
+                if (panelControl.Width > width)
+                {
+                    width = panelControl.Width;
+                }
 
+                height += panelControl.Height;
             }
+
+            ContainerPanel.Width = width;
+            ContainerPanel.Height = height;
         }
 
         private void SetFormDimensions()
