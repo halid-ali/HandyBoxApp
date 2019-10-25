@@ -46,7 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CurrencyService\CurrencySummaryData.cs" />
     <Compile Include="CurrencyService\ICurrency.cs" />
+    <Compile Include="CurrencyService\ICurrencyService.cs" />
     <Compile Include="CurrencyService\Types\EurTryCurrency.cs" />
     <Compile Include="CurrencyService\Types\EurUsdCurrency.cs" />
     <Compile Include="CurrencyService\Types\UsdEurCurrency.cs" />
@@ -79,6 +81,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EventArgs\BorderEventArgs.cs" />
+    <Compile Include="EventArgs\CurrencyUpdatedEventArgs.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
