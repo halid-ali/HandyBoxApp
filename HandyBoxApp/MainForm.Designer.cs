@@ -34,7 +34,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            //this.TransparencyKey = System.Drawing.Color.Red;
+            this.TransparencyKey = this.BackColor;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.MaximizeBox = false;
@@ -42,7 +42,7 @@
             this.Name = "MainForm";
             this.ShowIcon = false;
             this.Text = "Handy Box v1.0 by Halit Yurtsever";
-            //this.TopMost = Settings.Default.AlwaysOnTop;
+            this.TopMost = true; //todo: get this data from settings
             this.ShowInTaskbar = false;
             this.ResumeLayout(false);
             this.Load += MainForm_Load;

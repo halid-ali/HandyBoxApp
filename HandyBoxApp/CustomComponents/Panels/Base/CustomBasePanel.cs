@@ -1,5 +1,4 @@
-﻿using HandyBoxApp.EventArgs;
-using HandyBoxApp.Utilities;
+﻿using HandyBoxApp.Utilities;
 
 using System.Drawing;
 using System.Windows.Forms;
@@ -14,6 +13,7 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         protected CustomBasePanel(Control parentControl)
         {
             ParentControl = parentControl;
+            Border = new Border(Color.White, 1); //default border style
         }
 
         #endregion
@@ -30,12 +30,12 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
         protected abstract void InitializeComponents();
 
-        protected abstract void PaintBorder(object sender, PaintEventArgs e);
-
         #endregion
 
         //################################################################################
         #region Protected Implementation
+
+        protected Border Border { get; set; }
 
         protected Size GetPanelDimensions()
         {
@@ -45,16 +45,20 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
             foreach (Control control in Controls)
             {
                 width += control.Width;
-                height += control.Height;
+
+                if (height < control.Height)
+                {
+                    height = control.Height;
+                }
             }
 
             return new Size(width, height);
         }
 
-        protected void PaintPanelBorder(object sender, BorderEventArgs e)
+        protected void PaintBorder(object sender, PaintEventArgs e)
         {
             Rectangle borderRectangle = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
-            CreateGraphics().DrawRectangle(new Pen(e.Color, e.Size), borderRectangle);
+            CreateGraphics().DrawRectangle(new Pen(Border.Color, Border.Size), borderRectangle);
         }
 
         protected void ShowBalloonTip(string title, string message, ToolTipIcon toolTipIcon)
@@ -67,6 +71,4 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
         #endregion
     }
-
-
 }

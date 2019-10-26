@@ -1,5 +1,6 @@
 ﻿using HandyBoxApp.CurrencyService;
 using HandyBoxApp.CurrencyService.Types;
+using HandyBoxApp.CustomComponents;
 using HandyBoxApp.CustomComponents.Panels;
 
 using System.Drawing;
@@ -9,12 +10,6 @@ namespace HandyBoxApp
 {
     public partial class MainForm : Form
     {
-        //################################################################################
-        #region Fields
-
-
-        #endregion
-
         //################################################################################
         #region Constructor
 
@@ -41,7 +36,10 @@ namespace HandyBoxApp
         private void MainForm_Load(object sender, System.EventArgs e)
         {
             SetContainerPanelDimensions();
+            SetContainerPanelLocation();
             SetFormDimensions();
+
+            Paint += PaintBorder;
         }
 
         #endregion
@@ -53,12 +51,9 @@ namespace HandyBoxApp
         {
             ContainerPanel = new MainContainerPanel(this);
             ContainerPanel.SendToBack();
-            ContainerPanel.BackColor = Color.Brown;
             ContainerPanel.Visible = true;
 
             EuroCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), ContainerPanel);
-            EuroCurrencyPanel.AutoSize = true;
-            EuroCurrencyPanel.BackColor = Color.Crimson;
             EuroCurrencyPanel.Visible = true;
 
             ContainerPanel.Controls.Add(EuroCurrencyPanel);
@@ -85,10 +80,24 @@ namespace HandyBoxApp
             ContainerPanel.Height = height;
         }
 
+        private void SetContainerPanelLocation()
+        {
+            int x = Style.FormBorder;
+            ContainerPanel.Location = new Point(x, x);
+        }
+
         private void SetFormDimensions()
         {
-            Height = ContainerPanel.Height;
-            Width = ContainerPanel.Width;
+            Height = ContainerPanel.Height + Style.FormBorder * 2;
+
+            //todo: additional value (100) will be calculated according to most function owner panel
+            Width = ContainerPanel.Width + 100;
+        }
+
+        private void PaintBorder(object sender, PaintEventArgs e)
+        {
+            Rectangle borderRectangle = new Rectangle(new Point(0, 0), new Size(Width, Height));
+            CreateGraphics().DrawRectangle(new Pen(Color.Yellow, Style.FormBorder), borderRectangle);
         }
 
         #endregion

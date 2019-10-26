@@ -15,10 +15,5 @@ namespace HandyBoxApp.CustomComponents.Panels
         {
             throw new NotImplementedException();
         }
-
-        protected override void PaintBorder(object sender, PaintEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

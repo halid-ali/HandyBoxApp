@@ -1,7 +1,6 @@
 ﻿using HandyBoxApp.CurrencyService;
+using HandyBoxApp.CustomComponents.Buttons;
 using HandyBoxApp.CustomComponents.Panels.Base;
-using HandyBoxApp.EventArgs;
-using HandyBoxApp.Properties;
 
 using System;
 using System.ComponentModel;
@@ -13,27 +12,18 @@ namespace HandyBoxApp.CustomComponents.Panels
     internal sealed class CurrencyPanel : DynamicPanel
     {
         //################################################################################
-        #region Fields
-
-        private Color m_BorderColor;
-
-        #endregion
-
-        //################################################################################
         #region Constructor
 
-        public CurrencyPanel(ICurrency currencyService, Control parentControl) : this(currencyService, parentControl, 1000)
+        public CurrencyPanel(ICurrency currency, Control parentControl) : this(currency, parentControl, 1000)
         {
         }
 
-        public CurrencyPanel(ICurrency currencyService, Control parentControl, int refreshRate) : base(parentControl)
+        public CurrencyPanel(ICurrency currency, Control parentControl, int refreshRate) : base(parentControl)
         {
-            CurrencyService = currencyService;
+            Currency = currency;
             RefreshRate = refreshRate;
 
             InitializeComponents();
-
-            Paint += PaintBorder;
         }
 
         #endregion
@@ -41,24 +31,15 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Properties
 
-        private ICurrency CurrencyService { get; set; }
+        private ICurrency Currency { get; set; }
 
         private int RefreshRate { get; set; }
 
-        private Label CurrencyName { get; set; }
+        private CustomLabel CurrencyName { get; set; }
 
-        private Label CurrencyValue { get; set; }
+        private CustomLabel CurrencyValue { get; set; }
 
-        public Color BorderColor
-        {
-            get => m_BorderColor;
-
-            set
-            {
-                m_BorderColor = value;
-                PaintBorder(this, null);
-            }
-        }
+        private ClickImageButton FunctionSwitch { get; set; }
 
         #endregion
 
@@ -68,30 +49,31 @@ namespace HandyBoxApp.CustomComponents.Panels
         protected override void InitializeComponents()
         {
             //Initialize Panel
-            m_BorderColor = Color.White;
+            //Border = new Border(Color.Red, 1);
+            //Paint += PaintBorder;
 
             //Initialize Currency Name
-            CurrencyName = new Label();
-
+            CurrencyName = new CustomLabel(this, new Tuple<Color, Color>(Color.LightSkyBlue, Color.MidnightBlue), Currency.Name);
+            Controls.Add(CurrencyName);
 
             //Initialize Currency Value
-            CurrencyValue = new Label();
+            CurrencyValue = new CustomLabel(this, new Tuple<Color, Color>(Color.LightGreen, Color.DarkGreen), @"6,4123 TL");
+            CurrencyValue.TextAlign = ContentAlignment.MiddleRight;
+            Controls.Add(CurrencyValue);
 
-
-            //Initialize Function Button
+            //Initialize function switch button
             void Action()
             {
                 MessageBox.Show("Currency function clicked");
             }
 
-            Bitmap buttonImage = Resource.Close;
-            AddFunction(Action, buttonImage, "Show functions");
-        }
+            FunctionSwitch = new ClickImageButton(this, Action, "Show functions");
+            Controls.Add(FunctionSwitch);
 
-        protected override void PaintBorder(object sender, PaintEventArgs e)
-        {
-            var args = new BorderEventArgs(m_BorderColor, 1);
-            PaintPanelBorder(sender, args);
+            //Initialize Function Buttons
+            //AddFunction(Action, buttonImage, "Show functions");
+
+            Size = GetPanelDimensions();
         }
 
         protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -103,12 +85,6 @@ namespace HandyBoxApp.CustomComponents.Panels
         {
             throw new NotImplementedException();
         }
-
-        #endregion
-
-        //################################################################################
-        #region Private Members
-
 
         #endregion
     }

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace HandyBoxApp.CustomComponents.Panels.Base
@@ -49,9 +48,9 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         //################################################################################
         #region Protected Members
 
-        protected void AddFunction(Action action, Bitmap buttonImage, string functionName)
+        protected void AddFunction(Control containerPanel, Action action, string functionName)
         {
-            m_FunctionButtonList.Add(new ClickImageButton(action, buttonImage, functionName));
+            m_FunctionButtonList.Add(new ClickImageButton(containerPanel, action, functionName));
         }
 
         #endregion

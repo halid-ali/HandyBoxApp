@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HandyBoxApp.Utilities;
+
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -7,28 +9,29 @@ namespace HandyBoxApp.CustomComponents.Buttons
     internal class ClickImageButton : Label
     {
         //################################################################################
-        #region Fields
-
-        private readonly Action m_Action;
-        private readonly Bitmap m_Image;
-
-        #endregion
-
-        //################################################################################
         #region Constructor
 
-        public ClickImageButton(Action action, Bitmap image, string tooltip)
+        public ClickImageButton(Control parentControl, Action action, string tooltip)
         {
-            m_Action = action;
-            m_Image = image;
+            ParentControl = parentControl;
+            Action = action;
+
+            InitializeComponent();
 
             var toolTip = new ToolTip();
             toolTip.SetToolTip(this, tooltip);
 
-            InitializeComponent();
-
             Click += Button_Click;
         }
+
+        #endregion
+
+        //################################################################################
+        #region Properties
+
+        private Control ParentControl { get; set; }
+
+        private Action Action { get; set; }
 
         #endregion
 
@@ -37,7 +40,7 @@ namespace HandyBoxApp.CustomComponents.Buttons
 
         private void Button_Click(object sender, System.EventArgs e)
         {
-            m_Action();
+            Action();
         }
 
         #endregion
@@ -47,7 +50,16 @@ namespace HandyBoxApp.CustomComponents.Buttons
 
         private void InitializeComponent()
         {
-            BackgroundImage = m_Image;
+            Visible = true;
+
+            Text = "X";
+            TextAlign = ContentAlignment.MiddleCenter;
+            Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
+            BackColor = Color.Black;
+            ForeColor = Color.White;
+
+            Width = Height;
+            Location = CustomControlHelper.SetLocation(ParentControl);
         }
 
         #endregion
