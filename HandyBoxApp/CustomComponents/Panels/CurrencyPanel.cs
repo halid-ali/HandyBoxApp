@@ -1,6 +1,9 @@
-﻿using HandyBoxApp.CurrencyService;
+﻿using HandyBoxApp.ColorScheme;
+using HandyBoxApp.ColorScheme.Colors;
+using HandyBoxApp.CurrencyService;
 using HandyBoxApp.CustomComponents.Buttons;
 using HandyBoxApp.CustomComponents.Panels.Base;
+using HandyBoxApp.Utilities;
 
 using System;
 using System.ComponentModel;
@@ -35,9 +38,9 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         private int RefreshRate { get; set; }
 
-        private CustomLabel CurrencyName { get; set; }
+        private Label CurrencyName { get; set; }
 
-        private CustomLabel CurrencyValue { get; set; }
+        private Label CurrencyValue { get; set; }
 
         private ClickImageButton FunctionSwitch { get; set; }
 
@@ -53,11 +56,19 @@ namespace HandyBoxApp.CustomComponents.Panels
             Paint += PaintBorder;
 
             //Initialize Currency Name
-            CurrencyName = new CustomLabel(this, Currency.Name);
+            CurrencyName = new Label
+            {
+                Text = Currency.Name
+            };
+            SetLabel<Red>(CurrencyName);
             Controls.Add(CurrencyName);
 
             //Initialize Currency Value
-            CurrencyValue = new CustomLabel(this, @"6,4123 TL");
+            CurrencyValue = new Label
+            {
+                Text = @"6,4123 TL"
+            };
+            SetLabel<Blue>(CurrencyValue);
             Controls.Add(CurrencyValue);
 
             //Initialize function switch button
@@ -86,5 +97,18 @@ namespace HandyBoxApp.CustomComponents.Panels
         }
 
         #endregion
+
+        private void SetLabel<T>(Label label) where T : ColorBase, new()
+        {
+            label.AutoSize = true;
+
+            label.Padding = new Padding(Style.PanelPadding);
+            label.Location = CustomControlHelper.SetLocation(this);
+
+            label.TextAlign = ContentAlignment.MiddleCenter;
+            label.Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
+
+            Painter<T>.Paint(label, PaintMode.Normal);
+        }
     }
 }

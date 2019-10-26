@@ -77,9 +77,6 @@
     <Compile Include="CustomComponents\Buttons\ClickImageButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomComponents\CustomLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="CustomComponents\Panels\Base\CustomBasePanel.cs">
       <SubType>Component</SubType>
     </Compile>
