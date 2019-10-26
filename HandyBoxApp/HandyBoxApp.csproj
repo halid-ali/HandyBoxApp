@@ -52,6 +52,10 @@
     <Compile Include="ColorScheme\ColorBase.cs" />
     <Compile Include="ColorScheme\ColorPalette.cs" />
     <Compile Include="ColorScheme\ColorSet.cs" />
+    <Compile Include="ColorScheme\Colors\Black.cs" />
+    <Compile Include="ColorScheme\Colors\Blue.cs" />
+    <Compile Include="ColorScheme\Colors\Green.cs" />
+    <Compile Include="ColorScheme\Colors\Red.cs" />
     <Compile Include="ColorScheme\Painter.cs" />
     <Compile Include="ColorScheme\PaintMode.cs" />
     <Compile Include="CurrencyService\CurrencySummaryData.cs" />
