@@ -36,7 +36,7 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         #endregion
 
         //################################################################################
-        #region Abstract Methods
+        #region Protected Members
 
         protected void DragAndDrop(object sender, MouseEventArgs e)
         {

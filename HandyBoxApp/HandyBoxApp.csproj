@@ -89,6 +89,9 @@
     <Compile Include="CustomComponents\Panels\MainContainerPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomComponents\Panels\TitlePanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomComponents\Style.cs" />
     <Compile Include="EventArgs\CurrencyUpdatedEventArgs.cs" />
     <Compile Include="MainForm.cs">
