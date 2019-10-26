@@ -39,7 +39,7 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
         protected Size GetPanelDimensions()
         {
-            var width = 0;
+            var width = Style.PanelMargin * 2 + Border.Size * 2;
             var height = 0;
 
             foreach (Control control in Controls)
@@ -51,6 +51,8 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
                     height = control.Height;
                 }
             }
+
+            height += Style.PanelMargin * 2;
 
             return new Size(width, height);
         }

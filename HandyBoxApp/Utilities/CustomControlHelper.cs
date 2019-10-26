@@ -9,8 +9,8 @@ namespace HandyBoxApp.Utilities
     {
         internal static Point SetLocation(Control parentControl)
         {
-            var x = 0;
-            var y = 0;
+            var x = Style.PanelMargin;
+            var y = Style.PanelMargin;
 
             foreach (Control control in parentControl.Controls)
             {

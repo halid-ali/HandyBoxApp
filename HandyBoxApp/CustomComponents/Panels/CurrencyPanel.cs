@@ -49,8 +49,8 @@ namespace HandyBoxApp.CustomComponents.Panels
         protected override void InitializeComponents()
         {
             //Initialize Panel
-            //Border = new Border(Color.Red, 1);
-            //Paint += PaintBorder;
+            Border = new Border(Color.Turquoise, 1);
+            Paint += PaintBorder;
 
             //Initialize Currency Name
             CurrencyName = new CustomLabel(this, Currency.Name);

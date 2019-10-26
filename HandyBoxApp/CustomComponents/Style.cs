@@ -8,6 +8,8 @@
 
         public const int PanelPadding = 3;
 
+        public const int PanelMargin = 2;
+
         public const int PanelFontSize = 10;
     }
 }
