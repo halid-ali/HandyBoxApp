@@ -49,6 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorScheme\ColorBase.cs" />
+    <Compile Include="ColorScheme\ColorPalette.cs" />
+    <Compile Include="ColorScheme\ColorSet.cs" />
+    <Compile Include="ColorScheme\Painter.cs" />
+    <Compile Include="ColorScheme\PaintMode.cs" />
     <Compile Include="CurrencyService\CurrencySummaryData.cs" />
     <Compile Include="CurrencyService\CurrencyUrls.cs" />
     <Compile Include="CurrencyService\ICurrency.cs" />
