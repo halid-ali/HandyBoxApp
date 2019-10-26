@@ -53,12 +53,11 @@ namespace HandyBoxApp.CustomComponents.Panels
             //Paint += PaintBorder;
 
             //Initialize Currency Name
-            CurrencyName = new CustomLabel(this, new Tuple<Color, Color>(Color.LightSkyBlue, Color.MidnightBlue), Currency.Name);
+            CurrencyName = new CustomLabel(this, Currency.Name);
             Controls.Add(CurrencyName);
 
             //Initialize Currency Value
-            CurrencyValue = new CustomLabel(this, new Tuple<Color, Color>(Color.LightGreen, Color.DarkGreen), @"6,4123 TL");
-            CurrencyValue.TextAlign = ContentAlignment.MiddleRight;
+            CurrencyValue = new CustomLabel(this, @"6,4123 TL");
             Controls.Add(CurrencyValue);
 
             //Initialize function switch button

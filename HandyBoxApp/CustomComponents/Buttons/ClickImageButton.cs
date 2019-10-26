@@ -1,4 +1,6 @@
-﻿using HandyBoxApp.Utilities;
+﻿using HandyBoxApp.ColorScheme;
+using HandyBoxApp.ColorScheme.Colors;
+using HandyBoxApp.Utilities;
 
 using System;
 using System.Drawing;
@@ -55,8 +57,7 @@ namespace HandyBoxApp.CustomComponents.Buttons
             Text = "X";
             TextAlign = ContentAlignment.MiddleCenter;
             Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
-            BackColor = Color.Black;
-            ForeColor = Color.White;
+            Painter<Green>.Paint(this, PaintMode.Light);
 
             Width = Height;
             Location = CustomControlHelper.SetLocation(ParentControl);

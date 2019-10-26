@@ -97,7 +97,7 @@ namespace HandyBoxApp
         private void PaintBorder(object sender, PaintEventArgs e)
         {
             Rectangle borderRectangle = new Rectangle(new Point(0, 0), new Size(Width, Height));
-            CreateGraphics().DrawRectangle(new Pen(Color.Yellow, Style.FormBorder), borderRectangle);
+            CreateGraphics().DrawRectangle(new Pen(Color.White, Style.FormBorder), borderRectangle);
         }
 
         #endregion

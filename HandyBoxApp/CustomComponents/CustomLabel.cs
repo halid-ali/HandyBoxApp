@@ -1,6 +1,7 @@
-﻿using HandyBoxApp.Utilities;
+﻿using HandyBoxApp.ColorScheme;
+using HandyBoxApp.ColorScheme.Colors;
+using HandyBoxApp.Utilities;
 
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -8,18 +9,15 @@ namespace HandyBoxApp.CustomComponents
 {
     internal class CustomLabel : Label
     {
-        public CustomLabel(Control parent, Tuple<Color, Color> colors, string text)
+        public CustomLabel(Control parent, string text)
         {
             ParentControl = parent;
-            Colors = colors;
             TextValue = text;
 
             InitializeComponent();
         }
 
         private Control ParentControl { get; set; }
-
-        private Tuple<Color, Color> Colors { get; }
 
         private string TextValue { get; set; }
 
@@ -34,8 +32,7 @@ namespace HandyBoxApp.CustomComponents
             TextAlign = ContentAlignment.MiddleCenter;
             Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
 
-            BackColor = Colors.Item1;
-            ForeColor = Colors.Item2;
+            Painter<Blue>.Paint(this, PaintMode.Normal);
         }
     }
 }
