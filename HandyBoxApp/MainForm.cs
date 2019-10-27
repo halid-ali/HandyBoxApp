@@ -2,6 +2,7 @@
 using HandyBoxApp.CurrencyService.Types;
 using HandyBoxApp.CustomComponents;
 using HandyBoxApp.CustomComponents.Panels;
+using HandyBoxApp.Utilities;
 
 using System.Drawing;
 using System.Windows.Forms;
@@ -28,6 +29,8 @@ namespace HandyBoxApp
 
         private CurrencyPanel EuroCurrencyPanel { get; set; }
 
+        private TitlePanel TitlePanel { get; set; }
+
         #endregion
 
         //################################################################################
@@ -53,10 +56,16 @@ namespace HandyBoxApp
             ContainerPanel.SendToBack();
             ContainerPanel.Visible = true;
 
+            TitlePanel = new TitlePanel(ContainerPanel);
+            TitlePanel.Visible = true;
+            TitlePanel.Location = CustomControlHelper.SetLocation(ContainerPanel);
+            ContainerPanel.Controls.Add(TitlePanel);
+
             EuroCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), ContainerPanel);
             EuroCurrencyPanel.Visible = true;
-
+            EuroCurrencyPanel.Location = CustomControlHelper.SetLocation(ContainerPanel);
             ContainerPanel.Controls.Add(EuroCurrencyPanel);
+
 
             Controls.Add(ContainerPanel);
         }

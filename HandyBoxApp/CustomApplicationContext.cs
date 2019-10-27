@@ -27,9 +27,9 @@ namespace HandyBoxApp
             m_CustomContextMenu = new CustomContextMenu(mainForm);
 
 #if DEBUG
-            Bitmap icon = Resource.Debug_Logo;
+            Bitmap icon = Resources.Debug_Logo;
 #else
-            Bitmap icon = Resource.Logo;
+            Bitmap icon = Resources.Logo;
 #endif
 
             s_NotifyIcon = new NotifyIcon()
