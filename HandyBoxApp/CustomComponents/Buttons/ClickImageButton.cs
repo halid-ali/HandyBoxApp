@@ -52,15 +52,15 @@ namespace HandyBoxApp.CustomComponents.Buttons
 
         private void InitializeComponent()
         {
+            AutoSize = true;
+            Text = @"»";
+            Painter<Green>.Paint(this, PaintMode.Light);
+            Padding = new Padding(Style.PanelPadding);
+            Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
             Visible = true;
 
-            Text = "X";
-            TextAlign = ContentAlignment.MiddleCenter;
-            Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
-            Painter<Green>.Paint(this, PaintMode.Light);
-
             Width = Height;
-            Location = CustomControlHelper.SetLocation(ParentControl);
+            Location = CustomControlHelper.SetHorizontalLocation(ParentControl);
         }
 
         #endregion

@@ -48,14 +48,18 @@ namespace HandyBoxApp
 
         private void InitializePanels()
         {
-            TitlePanel = new TitlePanel(this);
-            TitlePanel.Visible = true;
-            TitlePanel.Location = CustomControlHelper.SetLocation(this);
+            TitlePanel = new TitlePanel(this)
+            {
+                Visible = true,
+                Location = CustomControlHelper.SetVerticalLocation(this)
+            };
             Controls.Add(TitlePanel);
 
-            EuroCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), this);
-            EuroCurrencyPanel.Visible = true;
-            EuroCurrencyPanel.Location = CustomControlHelper.SetLocation(this);
+            EuroCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), this)
+            {
+                Visible = true,
+                Location = CustomControlHelper.SetVerticalLocation(this)
+            };
             Controls.Add(EuroCurrencyPanel);
         }
 
@@ -73,6 +77,9 @@ namespace HandyBoxApp
 
                 height += panelControl.Height;
             }
+
+            width += Style.FormBorder * 2;
+            height += Style.PanelSpacing + Style.FormBorder * 2;
 
             Width = width;
             Height = height;

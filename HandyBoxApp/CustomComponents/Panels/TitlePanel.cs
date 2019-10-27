@@ -50,7 +50,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             #region Image Label Initialization
 
             LogoLabel.Name = "LogoLabel";
-            LogoLabel.Text = @"X";
+            LogoLabel.Text = @"L";
             LogoLabel.Visible = true;
             LogoLabel.AutoSize = true;
             LogoLabel.Cursor = Cursors.Default;
@@ -58,7 +58,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             LogoLabel.Padding = new Padding(Style.PanelPadding);
             LogoLabel.Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
             LogoLabel.DoubleClick += LogoLabel_DoubleClick;
-            LogoLabel.Location = CustomControlHelper.SetLocation(this);
+            LogoLabel.Location = CustomControlHelper.SetHorizontalLocation(this);
             Controls.Add(LogoLabel);
 
             #endregion
@@ -73,7 +73,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             TitleLabel.Padding = new Padding(Style.PanelPadding);
             TitleLabel.Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
             TitleLabel.MouseDown += DragAndDrop;
-            TitleLabel.Location = CustomControlHelper.SetLocation(this);
+            TitleLabel.Location = CustomControlHelper.SetHorizontalLocation(this);
             Controls.Add(TitleLabel);
 
             #endregion
@@ -88,7 +88,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             CloseLabel.Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
             CloseLabel.Visible = true;
             CloseLabel.Click += CloseLabel_Click;
-            CloseLabel.Location = CustomControlHelper.SetLocation(this);
+            CloseLabel.Location = CustomControlHelper.SetHorizontalLocation(this);
             Controls.Add(CloseLabel);
 
             #endregion

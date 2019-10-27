@@ -71,7 +71,7 @@ namespace HandyBoxApp
 
         private void NotifyIcon_DoubleClick(object sender, System.EventArgs e)
         {
-            Exit();
+            MainForm.Visible = !MainForm.Visible;
         }
 
         #endregion

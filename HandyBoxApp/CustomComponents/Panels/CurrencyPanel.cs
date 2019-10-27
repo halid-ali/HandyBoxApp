@@ -52,7 +52,7 @@ namespace HandyBoxApp.CustomComponents.Panels
         protected override void InitializeComponents()
         {
             //Initialize Panel
-            Border = new Border(Color.Turquoise, 1);
+            Border = new Border(Color.White, 1);
             Paint += PaintBorder;
 
             //Initialize Currency Name
@@ -103,7 +103,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             label.AutoSize = true;
 
             label.Padding = new Padding(Style.PanelPadding);
-            label.Location = CustomControlHelper.SetLocation(this);
+            label.Location = CustomControlHelper.SetHorizontalLocation(this);
 
             label.TextAlign = ContentAlignment.MiddleCenter;
             label.Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
