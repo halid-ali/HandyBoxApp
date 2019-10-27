@@ -25,8 +25,6 @@ namespace HandyBoxApp
         //################################################################################
         #region Properties
 
-        private MainContainerPanel ContainerPanel { get; set; }
-
         private CurrencyPanel EuroCurrencyPanel { get; set; }
 
         private TitlePanel TitlePanel { get; set; }
@@ -38,8 +36,6 @@ namespace HandyBoxApp
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
-            SetContainerPanelDimensions();
-            SetContainerPanelLocation();
             SetFormDimensions();
 
             Paint += PaintBorder;
@@ -52,30 +48,23 @@ namespace HandyBoxApp
 
         private void InitializePanels()
         {
-            ContainerPanel = new MainContainerPanel(this);
-            ContainerPanel.SendToBack();
-            ContainerPanel.Visible = true;
-
-            TitlePanel = new TitlePanel(ContainerPanel);
+            TitlePanel = new TitlePanel(this);
             TitlePanel.Visible = true;
-            TitlePanel.Location = CustomControlHelper.SetLocation(ContainerPanel);
-            ContainerPanel.Controls.Add(TitlePanel);
+            TitlePanel.Location = CustomControlHelper.SetLocation(this);
+            Controls.Add(TitlePanel);
 
-            EuroCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), ContainerPanel);
+            EuroCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), this);
             EuroCurrencyPanel.Visible = true;
-            EuroCurrencyPanel.Location = CustomControlHelper.SetLocation(ContainerPanel);
-            ContainerPanel.Controls.Add(EuroCurrencyPanel);
-
-
-            Controls.Add(ContainerPanel);
+            EuroCurrencyPanel.Location = CustomControlHelper.SetLocation(this);
+            Controls.Add(EuroCurrencyPanel);
         }
 
-        private void SetContainerPanelDimensions()
+        private void SetFormDimensions()
         {
             var width = 0;
             var height = 0;
 
-            foreach (Control panelControl in ContainerPanel.Controls)
+            foreach (Control panelControl in Controls)
             {
                 if (panelControl.Width > width)
                 {
@@ -85,22 +74,8 @@ namespace HandyBoxApp
                 height += panelControl.Height;
             }
 
-            ContainerPanel.Width = width;
-            ContainerPanel.Height = height;
-        }
-
-        private void SetContainerPanelLocation()
-        {
-            int x = Style.FormBorder;
-            ContainerPanel.Location = new Point(x, x);
-        }
-
-        private void SetFormDimensions()
-        {
-            Height = ContainerPanel.Height + Style.FormBorder * 2;
-
-            //todo: additional value (100) will be calculated according to most function owner panel
-            Width = ContainerPanel.Width + 100;
+            Width = width;
+            Height = height;
         }
 
         private void PaintBorder(object sender, PaintEventArgs e)
