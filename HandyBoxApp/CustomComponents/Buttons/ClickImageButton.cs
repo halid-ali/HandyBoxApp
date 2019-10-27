@@ -56,11 +56,10 @@ namespace HandyBoxApp.CustomComponents.Buttons
             Text = @"»";
             Painter<Green>.Paint(this, PaintMode.Light);
             Padding = new Padding(Style.PanelPadding);
-            Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
+            Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
             Visible = true;
 
             Width = Height;
-            Location = CustomControlHelper.SetHorizontalLocation(ParentControl);
         }
 
         #endregion

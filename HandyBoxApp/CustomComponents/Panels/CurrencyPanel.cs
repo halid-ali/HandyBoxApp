@@ -38,9 +38,9 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         private int RefreshRate { get; set; }
 
-        private Label CurrencyName { get; set; }
+        private Label NameLabel { get; } = new Label();
 
-        private Label CurrencyValue { get; set; }
+        private Label ValueLabel { get; } = new Label();
 
         private ClickImageButton FunctionSwitch { get; set; }
 
@@ -56,25 +56,17 @@ namespace HandyBoxApp.CustomComponents.Panels
             Paint += PaintBorder;
 
             //Initialize Currency Name
-            CurrencyName = new Label
-            {
-                Text = Currency.Name
-            };
-            SetLabel<Red>(CurrencyName);
-            Controls.Add(CurrencyName);
+            SetLabel<Red>(NameLabel, Currency.Name);
+            Controls.Add(NameLabel);
 
             //Initialize Currency Value
-            CurrencyValue = new Label
-            {
-                Text = @"6,4123 TL"
-            };
-            SetLabel<Blue>(CurrencyValue);
-            Controls.Add(CurrencyValue);
+            SetLabel<Blue>(ValueLabel, @"6,4123 TL");
+            Controls.Add(ValueLabel);
 
             //Initialize function switch button
             void Action()
             {
-                MessageBox.Show("Currency function clicked");
+                MessageBox.Show($@"{Currency.Name} is clicked.");
             }
 
             FunctionSwitch = new ClickImageButton(this, Action, "Show functions");
@@ -83,6 +75,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             //Initialize Function Buttons
             //AddFunction(Action, buttonImage, "Show functions");
 
+            CustomControlHelper.SetHorizontalLocation(this);
             Size = GetPanelDimensions();
         }
 
@@ -98,17 +91,20 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         #endregion
 
-        private void SetLabel<T>(Label label) where T : ColorBase, new()
+        //################################################################################
+        #region Private Members
+
+        private void SetLabel<T>(Label label, string text) where T : ColorBase, new()
         {
+            label.Text = text;
             label.AutoSize = true;
-
-            label.Padding = new Padding(Style.PanelPadding);
-            label.Location = CustomControlHelper.SetHorizontalLocation(this);
-
             label.TextAlign = ContentAlignment.MiddleCenter;
-            label.Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
+            label.Padding = new Padding(Style.PanelPadding);
+            label.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
 
             Painter<T>.Paint(label, PaintMode.Normal);
         }
+
+        #endregion
     }
 }

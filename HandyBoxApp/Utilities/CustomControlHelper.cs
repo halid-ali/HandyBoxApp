@@ -7,18 +7,18 @@ namespace HandyBoxApp.Utilities
 {
     internal class CustomControlHelper
     {
-        internal static Point SetHorizontalLocation(Control parentControl)
+        internal static void SetHorizontalLocation(Control parentControl)
         {
             var x = Style.PanelMargin;
             var y = Style.PanelMargin;
 
             foreach (Control control in parentControl.Controls)
             {
+                control.Location = new Point(x, y);
+
                 x += control.Width + Style.PanelSpacing;
                 y = control.Location.Y;
             }
-
-            return new Point(x, y);
         }
 
         internal static Point SetVerticalLocation(Control parentControl)

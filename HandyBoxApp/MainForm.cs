@@ -53,6 +53,25 @@ namespace HandyBoxApp
             SetFormDimensions();
         }
 
+        private void PaintBorder(object sender, PaintEventArgs e)
+        {
+            Rectangle borderRectangle = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
+            CreateGraphics().DrawRectangle(new Pen(Color.White, Style.FormBorder), borderRectangle);
+        }
+
+        private void OnControlAdd(object sender, ControlEventArgs e)
+        {
+            if (e.Control.Width > m_LargestPanelWidth)
+            {
+                m_LargestPanelWidth = e.Control.Width;
+            }
+
+            foreach (Control control in Controls)
+            {
+                control.Width = m_LargestPanelWidth;
+            }
+        }
+
         #endregion
 
         //################################################################################
@@ -91,43 +110,21 @@ namespace HandyBoxApp
 
         private void SetFormDimensions()
         {
-            var width = 0;
-            var height = 0;
+            Width = 0;
+            Height = 0;
 
             foreach (Control panelControl in Controls)
             {
-                if (panelControl.Width > width)
+                if (panelControl.Width > Width)
                 {
-                    width = panelControl.Width;
+                    Width = panelControl.Width;
                 }
 
-                height += panelControl.Height;
+                Height += panelControl.Height + Style.PanelSpacing;
             }
 
-            width += Style.FormBorder * 2;
-            height += Style.PanelSpacing + Style.FormBorder * 2;
-
-            Width = width;
-            Height = height;
-        }
-
-        private void PaintBorder(object sender, PaintEventArgs e)
-        {
-            Rectangle borderRectangle = new Rectangle(new Point(0, 0), new Size(Width, Height));
-            CreateGraphics().DrawRectangle(new Pen(Color.White, Style.FormBorder), borderRectangle);
-        }
-
-        private void OnControlAdd(object sender, ControlEventArgs e)
-        {
-            if (e.Control.Width > m_LargestPanelWidth)
-            {
-                m_LargestPanelWidth = e.Control.Width;
-            }
-
-            foreach (Control control in Controls)
-            {
-                control.Width = m_LargestPanelWidth;
-            }
+            Width += Style.FormBorder * 2 + Style.PanelSpacing * 2;
+            Height += Style.FormBorder;
         }
 
         #endregion

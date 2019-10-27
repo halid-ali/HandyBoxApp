@@ -19,6 +19,8 @@ namespace HandyBoxApp.CustomComponents.Panels
             CloseLabel = new Label();
             TitleLabel = new Label();
 
+            SizeChanged += UpdatePanelContent;
+
             InitializeComponents();
         }
 
@@ -27,11 +29,11 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Properties
 
-        private Label LogoLabel { get; set; }
+        private Label LogoLabel { get; }
 
-        private Label TitleLabel { get; set; }
+        private Label TitleLabel { get; }
 
-        private Label CloseLabel { get; set; }
+        private Label CloseLabel { get; }
 
         #endregion
 
@@ -40,6 +42,7 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         protected override void InitializeComponents()
         {
+            //------------------------------------------------------------
             #region Panel Initialization
 
             Name = "TitlePanel";
@@ -47,53 +50,43 @@ namespace HandyBoxApp.CustomComponents.Panels
 
             #endregion
 
+            //------------------------------------------------------------
             #region Image Label Initialization
 
-            LogoLabel.Name = "LogoLabel";
-            LogoLabel.Text = @"L";
-            LogoLabel.Visible = true;
-            LogoLabel.AutoSize = true;
-            LogoLabel.Cursor = Cursors.Default;
-            Painter<Green>.Paint(LogoLabel, PaintMode.Light);
-            LogoLabel.Padding = new Padding(Style.PanelPadding);
-            LogoLabel.Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
+            SetLabel<Green>(LogoLabel, "LogoLabel", "L");
             LogoLabel.DoubleClick += LogoLabel_DoubleClick;
-            LogoLabel.Location = CustomControlHelper.SetHorizontalLocation(this);
             Controls.Add(LogoLabel);
 
             #endregion
 
+            //------------------------------------------------------------
             #region Title Label Initialization
 
-            TitleLabel.Name = "TitleLabel";
-            TitleLabel.Text = @"Handy Box";
-            TitleLabel.Visible = true;
-            TitleLabel.AutoSize = true;
-            Painter<Black>.Paint(TitleLabel, PaintMode.Light);
-            TitleLabel.Padding = new Padding(Style.PanelPadding);
-            TitleLabel.Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
+            SetLabel<Black>(TitleLabel, "TitleLabel", "Handy Box");
             TitleLabel.MouseDown += DragAndDrop;
-            TitleLabel.Location = CustomControlHelper.SetHorizontalLocation(this);
             Controls.Add(TitleLabel);
 
             #endregion
 
+            //------------------------------------------------------------
             #region Close Label Initialization
 
-            CloseLabel.Name = "CloseLabel";
-            CloseLabel.Text = @"X";
-            CloseLabel.Visible = true;
-            CloseLabel.AutoSize = true;
-            Painter<Green>.Paint(CloseLabel, PaintMode.Light);
-            CloseLabel.Padding = new Padding(Style.PanelPadding);
-            CloseLabel.Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
+            SetLabel<Green>(CloseLabel, "CloseLabel", "X");
             CloseLabel.Click += CloseLabel_Click;
-            CloseLabel.Location = CustomControlHelper.SetHorizontalLocation(this);
             Controls.Add(CloseLabel);
 
             #endregion
 
+            CustomControlHelper.SetHorizontalLocation(this);
             Size = GetPanelDimensions();
+        }
+
+        protected override void UpdatePanelContent(object sender, System.EventArgs e)
+        {
+            TitleLabel.AutoSize = false;
+            TitleLabel.Width = Width - LogoLabel.Width - CloseLabel.Width - (Controls.Count + 1) * Style.PanelSpacing - Border.Size * 2;
+            TitleLabel.Height = LogoLabel.Height;
+            CustomControlHelper.SetHorizontalLocation(this);
         }
 
         #endregion
@@ -109,6 +102,22 @@ namespace HandyBoxApp.CustomComponents.Panels
         private void CloseLabel_Click(object sender, System.EventArgs e)
         {
             CustomApplicationContext.Exit();
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Private Members
+
+        private void SetLabel<T>(Label label, string name, string text) where T : ColorBase, new()
+        {
+            label.Name = name;
+            label.Text = text;
+            label.Visible = true;
+            label.AutoSize = true;
+            label.Padding = new Padding(Style.PanelPadding);
+            label.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
+            Painter<T>.Paint(label, PaintMode.Light);
         }
 
         #endregion
