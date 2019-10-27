@@ -65,7 +65,7 @@
     <Compile Include="CurrencyService\Services\Yahoo.cs" />
     <Compile Include="CurrencyService\Types\EurTryCurrency.cs" />
     <Compile Include="CurrencyService\Types\EurUsdCurrency.cs" />
-    <Compile Include="CurrencyService\Types\UsdEurCurrency.cs" />
+    <Compile Include="CurrencyService\Types\UsdTryCurrency.cs" />
     <Compile Include="CustomApplicationContext.cs" />
     <Compile Include="CustomComponents\Border.cs" />
     <Compile Include="CustomComponents\Buttons\SwitchImageButton.cs">

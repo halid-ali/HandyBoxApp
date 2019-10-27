@@ -2,7 +2,7 @@
 
 namespace HandyBoxApp.CurrencyService.Types
 {
-    internal struct UsdEurCurrency : ICurrency
+    internal struct UsdTryCurrency : ICurrency
     {
         //################################################################################
         #region Fields
@@ -14,7 +14,7 @@ namespace HandyBoxApp.CurrencyService.Types
         //################################################################################
         #region Constructor
 
-        public UsdEurCurrency(string urlLink)
+        public UsdTryCurrency(string urlLink)
         {
             m_SourceUrl = new Url(urlLink);
         }

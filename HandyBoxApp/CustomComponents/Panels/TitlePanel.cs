@@ -81,12 +81,12 @@ namespace HandyBoxApp.CustomComponents.Panels
             #region Close Label Initialization
 
             CloseLabel.Name = "CloseLabel";
-            CloseLabel.AutoSize = true;
             CloseLabel.Text = @"X";
+            CloseLabel.Visible = true;
+            CloseLabel.AutoSize = true;
             Painter<Green>.Paint(CloseLabel, PaintMode.Light);
             CloseLabel.Padding = new Padding(Style.PanelPadding);
             CloseLabel.Font = new Font(new FontFamily("Consolas"), Style.PanelFontSize, FontStyle.Bold);
-            CloseLabel.Visible = true;
             CloseLabel.Click += CloseLabel_Click;
             CloseLabel.Location = CustomControlHelper.SetHorizontalLocation(this);
             Controls.Add(CloseLabel);
