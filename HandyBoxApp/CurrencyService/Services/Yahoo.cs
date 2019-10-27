@@ -16,7 +16,6 @@ namespace HandyBoxApp.CurrencyService.Services
         #region Fields
 
         private readonly string m_CurrencySourceUrl;
-        private CurrencySummaryData m_PreviousSummary;
 
         private event EventHandler<CurrencyUpdatedEventArgs> CurrencyUpdated;
 
@@ -28,7 +27,6 @@ namespace HandyBoxApp.CurrencyService.Services
         public Yahoo(string currencySourceUrl)
         {
             m_CurrencySourceUrl = currencySourceUrl;
-            m_PreviousSummary = new CurrencySummaryData();
         }
 
         #endregion
@@ -41,6 +39,8 @@ namespace HandyBoxApp.CurrencyService.Services
             add => CurrencyUpdated += value;
             remove => CurrencyUpdated -= value;
         }
+
+        CurrencySummaryData ICurrencyService.PreviousCurrencyData { get; set; } = new CurrencySummaryData();
 
         void ICurrencyService.GetUpdatedRateData()
         {
@@ -55,15 +55,15 @@ namespace HandyBoxApp.CurrencyService.Services
                 var currencySummary = new CurrencySummaryData
                 {
                     Actual = GetActualCurrency(doc),
-                    PreviousClose = TryParseCurrencyText(summaryData["previous-close"], m_PreviousSummary.PreviousClose),
-                    Open = TryParseCurrencyText(summaryData["open"], m_PreviousSummary.Open),
+                    PreviousClose = TryParseCurrencyText(summaryData["previous-close"]),
+                    Open = TryParseCurrencyText(summaryData["open"]),
                     DayRangeLow = GetDayRangeLow(summaryData["day-range"]),
                     DayRangeHigh = GetDayRangeHigh(summaryData["day-range"]),
                     YearRangeLow = GetYearRangeLow(summaryData["year-range"]),
                     YearRangeHigh = GetYearRangeHigh(summaryData["year-range"])
                 };
 
-                m_PreviousSummary = currencySummary;
+                ((ICurrencyService)this).PreviousCurrencyData = currencySummary;
                 OnCurrencyUpdated(currencySummary);
             }
             catch (Exception e)
@@ -176,27 +176,27 @@ namespace HandyBoxApp.CurrencyService.Services
                 }
             }
 
-            return TryParseCurrencyText(currencyText, m_PreviousSummary.Actual);
+            return TryParseCurrencyText(currencyText);
         }
 
         private double GetDayRangeLow(string currencyText)
         {
-            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: false), m_PreviousSummary.DayRangeLow);
+            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: false));
         }
 
         private double GetDayRangeHigh(string currencyText)
         {
-            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: true), m_PreviousSummary.DayRangeHigh);
+            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: true));
         }
 
         private double GetYearRangeLow(string currencyText)
         {
-            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: false), m_PreviousSummary.YearRangeLow);
+            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: false));
         }
 
         private double GetYearRangeHigh(string currencyText)
         {
-            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: true), m_PreviousSummary.YearRangeHigh);
+            return TryParseCurrencyText(TrySplitCurrencyText(currencyText, isHigh: true));
         }
 
         #endregion
@@ -215,9 +215,9 @@ namespace HandyBoxApp.CurrencyService.Services
             }
         }
 
-        private double TryParseCurrencyText(string currencyText, double previousValue)
+        private double TryParseCurrencyText(string currencyText)
         {
-            double actualCurrency;
+            double actualCurrency = 0;
 
             try
             {
@@ -226,7 +226,6 @@ namespace HandyBoxApp.CurrencyService.Services
             catch (Exception)
             {
                 //todo: handle exception and log data
-                actualCurrency = previousValue;
             }
 
             return actualCurrency;

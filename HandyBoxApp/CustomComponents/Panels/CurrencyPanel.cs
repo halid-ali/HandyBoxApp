@@ -1,13 +1,16 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CurrencyService;
+using HandyBoxApp.CurrencyService.Services;
 using HandyBoxApp.CustomComponents.Buttons;
 using HandyBoxApp.CustomComponents.Panels.Base;
+using HandyBoxApp.EventArgs;
 using HandyBoxApp.Utilities;
 
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace HandyBoxApp.CustomComponents.Panels
@@ -17,7 +20,7 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Constructor
 
-        public CurrencyPanel(ICurrency currency, Control parentControl) : this(currency, parentControl, 1000)
+        public CurrencyPanel(ICurrency currency, Control parentControl) : this(currency, parentControl, Constants.DefaultRefreshRate)
         {
         }
 
@@ -27,6 +30,8 @@ namespace HandyBoxApp.CustomComponents.Panels
             RefreshRate = refreshRate;
 
             InitializeComponents();
+
+            Start();
         }
 
         #endregion
@@ -34,9 +39,11 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Properties
 
-        private ICurrency Currency { get; set; }
+        private ICurrency Currency { get; }
 
-        private int RefreshRate { get; set; }
+        private ICurrencyService CurrencyService { get; set; }
+
+        private int RefreshRate { get; }
 
         private Label NameLabel { get; } = new Label();
 
@@ -51,29 +58,48 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         protected override void InitializeComponents()
         {
-            //Initialize Panel
+            //------------------------------------------------------------
+            #region Panel Initialization
+
             Border = new Border(Color.White, 1);
             Paint += PaintBorder;
 
-            //Initialize Currency Name
-            SetLabel<Red>(NameLabel, Currency.Name);
+            #endregion
+
+            //------------------------------------------------------------
+            #region Currency Name Label Initialization
+
+            SetLabel<Black>(NameLabel, PaintMode.Normal, Currency.Name);
             Controls.Add(NameLabel);
 
-            //Initialize Currency Value
-            SetLabel<Blue>(ValueLabel, @"6,4123 TL");
+            #endregion
+
+            //------------------------------------------------------------
+            #region Currency Value Label Initialization
+
+            SetLabel<Black>(ValueLabel, PaintMode.Normal, @"0,0000 TL");
             Controls.Add(ValueLabel);
 
-            //Initialize function switch button
+            #endregion
+
+            //------------------------------------------------------------
+            #region Function Switch Button Initialization
+
             void Action()
             {
                 MessageBox.Show($@"{Currency.Name} is clicked.");
             }
-
             FunctionSwitch = new ClickImageButton(this, Action, "Show functions");
             Controls.Add(FunctionSwitch);
 
-            //Initialize Function Buttons
+            #endregion
+
+            //------------------------------------------------------------
+            #region Functions Initialization
+
             //AddFunction(Action, buttonImage, "Show functions");
+
+            #endregion
 
             CustomControlHelper.SetHorizontalLocation(this);
             Size = GetPanelDimensions();
@@ -81,7 +107,21 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            throw new NotImplementedException();
+            CurrencyService = new Yahoo(Currency.SourceUrl.Value);
+            CurrencyService.OnCurrencyUpdated += UpdateCurrency;
+
+            try
+            {
+                while (!IsStopped)
+                {
+                    CurrencyService.GetUpdatedRateData();
+                    Thread.Sleep(RefreshRate);
+                }
+            }
+            finally
+            {
+                CurrencyService.OnCurrencyUpdated -= UpdateCurrency;
+            }
         }
 
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -94,7 +134,37 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Private Members
 
-        private void SetLabel<T>(Label label, string text) where T : ColorBase, new()
+        private void Start()
+        {
+            BackgroundWorker.RunWorkerAsync();
+        }
+
+        private void UpdateCurrency(object sender, CurrencyUpdatedEventArgs e)
+        {
+            if (ValueLabel.InvokeRequired)
+            {
+                CurrencyUpdateCallback callback = UpdateCurrency;
+                Invoke(callback, sender, e);
+            }
+            else
+            {
+                CurrencySummaryData currencySummary = e.CurrencySummary;
+
+                if (currencySummary.Actual > CurrencyService.PreviousCurrencyData.Actual)
+                {
+                    Painter<Green>.Paint(ValueLabel, PaintMode.Light);
+                }
+                else if (currencySummary.Actual < CurrencyService.PreviousCurrencyData.Actual)
+                {
+                    Painter<Red>.Paint(ValueLabel, PaintMode.Light);
+                }
+
+                ValueLabel.Text = $@"{currencySummary.Actual:F4} TL";
+                CurrencyService.PreviousCurrencyData = currencySummary;
+            }
+        }
+
+        private void SetLabel<T>(Label label, PaintMode paintMode, string text) where T : ColorBase, new()
         {
             label.Text = text;
             label.AutoSize = true;
@@ -102,7 +172,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             label.Padding = new Padding(Style.PanelPadding);
             label.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
 
-            Painter<T>.Paint(label, PaintMode.Normal);
+            Painter<T>.Paint(label, paintMode);
         }
 
         #endregion

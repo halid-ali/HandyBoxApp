@@ -32,7 +32,9 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         //################################################################################
         #region Properties
 
-        private BackgroundWorker BackgroundWorker { get; }
+        protected BackgroundWorker BackgroundWorker { get; }
+
+        protected bool IsStopped { get; set; }
 
         #endregion
 

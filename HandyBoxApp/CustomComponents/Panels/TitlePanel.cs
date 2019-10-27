@@ -51,9 +51,9 @@ namespace HandyBoxApp.CustomComponents.Panels
             #endregion
 
             //------------------------------------------------------------
-            #region Image Label Initialization
+            #region Logo Label Initialization
 
-            SetLabel<Green>(LogoLabel, "LogoLabel", "L");
+            SetLabel<Green>(LogoLabel, PaintMode.Light, "LogoLabel", "L");
             LogoLabel.DoubleClick += LogoLabel_DoubleClick;
             Controls.Add(LogoLabel);
 
@@ -62,7 +62,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Title Label Initialization
 
-            SetLabel<Black>(TitleLabel, "TitleLabel", "Handy Box");
+            SetLabel<Black>(TitleLabel, PaintMode.Dark, "TitleLabel", "Handy Box");
             TitleLabel.MouseDown += DragAndDrop;
             Controls.Add(TitleLabel);
 
@@ -71,7 +71,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Close Label Initialization
 
-            SetLabel<Green>(CloseLabel, "CloseLabel", "X");
+            SetLabel<Green>(CloseLabel, PaintMode.Light, "CloseLabel", "X");
             CloseLabel.Click += CloseLabel_Click;
             Controls.Add(CloseLabel);
 
@@ -109,7 +109,7 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Private Members
 
-        private void SetLabel<T>(Label label, string name, string text) where T : ColorBase, new()
+        private void SetLabel<T>(Label label, PaintMode paintMode, string name, string text) where T : ColorBase, new()
         {
             label.Name = name;
             label.Text = text;
@@ -117,7 +117,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             label.AutoSize = true;
             label.Padding = new Padding(Style.PanelPadding);
             label.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
-            Painter<T>.Paint(label, PaintMode.Light);
+            Painter<T>.Paint(label, paintMode);
         }
 
         #endregion
