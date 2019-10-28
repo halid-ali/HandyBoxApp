@@ -51,6 +51,7 @@ namespace HandyBoxApp
         private void MainForm_Load(object sender, System.EventArgs e)
         {
             SetFormDimensions();
+            SetFormPosition();
         }
 
         private void PaintBorder(object sender, PaintEventArgs e)
@@ -93,19 +94,19 @@ namespace HandyBoxApp
             };
             Controls.Add(EurTryCurrencyPanel);
 
-            EurUsdCurrencyPanel = new CurrencyPanel(new EurUsdCurrency(CurrencyUrls.YahooEurUsd), this)
-            {
-                Visible = true,
-                Location = CustomControlHelper.SetVerticalLocation(this)
-            };
-            Controls.Add(EurUsdCurrencyPanel);
-
             UsdTryCurrencyPanel = new CurrencyPanel(new UsdTryCurrency(CurrencyUrls.YahooUsdTry), this)
             {
                 Visible = true,
                 Location = CustomControlHelper.SetVerticalLocation(this)
             };
             Controls.Add(UsdTryCurrencyPanel);
+
+            EurUsdCurrencyPanel = new CurrencyPanel(new EurUsdCurrency(CurrencyUrls.YahooEurUsd), this)
+            {
+                Visible = true,
+                Location = CustomControlHelper.SetVerticalLocation(this)
+            };
+            Controls.Add(EurUsdCurrencyPanel);
         }
 
         private void SetFormDimensions()
@@ -125,6 +126,19 @@ namespace HandyBoxApp
 
             Width += Style.FormBorder * 2 + Style.PanelSpacing * 2;
             Height += Style.FormBorder;
+        }
+
+        private void SetFormPosition()
+        {
+//#if DEBUG == false
+            var marginRight = 30;
+            var marginBottom = 60;
+            var screenW = Screen.PrimaryScreen.Bounds.Width;
+            var screenH = Screen.PrimaryScreen.Bounds.Height;
+
+            Top = screenH - Height - marginBottom;
+            Left = screenW - Width - marginRight;
+//#endif
         }
 
         #endregion
