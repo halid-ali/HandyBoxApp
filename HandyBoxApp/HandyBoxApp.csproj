@@ -107,6 +107,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\BalloonTip.cs" />
     <Compile Include="Utilities\Constants.cs" />
+    <Compile Include="Utilities\CurrencyFormater.cs" />
     <Compile Include="Utilities\CustomControlHelper.cs" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
