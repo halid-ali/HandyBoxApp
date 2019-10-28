@@ -31,8 +31,6 @@ namespace HandyBoxApp.CurrencyService.Services
 
         #endregion
 
-        private CurrencySummaryData LatestCurrencySummary { get; set; } = new CurrencySummaryData();
-
         //################################################################################
         #region ICurrencyService Members
 
@@ -46,8 +44,6 @@ namespace HandyBoxApp.CurrencyService.Services
 
         void ICurrencyService.GetUpdatedRateData()
         {
-            ((ICurrencyService)this).PreviousCurrencyData = LatestCurrencySummary;
-
             try
             {
                 //todo: implement your own business logic to read html data instead of using third party APIs
@@ -56,7 +52,7 @@ namespace HandyBoxApp.CurrencyService.Services
 
                 var summaryData = ReadSummaryData(doc);
 
-                LatestCurrencySummary = new CurrencySummaryData
+                var currencySummary = new CurrencySummaryData
                 {
                     Actual = GetActualCurrency(doc),
                     PreviousClose = TryParseCurrencyText(summaryData["previous-close"]),
@@ -67,7 +63,8 @@ namespace HandyBoxApp.CurrencyService.Services
                     YearRangeHigh = GetYearRangeHigh(summaryData["year-range"])
                 };
 
-                OnCurrencyUpdated(LatestCurrencySummary);
+                ((ICurrencyService)this).PreviousCurrencyData = currencySummary;
+                OnCurrencyUpdated(currencySummary);
             }
             catch (Exception e)
             {
