@@ -22,5 +22,29 @@ namespace HandyBoxApp.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Transparency {
+            get {
+                return ((double)(this["Transparency"]));
+            }
+            set {
+                this["Transparency"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OnTop {
+            get {
+                return ((bool)(this["OnTop"]));
+            }
+            set {
+                this["OnTop"] = value;
+            }
+        }
     }
 }
