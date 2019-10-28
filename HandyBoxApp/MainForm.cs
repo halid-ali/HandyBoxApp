@@ -2,6 +2,7 @@
 using HandyBoxApp.CurrencyService.Types;
 using HandyBoxApp.CustomComponents;
 using HandyBoxApp.CustomComponents.Panels;
+using HandyBoxApp.Properties;
 using HandyBoxApp.Utilities;
 
 using System.Drawing;
@@ -23,7 +24,8 @@ namespace HandyBoxApp
 
         public MainForm()
         {
-            Paint += PaintBorder;
+            //Paint += PaintBorder;
+            BackColor = Color.Yellow;
             ControlAdded += OnControlAdd;
 
             InitializeComponent();
@@ -50,26 +52,32 @@ namespace HandyBoxApp
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
+            PlaceBgPanel();
             SetFormDimensions();
             SetFormPosition();
+
+            Opacity = Settings.Default.Transparency;
         }
 
         private void PaintBorder(object sender, PaintEventArgs e)
         {
-            Rectangle borderRectangle = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
-            CreateGraphics().DrawRectangle(new Pen(Color.White, Style.FormBorder), borderRectangle);
+            Rectangle borderRectangle = new Rectangle(new Point(0, 0), new Size(((Control)sender).Width + 1, ((Control)sender).Height + 1));
+            CreateGraphics().DrawRectangle(new Pen(Color.Black, Style.FormBorder), borderRectangle);
         }
 
         private void OnControlAdd(object sender, ControlEventArgs e)
         {
-            if (e.Control.Width > m_LargestPanelWidth)
+            if (!e.Control.Name.Equals("BG"))
             {
-                m_LargestPanelWidth = e.Control.Width;
-            }
+                if (e.Control.Width > m_LargestPanelWidth)
+                {
+                    m_LargestPanelWidth = e.Control.Width;
+                }
 
-            foreach (Control control in Controls)
-            {
-                control.Width = m_LargestPanelWidth;
+                foreach (Control control in Controls)
+                {
+                    control.Width = m_LargestPanelWidth;
+                } 
             }
         }
 
@@ -109,27 +117,48 @@ namespace HandyBoxApp
             Controls.Add(EurUsdCurrencyPanel);
         }
 
+        Panel bgPanel = new Panel();
+
+        private void PlaceBgPanel()
+        {
+            bgPanel.Name = "BG";
+            bgPanel.Location = new Point(1, 1);
+            bgPanel.BackColor = Color.WhiteSmoke;
+            bgPanel.SendToBack();
+            bgPanel.Paint += PaintBorder;
+
+            Controls.Add(bgPanel);
+        }
+
         private void SetFormDimensions()
         {
-            Width = 0;
-            Height = 0;
+            bgPanel.Width = 0;
+            bgPanel.Height = 0;
 
             foreach (Control panelControl in Controls)
             {
-                if (panelControl.Width > Width)
+                if (!panelControl.Name.Equals("BG"))
                 {
-                    Width = panelControl.Width;
-                }
+                    if (panelControl.Width > bgPanel.Width)
+                    {
+                        bgPanel.Width = panelControl.Width;
+                    }
 
-                Height += panelControl.Height + Style.PanelSpacing;
+                    bgPanel.Height += panelControl.Height + Style.PanelSpacing; 
+                }
             }
 
-            Width += Style.FormBorder * 2 + Style.PanelSpacing * 2;
-            Height += Style.FormBorder;
+            bgPanel.Width += Style.FormBorder * 2;
+            bgPanel.Height += Style.FormBorder;
+
+            Width = bgPanel.Width + Style.FormBorder * 2;
+            Height = bgPanel.Height + Style.FormBorder * 2;
         }
 
         private void SetFormPosition()
         {
+            //todo: remember last location
+
 //#if DEBUG == false
             var marginRight = 30;
             var marginBottom = 60;

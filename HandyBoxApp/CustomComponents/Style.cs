@@ -10,7 +10,7 @@
 
         public const int PanelPadding = 2; //ok
 
-        public const int PanelFontSize = 9; //ok
+        public const int PanelFontSize = 10; //ok
 
         public const string FontName = "Consolas";
     }

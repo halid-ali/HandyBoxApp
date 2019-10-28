@@ -17,6 +17,8 @@ namespace HandyBoxApp.CustomComponents.Panels
 {
     internal sealed class CurrencyPanel : DynamicPanel
     {
+        private static bool m_IsActive = false;
+
         //################################################################################
         #region Constructor
 
@@ -61,7 +63,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Panel Initialization
 
-            Border = new Border(Color.FromArgb(51, 51, 51), 1);
+            Border = new Border(Color.FromArgb(22, 22, 22), 1);
             Paint += PaintBorder;
 
             #endregion
@@ -77,7 +79,8 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Currency Value Label Initialization
 
-            SetLabel<Black>(ValueLabel, PaintMode.Normal, @"0,0000 TL");
+            //todo: adjustable floating count after comma
+            SetLabel<Black>(ValueLabel, PaintMode.Normal, CurrencyFormater.Format(0, "tr-TR", "TL"));
             Controls.Add(ValueLabel);
 
             #endregion
@@ -87,7 +90,18 @@ namespace HandyBoxApp.CustomComponents.Panels
 
             void Action()
             {
-                MessageBox.Show($@"{Currency.Name} is clicked.");
+                m_IsActive = !m_IsActive;
+
+                if (m_IsActive)
+                {
+                    ParentControl.Width += 50;
+                }
+                else
+                {
+                    ParentControl.Width -= 50;
+                }
+
+                //MessageBox.Show($@"{Currency.Name} is clicked.");
             }
             FunctionSwitch = new ClickImageButton(this, Action, "Show functions");
             Controls.Add(FunctionSwitch);
@@ -159,7 +173,7 @@ namespace HandyBoxApp.CustomComponents.Panels
                     Painter<Red>.Paint(ValueLabel, PaintMode.Light);
                 }
 
-                ValueLabel.Text = $@"{currencySummary.Actual:F4} TL";
+                ValueLabel.Text = CurrencyFormater.Format(currencySummary.Actual, "tr-TR", "TL");
                 CurrencyService.PreviousCurrencyData = currencySummary;
             }
         }

@@ -46,7 +46,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             #region Panel Initialization
 
             Name = "TitlePanel";
-            Border = new Border(Color.FromArgb(51, 51, 51), 1);
+            Border = new Border(Color.FromArgb(22, 22, 22), 1);
             Paint += PaintBorder;
 
             #endregion
@@ -63,7 +63,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Title Label Initialization
 
-            SetLabel<Black>(TitleLabel, PaintMode.Dark, "TitleLabel", "Handy Box");
+            SetLabel<Black>(TitleLabel, PaintMode.Dark, "TitleLabel", "Handy Box App");
             TitleLabel.MouseDown += DragAndDrop;
             Controls.Add(TitleLabel);
 

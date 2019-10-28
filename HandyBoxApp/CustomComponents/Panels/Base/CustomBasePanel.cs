@@ -14,6 +14,7 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         {
             ParentControl = parentControl;
             Border = new Border(Color.White, 1); //default border style
+            BackColor = Color.FromArgb(91, 91, 91);
         }
 
         #endregion

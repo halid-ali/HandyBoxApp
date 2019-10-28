@@ -1,4 +1,6 @@
-﻿namespace HandyBoxApp
+﻿using HandyBoxApp.Properties;
+
+namespace HandyBoxApp
 {
     partial class MainForm
     {
@@ -32,9 +34,8 @@
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.TransparencyKey = this.BackColor;
+            //this.TransparencyKey = this.BackColor;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.MaximizeBox = false;
@@ -42,7 +43,7 @@
             this.Name = "MainForm";
             this.ShowIcon = false;
             this.Text = "Handy Box v1.0 by Halit Yurtsever";
-            this.TopMost = true; //todo: get this data from settings
+            this.TopMost = Settings.Default.OnTop;
             this.ShowInTaskbar = false;
             this.ResumeLayout(false);
             this.Load += MainForm_Load;
