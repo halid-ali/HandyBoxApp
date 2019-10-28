@@ -17,7 +17,12 @@ namespace HandyBoxApp.CustomComponents.Panels
 {
     internal sealed class CurrencyPanel : DynamicPanel
     {
-        private static bool m_IsActive = false;
+        //################################################################################
+        #region Fields
+
+        private static bool s_IsActive;
+
+        #endregion
 
         //################################################################################
         #region Constructor
@@ -80,7 +85,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             #region Currency Value Label Initialization
 
             //todo: adjustable floating count after comma
-            SetLabel<Black>(ValueLabel, PaintMode.Normal, CurrencyFormater.Format(0, "tr-TR", "TL"));
+            SetLabel<Black>(ValueLabel, PaintMode.Normal, CurrencyFormatter.Format(0, "tr-TR", "TL"));
             Controls.Add(ValueLabel);
 
             #endregion
@@ -90,9 +95,9 @@ namespace HandyBoxApp.CustomComponents.Panels
 
             void Action()
             {
-                m_IsActive = !m_IsActive;
+                s_IsActive = !s_IsActive;
 
-                if (m_IsActive)
+                if (s_IsActive)
                 {
                     ParentControl.Width += 50;
                 }
@@ -173,7 +178,7 @@ namespace HandyBoxApp.CustomComponents.Panels
                     Painter<Red>.Paint(ValueLabel, PaintMode.Light);
                 }
 
-                ValueLabel.Text = CurrencyFormater.Format(currencySummary.Actual, "tr-TR", "TL");
+                ValueLabel.Text = CurrencyFormatter.Format(currencySummary.Actual, "tr-TR", "TL");
                 CurrencyService.PreviousCurrencyData = currencySummary;
             }
         }

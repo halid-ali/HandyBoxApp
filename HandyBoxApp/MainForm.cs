@@ -15,6 +15,7 @@ namespace HandyBoxApp
         //################################################################################
         #region Fields
 
+        private readonly Panel m_ContainerPanel;
         private int m_LargestPanelWidth;
 
         #endregion
@@ -24,12 +25,14 @@ namespace HandyBoxApp
 
         public MainForm()
         {
+            m_ContainerPanel = new Panel();
+
             //Paint += PaintBorder;
-            BackColor = Color.Yellow;
             ControlAdded += OnControlAdd;
 
             InitializeComponent();
             InitializePanels();
+            InitializeContainerPanel();
         }
 
         #endregion
@@ -52,8 +55,8 @@ namespace HandyBoxApp
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
-            PlaceBgPanel();
-            SetFormDimensions();
+            SetContainerPanelDimensions();
+            SetMainFormDimensions();
             SetFormPosition();
 
             Opacity = Settings.Default.Transparency;
@@ -77,7 +80,7 @@ namespace HandyBoxApp
                 foreach (Control control in Controls)
                 {
                     control.Width = m_LargestPanelWidth;
-                } 
+                }
             }
         }
 
@@ -117,49 +120,50 @@ namespace HandyBoxApp
             Controls.Add(EurUsdCurrencyPanel);
         }
 
-        Panel bgPanel = new Panel();
-
-        private void PlaceBgPanel()
+        private void InitializeContainerPanel()
         {
-            bgPanel.Name = "BG";
-            bgPanel.Location = new Point(1, 1);
-            bgPanel.BackColor = Color.WhiteSmoke;
-            bgPanel.SendToBack();
-            bgPanel.Paint += PaintBorder;
+            m_ContainerPanel.Name = "BG";
+            m_ContainerPanel.Location = new Point(1, 1);
+            m_ContainerPanel.BackColor = Color.WhiteSmoke;
+            m_ContainerPanel.SendToBack();
+            m_ContainerPanel.Paint += PaintBorder;
 
-            Controls.Add(bgPanel);
+            Controls.Add(m_ContainerPanel);
         }
 
-        private void SetFormDimensions()
+        private void SetContainerPanelDimensions()
         {
-            bgPanel.Width = 0;
-            bgPanel.Height = 0;
+            m_ContainerPanel.Width = 0;
+            m_ContainerPanel.Height = 0;
 
             foreach (Control panelControl in Controls)
             {
                 if (!panelControl.Name.Equals("BG"))
                 {
-                    if (panelControl.Width > bgPanel.Width)
+                    if (panelControl.Width > m_ContainerPanel.Width)
                     {
-                        bgPanel.Width = panelControl.Width;
+                        m_ContainerPanel.Width = panelControl.Width;
                     }
 
-                    bgPanel.Height += panelControl.Height + Style.PanelSpacing; 
+                    m_ContainerPanel.Height += panelControl.Height + Style.PanelSpacing;
                 }
             }
 
-            bgPanel.Width += Style.FormBorder * 2;
-            bgPanel.Height += Style.FormBorder;
+            m_ContainerPanel.Width += Style.FormBorder * 2;
+            m_ContainerPanel.Height += Style.FormBorder;
+        }
 
-            Width = bgPanel.Width + Style.FormBorder * 2;
-            Height = bgPanel.Height + Style.FormBorder * 2;
+        private void SetMainFormDimensions()
+        {
+            Width = m_ContainerPanel.Width + Style.FormBorder * 2;
+            Height = m_ContainerPanel.Height + Style.FormBorder * 2;
         }
 
         private void SetFormPosition()
         {
             //todo: remember last location
 
-//#if DEBUG == false
+            //#if DEBUG == false
             var marginRight = 30;
             var marginBottom = 60;
             var screenW = Screen.PrimaryScreen.Bounds.Width;
@@ -167,7 +171,7 @@ namespace HandyBoxApp
 
             Top = screenH - Height - marginBottom;
             Left = screenW - Width - marginRight;
-//#endif
+            //#endif
         }
 
         #endregion

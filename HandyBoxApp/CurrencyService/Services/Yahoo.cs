@@ -31,7 +31,12 @@ namespace HandyBoxApp.CurrencyService.Services
 
         #endregion
 
-        private CurrencySummaryData LatestCurrencySummary { get; set; } = new CurrencySummaryData();
+        //################################################################################
+        #region Properties
+
+        private CurrencySummaryData LatestCurrencySummary { get; set; }
+
+        #endregion
 
         //################################################################################
         #region ICurrencyService Members
