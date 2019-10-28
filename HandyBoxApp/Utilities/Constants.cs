@@ -2,6 +2,6 @@
 {
     internal static class Constants
     {
-        public const int DefaultRefreshRate = 5000; //ms
+        public const int DefaultRefreshRate = 1000; //ms
     }
 }

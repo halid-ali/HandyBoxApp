@@ -61,7 +61,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Panel Initialization
 
-            Border = new Border(Color.White, 1);
+            Border = new Border(Color.FromArgb(51, 51, 51), 1);
             Paint += PaintBorder;
 
             #endregion

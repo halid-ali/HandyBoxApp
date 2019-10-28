@@ -46,6 +46,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             #region Panel Initialization
 
             Name = "TitlePanel";
+            Border = new Border(Color.FromArgb(51, 51, 51), 1);
             Paint += PaintBorder;
 
             #endregion
@@ -71,7 +72,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Close Label Initialization
 
-            SetLabel<Green>(CloseLabel, PaintMode.Light, "CloseLabel", "X");
+            SetLabel<Red>(CloseLabel, PaintMode.Dark, "CloseLabel", "X");
             CloseLabel.Click += CloseLabel_Click;
             Controls.Add(CloseLabel);
 
