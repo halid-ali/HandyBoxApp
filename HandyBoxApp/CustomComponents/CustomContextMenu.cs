@@ -75,6 +75,7 @@ namespace HandyBoxApp.CustomComponents
 
         private void Exit_Click(object sender, System.EventArgs args)
         {
+            m_MainForm.Close();
             CustomApplicationContext.Exit();
         }
 

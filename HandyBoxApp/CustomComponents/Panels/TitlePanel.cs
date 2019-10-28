@@ -102,6 +102,7 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         private void CloseLabel_Click(object sender, System.EventArgs e)
         {
+            ((MainForm)ParentControl).Close();
             CustomApplicationContext.Exit();
         }
 

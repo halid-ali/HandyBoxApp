@@ -29,6 +29,7 @@ namespace HandyBoxApp
 
             //Paint += PaintBorder;
             ControlAdded += OnControlAdd;
+            Closing += OnFormClosed;
 
             InitializeComponent();
             InitializePanels();
@@ -82,6 +83,12 @@ namespace HandyBoxApp
                     control.Width = m_LargestPanelWidth;
                 }
             }
+        }
+
+        private void OnFormClosed(object sender, System.EventArgs e)
+        {
+            Settings.Default.LastLocation = Location;
+            Settings.Default.Save();
         }
 
         #endregion
@@ -161,17 +168,25 @@ namespace HandyBoxApp
 
         private void SetFormPosition()
         {
-            //todo: remember last location
+            var lastLocation = Settings.Default.LastLocation;
 
-            //#if DEBUG == false
-            var marginRight = 30;
-            var marginBottom = 60;
-            var screenW = Screen.PrimaryScreen.Bounds.Width;
-            var screenH = Screen.PrimaryScreen.Bounds.Height;
+            if (lastLocation.X == 0 && lastLocation.Y == 0)
+            {
+                //set default location
+                var marginRight = 30;
+                var marginBottom = 60;
+                var screenW = Screen.PrimaryScreen.Bounds.Width;
+                var screenH = Screen.PrimaryScreen.Bounds.Height;
 
-            Top = screenH - Height - marginBottom;
-            Left = screenW - Width - marginRight;
-            //#endif
+                Top = screenH - Height - marginBottom;
+                Left = screenW - Width - marginRight;
+
+                lastLocation = new Point(Left, Top);
+                Settings.Default.LastLocation = lastLocation;
+                Settings.Default.Save();
+            }
+
+            Location = lastLocation;
         }
 
         #endregion

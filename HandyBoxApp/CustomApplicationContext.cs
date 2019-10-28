@@ -13,7 +13,6 @@ namespace HandyBoxApp
         #region Fields
 
         private static NotifyIcon s_NotifyIcon;
-        private CustomContextMenu m_CustomContextMenu;
         private BalloonTip m_BalloonTip;
 
         #endregion
@@ -24,7 +23,7 @@ namespace HandyBoxApp
         public CustomApplicationContext(MainForm mainForm)
         {
             MainForm = mainForm;
-            m_CustomContextMenu = new CustomContextMenu(mainForm);
+            var customContextMenu = new CustomContextMenu(mainForm);
 
 #if DEBUG
             Bitmap icon = Resources.Debug_Logo;
@@ -37,7 +36,7 @@ namespace HandyBoxApp
                 //todo: badge icon for notify icon if anything occured eg. crash, update etc.
                 //todo: also show balloon tips if any update or crash occured
                 Icon = Icon.FromHandle(icon.GetHicon()),
-                ContextMenu = m_CustomContextMenu,
+                ContextMenu = customContextMenu,
                 Visible = true
             };
 
@@ -66,7 +65,7 @@ namespace HandyBoxApp
         private void NotifyIcon_MouseMouse(object sender, MouseEventArgs e)
         {
             //todo: show currency and working hour info
-            s_NotifyIcon.Text = "This is a notify icon.";
+            s_NotifyIcon.Text = @"This is a notify icon.";
         }
 
         private void NotifyIcon_DoubleClick(object sender, System.EventArgs e)
