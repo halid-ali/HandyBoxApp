@@ -57,7 +57,7 @@ namespace HandyBoxApp.CustomComponents.Panels
                     ParentControl.Visible = false;
                 };
             }
-            LogoLabel = new ClickImageButton(this, Logo_Action, "L");
+            LogoLabel = new ClickImageButton(Logo_Action, "L");
             LogoLabel.SetToolTip("Handy Box App v2.4");
             LogoLabel.SetColor<Blue>(PaintMode.Light);
             Controls.Add(LogoLabel);
@@ -71,7 +71,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             {
                 button.MouseDown += DragAndDrop;
             }
-            TitleLabel = new ClickImageButton(this, Title_Action, "Handy Box App");
+            TitleLabel = new ClickImageButton(Title_Action, "Handy Box App");
             TitleLabel.SetColor<Black>(PaintMode.Dark);
             Controls.Add(TitleLabel);
 
@@ -88,7 +88,7 @@ namespace HandyBoxApp.CustomComponents.Panels
                     CustomApplicationContext.Exit();
                 };
             }
-            CloseLabel = new ClickImageButton(this, Close_Action, "X");
+            CloseLabel = new ClickImageButton(Close_Action, "X");
             CloseLabel.SetToolTip("Close");
             CloseLabel.SetColor<Red>(PaintMode.Dark);
             Controls.Add(CloseLabel);

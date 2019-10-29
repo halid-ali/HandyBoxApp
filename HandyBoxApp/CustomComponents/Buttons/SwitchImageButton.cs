@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 
 namespace HandyBoxApp.CustomComponents.Buttons
 {
@@ -15,8 +14,8 @@ namespace HandyBoxApp.CustomComponents.Buttons
         //################################################################################
         #region Constructor
 
-        public SwitchImageButton(Control parentControl, Action<ClickImageButton> action, string label, bool switchStatus)
-            : base(parentControl, action, label)
+        public SwitchImageButton(Action<ClickImageButton> action, string labelText, bool switchStatus)
+            : base(action, labelText)
         {
             m_SwitchStatus = switchStatus;
         }

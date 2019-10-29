@@ -19,24 +19,12 @@ namespace HandyBoxApp.CustomComponents.Buttons
         //################################################################################
         #region Constructor
 
-        public ClickImageButton(Control parentControl, Action<ClickImageButton> action, string label)
+        public ClickImageButton(Action<ClickImageButton> action, string labelText)
         {
-            ParentControl = parentControl;
-            Label = label;
-
-            InitializeComponent();
+            InitializeComponent(labelText);
 
             action?.Invoke(this);
         }
-
-        #endregion
-
-        //################################################################################
-        #region Properties
-
-        private Control ParentControl { get; set; }
-
-        private string Label { get; }
 
         #endregion
 
@@ -58,12 +46,11 @@ namespace HandyBoxApp.CustomComponents.Buttons
         //################################################################################
         #region Private Members
 
-        private void InitializeComponent()
+        private void InitializeComponent(string labelText)
         {
-            Text = Label;
-            Width = Height; //must be square
             Visible = true;
             AutoSize = true;
+            Text = labelText;
             Padding = new Padding(Style.PanelPadding);
             Painter<Green>.Paint(this, PaintMode.Light);
             Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);

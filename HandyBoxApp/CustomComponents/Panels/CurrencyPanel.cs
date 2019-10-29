@@ -111,7 +111,7 @@ namespace HandyBoxApp.CustomComponents.Panels
                     //MessageBox.Show($@"{Currency.Name} is clicked.");
                 };
             }
-            FunctionSwitch = new ClickImageButton(this, Action, "»");
+            FunctionSwitch = new ClickImageButton(Action, "»");
             FunctionSwitch.SetToolTip("Expand functions.");
             Controls.Add(FunctionSwitch);
 

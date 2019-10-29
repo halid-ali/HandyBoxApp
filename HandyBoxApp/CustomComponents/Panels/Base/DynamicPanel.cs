@@ -50,9 +50,9 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         //################################################################################
         #region Protected Members
 
-        protected void AddFunction(Control containerPanel, Action<ClickImageButton> action, string label)
+        protected void AddFunction(Action<ClickImageButton> action, string labelText)
         {
-            m_FunctionButtonList.Add(new ClickImageButton(containerPanel, action, label));
+            m_FunctionButtonList.Add(new ClickImageButton(action, labelText));
         }
 
         #endregion
