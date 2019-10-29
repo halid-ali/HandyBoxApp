@@ -89,6 +89,9 @@
     <Compile Include="CustomComponents\Panels\Base\StaticPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomComponents\Panels\ContainerPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomComponents\Panels\CurrencyPanel.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -14,6 +14,7 @@ namespace HandyBoxApp
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            //todo: make it singleton
             MainForm mainForm = new MainForm();
             Application.Run(new CustomApplicationContext(mainForm));
         }
