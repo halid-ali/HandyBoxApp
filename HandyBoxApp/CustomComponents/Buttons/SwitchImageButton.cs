@@ -15,8 +15,8 @@ namespace HandyBoxApp.CustomComponents.Buttons
         //################################################################################
         #region Constructor
 
-        public SwitchImageButton(Control parentControl, Action action, string tooltip, bool switchStatus)
-            : base(parentControl, action, tooltip)
+        public SwitchImageButton(Control parentControl, Action<ClickImageButton> action, string label, bool switchStatus)
+            : base(parentControl, action, label)
         {
             m_SwitchStatus = switchStatus;
         }

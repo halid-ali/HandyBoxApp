@@ -1,5 +1,6 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
+using HandyBoxApp.CustomComponents.Buttons;
 using HandyBoxApp.CustomComponents.Panels.Base;
 using HandyBoxApp.Utilities;
 
@@ -15,12 +16,7 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         public TitlePanel(Control parentControl) : base(parentControl)
         {
-            LogoLabel = new Label();
-            CloseLabel = new Label();
-            TitleLabel = new Label();
-
             SizeChanged += UpdatePanelContent;
-
             InitializeComponents();
         }
 
@@ -29,11 +25,11 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Properties
 
-        private Label LogoLabel { get; }
+        private ClickImageButton LogoLabel { get; set; }
 
-        private Label TitleLabel { get; }
+        private ClickImageButton TitleLabel { get; set; }
 
-        private Label CloseLabel { get; }
+        private ClickImageButton CloseLabel { get; set; }
 
         #endregion
 
@@ -54,8 +50,16 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Logo Label Initialization
 
-            SetLabel<Green>(LogoLabel, PaintMode.Light, "LogoLabel", "L");
-            LogoLabel.DoubleClick += LogoLabel_DoubleClick;
+            void Logo_Action(ClickImageButton button)
+            {
+                button.DoubleClick += (sender, arg) => 
+                {
+                    ParentControl.Visible = false;
+                };
+            }
+            LogoLabel = new ClickImageButton(this, Logo_Action, "L");
+            LogoLabel.SetToolTip("Handy Box App v2.4");
+            LogoLabel.SetColor<Blue>(PaintMode.Light);
             Controls.Add(LogoLabel);
 
             #endregion
@@ -63,8 +67,12 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Title Label Initialization
 
-            SetLabel<Black>(TitleLabel, PaintMode.Dark, "TitleLabel", "Handy Box App");
-            TitleLabel.MouseDown += DragAndDrop;
+            void Title_Action(ClickImageButton button)
+            {
+                button.MouseDown += DragAndDrop;
+            }
+            TitleLabel = new ClickImageButton(this, Title_Action, "Handy Box App");
+            TitleLabel.SetColor<Black>(PaintMode.Dark);
             Controls.Add(TitleLabel);
 
             #endregion
@@ -72,8 +80,17 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Close Label Initialization
 
-            SetLabel<Red>(CloseLabel, PaintMode.Dark, "CloseLabel", "X");
-            CloseLabel.Click += CloseLabel_Click;
+            void Close_Action(ClickImageButton button)
+            {
+                button.Click += (sender, args) =>
+                {
+                    ((MainForm)ParentControl).Close();
+                    CustomApplicationContext.Exit();
+                };
+            }
+            CloseLabel = new ClickImageButton(this, Close_Action, "X");
+            CloseLabel.SetToolTip("Close");
+            CloseLabel.SetColor<Red>(PaintMode.Dark);
             Controls.Add(CloseLabel);
 
             #endregion
@@ -88,38 +105,6 @@ namespace HandyBoxApp.CustomComponents.Panels
             TitleLabel.Width = Width - LogoLabel.Width - CloseLabel.Width - (Controls.Count + 1) * Style.PanelSpacing - Border.Size * 2;
             TitleLabel.Height = LogoLabel.Height;
             CustomControlHelper.SetHorizontalLocation(this);
-        }
-
-        #endregion
-
-        //################################################################################
-        #region Event Handlers
-
-        private void LogoLabel_DoubleClick(object sender, System.EventArgs e)
-        {
-            ParentControl.Visible = false;
-        }
-
-        private void CloseLabel_Click(object sender, System.EventArgs e)
-        {
-            ((MainForm)ParentControl).Close();
-            CustomApplicationContext.Exit();
-        }
-
-        #endregion
-
-        //################################################################################
-        #region Private Members
-
-        private void SetLabel<T>(Label label, PaintMode paintMode, string name, string text) where T : ColorBase, new()
-        {
-            label.Name = name;
-            label.Text = text;
-            label.Visible = true;
-            label.AutoSize = true;
-            label.Padding = new Padding(Style.PanelPadding);
-            label.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
-            Painter<T>.Paint(label, paintMode);
         }
 
         #endregion

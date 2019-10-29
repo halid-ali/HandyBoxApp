@@ -1,6 +1,5 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
-using HandyBoxApp.Utilities;
 
 using System;
 using System.Drawing;
@@ -11,19 +10,23 @@ namespace HandyBoxApp.CustomComponents.Buttons
     internal class ClickImageButton : Label
     {
         //################################################################################
+        #region Fields
+
+        private readonly ToolTip m_ToolTip = new ToolTip();
+
+        #endregion
+
+        //################################################################################
         #region Constructor
 
-        public ClickImageButton(Control parentControl, Action action, string tooltip)
+        public ClickImageButton(Control parentControl, Action<ClickImageButton> action, string label)
         {
             ParentControl = parentControl;
-            Action = action;
+            Label = label;
 
             InitializeComponent();
 
-            var toolTip = new ToolTip();
-            toolTip.SetToolTip(this, tooltip);
-
-            Click += Button_Click;
+            action?.Invoke(this);
         }
 
         #endregion
@@ -33,16 +36,21 @@ namespace HandyBoxApp.CustomComponents.Buttons
 
         private Control ParentControl { get; set; }
 
-        private Action Action { get; set; }
+        private string Label { get; }
 
         #endregion
 
         //################################################################################
-        #region Event Handlers
+        #region Internal Members
 
-        private void Button_Click(object sender, System.EventArgs e)
+        internal void SetToolTip(string toolTipText)
         {
-            Action();
+            m_ToolTip.SetToolTip(this, toolTipText);
+        }
+
+        internal void SetColor<T>(PaintMode paintMode) where T : ColorBase, new()
+        {
+            Painter<T>.Paint(this, paintMode);
         }
 
         #endregion
@@ -52,14 +60,13 @@ namespace HandyBoxApp.CustomComponents.Buttons
 
         private void InitializeComponent()
         {
-            AutoSize = true;
-            Text = @"»";
-            Painter<Green>.Paint(this, PaintMode.Light);
-            Padding = new Padding(Style.PanelPadding);
-            Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
+            Text = Label;
+            Width = Height; //must be square
             Visible = true;
-
-            Width = Height;
+            AutoSize = true;
+            Padding = new Padding(Style.PanelPadding);
+            Painter<Green>.Paint(this, PaintMode.Light);
+            Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
         }
 
         #endregion

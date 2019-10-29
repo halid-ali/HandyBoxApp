@@ -93,22 +93,26 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Function Switch Button Initialization
 
-            void Action()
+            void Action(ClickImageButton button)
             {
-                s_IsActive = !s_IsActive;
-
-                if (s_IsActive)
+                button.Click += (sender, args) => 
                 {
-                    ParentControl.Width += 50;
-                }
-                else
-                {
-                    ParentControl.Width -= 50;
-                }
+                    s_IsActive = !s_IsActive;
 
-                //MessageBox.Show($@"{Currency.Name} is clicked.");
+                    if (s_IsActive)
+                    {
+                        ParentControl.Width += 50;
+                    }
+                    else
+                    {
+                        ParentControl.Width -= 50;
+                    }
+
+                    //MessageBox.Show($@"{Currency.Name} is clicked.");
+                };
             }
-            FunctionSwitch = new ClickImageButton(this, Action, "Show functions");
+            FunctionSwitch = new ClickImageButton(this, Action, "»");
+            FunctionSwitch.SetToolTip("Expand functions.");
             Controls.Add(FunctionSwitch);
 
             #endregion
