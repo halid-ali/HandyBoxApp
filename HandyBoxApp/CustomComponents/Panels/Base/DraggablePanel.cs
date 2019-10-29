@@ -28,17 +28,10 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         //################################################################################
         #region Constructor
 
-        protected DraggablePanel(Control parentControl) : base(parentControl)
+        protected DraggablePanel(Control parentControl, bool isVertical) : base(parentControl, isVertical)
         {
 
         }
-
-        #endregion
-
-        //################################################################################
-        #region Abstract Members
-
-        protected abstract void UpdatePanelContent(object sender, System.EventArgs e);
 
         #endregion
 

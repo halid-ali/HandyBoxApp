@@ -13,27 +13,19 @@ namespace HandyBoxApp
     public partial class MainForm : Form
     {
         //################################################################################
-        #region Fields
-
-        private readonly Panel m_ContainerPanel;
-        private int m_LargestPanelWidth;
-
-        #endregion
-
-        //################################################################################
         #region Constructor
 
         public MainForm()
         {
-            m_ContainerPanel = new Panel();
-
-            //Paint += PaintBorder;
-            ControlAdded += OnControlAdd;
+            Paint += PaintBorder;
             Closing += OnFormClosed;
+            ControlAdded += OnControlAdd;
 
             InitializeComponent();
             InitializePanels();
-            InitializeContainerPanel();
+
+            //todo: this call title panel specific, make more generic
+            TitlePanel.UpdatePanelContent(LargestContent);
         }
 
         #endregion
@@ -49,6 +41,8 @@ namespace HandyBoxApp
 
         private CurrencyPanel UsdTryCurrencyPanel { get; set; }
 
+        private int LargestContent { get; set; }
+
         #endregion
 
         //################################################################################
@@ -56,33 +50,26 @@ namespace HandyBoxApp
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
-            SetContainerPanelDimensions();
-            SetMainFormDimensions();
             SetFormPosition();
-
             Opacity = Settings.Default.Transparency;
         }
 
         private void PaintBorder(object sender, PaintEventArgs e)
         {
-            Rectangle borderRectangle = new Rectangle(new Point(0, 0), new Size(((Control)sender).Width + 1, ((Control)sender).Height + 1));
+            var point = new Point(0, 0);
+            var size = new Size(Width - Style.FormBorder, Height - Style.FormBorder);
+            Rectangle borderRectangle = new Rectangle(point, size);
             CreateGraphics().DrawRectangle(new Pen(Color.Black, Style.FormBorder), borderRectangle);
         }
 
         private void OnControlAdd(object sender, ControlEventArgs e)
         {
-            if (!e.Control.Name.Equals("BG"))
+            if (e.Control.Width > LargestContent)
             {
-                if (e.Control.Width > m_LargestPanelWidth)
-                {
-                    m_LargestPanelWidth = e.Control.Width;
-                }
-
-                foreach (Control control in Controls)
-                {
-                    control.Width = m_LargestPanelWidth;
-                }
+                LargestContent = e.Control.Width;
             }
+
+            CustomControlHelper.BoundsForVertical(e.Control, this);
         }
 
         private void OnFormClosed(object sender, System.EventArgs e)
@@ -98,72 +85,17 @@ namespace HandyBoxApp
 
         private void InitializePanels()
         {
-            TitlePanel = new TitlePanel(this)
-            {
-                Visible = true,
-                Location = CustomControlHelper.SetVerticalLocation(this)
-            };
+            TitlePanel = new TitlePanel(this, false);
             Controls.Add(TitlePanel);
 
-            EurTryCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), this)
-            {
-                Visible = true,
-                Location = CustomControlHelper.SetVerticalLocation(this)
-            };
+            EurTryCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), this, false);
             Controls.Add(EurTryCurrencyPanel);
 
-            UsdTryCurrencyPanel = new CurrencyPanel(new UsdTryCurrency(CurrencyUrls.YahooUsdTry), this)
-            {
-                Visible = true,
-                Location = CustomControlHelper.SetVerticalLocation(this)
-            };
+            UsdTryCurrencyPanel = new CurrencyPanel(new UsdTryCurrency(CurrencyUrls.YahooUsdTry), this, false);
             Controls.Add(UsdTryCurrencyPanel);
 
-            EurUsdCurrencyPanel = new CurrencyPanel(new EurUsdCurrency(CurrencyUrls.YahooEurUsd), this)
-            {
-                Visible = true,
-                Location = CustomControlHelper.SetVerticalLocation(this)
-            };
+            EurUsdCurrencyPanel = new CurrencyPanel(new EurUsdCurrency(CurrencyUrls.YahooEurUsd), this, false);
             Controls.Add(EurUsdCurrencyPanel);
-        }
-
-        private void InitializeContainerPanel()
-        {
-            m_ContainerPanel.Name = "BG";
-            m_ContainerPanel.Location = new Point(1, 1);
-            m_ContainerPanel.BackColor = Color.WhiteSmoke;
-            m_ContainerPanel.SendToBack();
-            m_ContainerPanel.Paint += PaintBorder;
-
-            Controls.Add(m_ContainerPanel);
-        }
-
-        private void SetContainerPanelDimensions()
-        {
-            m_ContainerPanel.Width = 0;
-            m_ContainerPanel.Height = 0;
-
-            foreach (Control panelControl in Controls)
-            {
-                if (!panelControl.Name.Equals("BG"))
-                {
-                    if (panelControl.Width > m_ContainerPanel.Width)
-                    {
-                        m_ContainerPanel.Width = panelControl.Width;
-                    }
-
-                    m_ContainerPanel.Height += panelControl.Height + Style.PanelSpacing;
-                }
-            }
-
-            m_ContainerPanel.Width += Style.FormBorder * 2;
-            m_ContainerPanel.Height += Style.FormBorder;
-        }
-
-        private void SetMainFormDimensions()
-        {
-            Width = m_ContainerPanel.Width + Style.FormBorder * 2;
-            Height = m_ContainerPanel.Height + Style.FormBorder * 2;
         }
 
         private void SetFormPosition()

@@ -19,7 +19,7 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         //################################################################################
         #region Constructor
 
-        protected DynamicPanel(Control parentControl) : base(parentControl)
+        protected DynamicPanel(Control parentControl, bool isVertical) : base(parentControl, isVertical)
         {
             m_FunctionButtonList = new List<ClickImageButton>();
 

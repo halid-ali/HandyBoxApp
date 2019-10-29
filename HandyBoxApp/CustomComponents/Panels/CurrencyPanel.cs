@@ -27,11 +27,11 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Constructor
 
-        public CurrencyPanel(ICurrency currency, Control parentControl) : this(currency, parentControl, Constants.DefaultRefreshRate)
+        public CurrencyPanel(ICurrency currency, Control parentControl, bool isVertical) : this(currency, parentControl, Constants.DefaultRefreshRate, isVertical)
         {
         }
 
-        public CurrencyPanel(ICurrency currency, Control parentControl, int refreshRate) : base(parentControl)
+        public CurrencyPanel(ICurrency currency, Control parentControl, int refreshRate, bool isVertical) : base(parentControl, isVertical)
         {
             Currency = currency;
             RefreshRate = refreshRate;
@@ -68,6 +68,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Panel Initialization
 
+            //todo: move border initialization to the base class and parameterized the color
             Border = new Border(Color.FromArgb(22, 22, 22), 1);
             Paint += PaintBorder;
 
@@ -95,7 +96,7 @@ namespace HandyBoxApp.CustomComponents.Panels
 
             void Action(ClickImageButton button)
             {
-                button.Click += (sender, args) => 
+                button.Click += (sender, args) =>
                 {
                     s_IsActive = !s_IsActive;
 
@@ -120,37 +121,34 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Functions Initialization
 
-            void Action_1(ClickImageButton button)
+            void Action1(ClickImageButton button)
             {
-                button.Click += (sender, args) => 
+                button.Click += (sender, args) =>
                 {
                     MessageBox.Show(@"Hello from function 1");
                 };
             }
-            AddFunction(Action_1, "1");
+            AddFunction(Action1, "1");
 
-            void Action_2(ClickImageButton button)
+            void Action2(ClickImageButton button)
             {
                 button.Click += (sender, args) =>
                 {
                     MessageBox.Show(@"Hello from function 2");
                 };
             }
-            AddFunction(Action_2, "2");
+            AddFunction(Action2, "2");
 
-            void Action_3(ClickImageButton button)
+            void Action3(ClickImageButton button)
             {
                 button.Click += (sender, args) =>
                 {
                     MessageBox.Show(@"Hello from function 3");
                 };
             }
-            AddFunction(Action_3, "3");
+            AddFunction(Action3, "3");
 
             #endregion
-
-            CustomControlHelper.SetHorizontalLocation(this);
-            Size = GetPanelDimensions();
         }
 
         protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)

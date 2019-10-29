@@ -10,11 +10,12 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         //################################################################################
         #region Constructor
 
-        protected CustomBasePanel(Control parentControl)
+        protected CustomBasePanel(Control parentControl, bool isVertical)
         {
             ParentControl = parentControl;
-            Border = new Border(Color.White, 1); //default border style
-            BackColor = Color.FromArgb(91, 91, 91);
+            IsVertical = isVertical;
+
+            InitializeComponent();
         }
 
         #endregion
@@ -23,6 +24,8 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         #region Properties
 
         protected Control ParentControl { get; }
+
+        private bool IsVertical { get; }
 
         #endregion
 
@@ -38,30 +41,20 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
         protected Border Border { get; set; }
 
-        protected Size GetPanelDimensions()
-        {
-            var width = Style.PanelMargin * 2 + Border.Size * 2;
-            var height = 0;
-
-            foreach (Control control in Controls)
-            {
-                width += control.Width;
-
-                if (height < control.Height)
-                {
-                    height = control.Height;
-                }
-            }
-
-            height += Style.PanelMargin * 2;
-
-            return new Size(width, height);
-        }
-
         protected void PaintBorder(object sender, PaintEventArgs e)
         {
-            Rectangle borderRectangle = new Rectangle(new Point(0, 0), new Size(Width - 1, Height - 1));
+            var point = new Point(0, 0);
+            var size = new Size(Width - Style.FormBorder, Height - Style.FormBorder);
+            Rectangle borderRectangle = new Rectangle(point, size);
             CreateGraphics().DrawRectangle(new Pen(Border.Color, Border.Size), borderRectangle);
+        }
+
+        protected void OnControlAdded(object sender, ControlEventArgs e)
+        {
+            if (IsVertical)
+                CustomControlHelper.BoundsForVertical(e.Control, this);
+            else
+                CustomControlHelper.BoundsForHorizontal(e.Control, this);
         }
 
         protected void ShowBalloonTip(string title, string message, ToolTipIcon toolTipIcon)
@@ -70,6 +63,19 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
             int timeout = 2000;
 
             BalloonTip.Show(title, message, icon, timeout);
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Private Members
+
+        private void InitializeComponent()
+        {
+            Border = new Border(Color.White, 1); //default border style
+            BackColor = Color.FromArgb(91, 91, 91);
+
+            ControlAdded += OnControlAdded;
         }
 
         #endregion

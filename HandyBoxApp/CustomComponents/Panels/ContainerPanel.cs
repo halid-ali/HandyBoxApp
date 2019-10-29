@@ -1,18 +1,47 @@
 ﻿using HandyBoxApp.CustomComponents.Panels.Base;
-using System;
+
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HandyBoxApp.CustomComponents.Panels
 {
     internal sealed class ContainerPanel : StaticPanel
     {
-        public ContainerPanel(Control parentControl, bool isVertical) : base(parentControl, isVertical)
+        //################################################################################
+        #region Constructor
+
+        public ContainerPanel(Control parentControl, Point location, bool isVertical) : base(parentControl, isVertical)
         {
+            Border = new Border(Color.White, Style.FormBorder);
+            InitialLocation = location;
+
+            InitializeComponents();
         }
+
+        #endregion
+
+        //################################################################################
+        #region Properties
+
+        private Point InitialLocation { get; }
+
+        #endregion
+
+        //################################################################################
+        #region Overrides
 
         protected override void InitializeComponents()
         {
-            throw new NotImplementedException();
+            BackColor = Color.WhiteSmoke;
+            Location = InitialLocation;
+            BorderStyle = BorderStyle.None;
+
+            Width = ParentControl.Width - Style.FormBorder * 2;
+            Height = ParentControl.Height - Style.FormBorder * 2;
+
+            Paint += PaintBorder;
         }
+
+        #endregion
     }
 }

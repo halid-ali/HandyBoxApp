@@ -7,32 +7,68 @@ namespace HandyBoxApp.Utilities
 {
     internal class CustomControlHelper
     {
-        internal static void SetHorizontalLocation(Control parentControl)
+        internal static void BoundsForVertical(Control control, Control parentControl)
         {
-            var x = Style.PanelMargin;
-            var y = Style.PanelMargin;
+            parentControl.Width = 0;
+            parentControl.Height = Style.FormBorder + Style.PanelSpacing;
 
-            foreach (Control control in parentControl.Controls)
+            var x = Style.PanelSpacing;
+            var y = Style.PanelSpacing;
+
+            foreach (Control childControl in parentControl.Controls)
             {
-                control.Location = new Point(x, y);
+                if (childControl.Width > parentControl.Width)
+                {
+                    parentControl.Width = childControl.Width;
+                }
 
-                x += control.Width + Style.PanelSpacing;
-                y = control.Location.Y;
+                parentControl.Height += childControl.Height + Style.PanelSpacing;
+
+                if (!control.Equals(childControl))
+                {
+                    y += childControl.Height + Style.PanelSpacing;
+                }
             }
+
+            parentControl.Width += Style.FormBorder * 2 + Style.PanelSpacing * 2;
+            parentControl.Height += Style.FormBorder;
+
+            x += Style.PanelSpacing;
+            y += Style.PanelSpacing;
+
+            control.Location = new Point(x, y);
         }
 
-        internal static Point SetVerticalLocation(Control parentControl)
+        internal static void BoundsForHorizontal(Control control, Control parentControl)
         {
-            var x = Style.PanelMargin;
-            var y = Style.PanelMargin;
+            parentControl.Width = Style.FormBorder + Style.PanelSpacing;
+            parentControl.Height = 0;
 
-            foreach (Control control in parentControl.Controls)
+            var x = Style.PanelSpacing;
+            var y = Style.PanelSpacing;
+
+            foreach (Control childControl in parentControl.Controls)
             {
-                x = control.Location.X;
-                y += control.Height + Style.PanelSpacing;
+                if (childControl.Height > parentControl.Height)
+                {
+                    parentControl.Height = childControl.Height;
+                }
+
+                parentControl.Width += childControl.Width + Style.PanelSpacing;
+
+                if (!control.Equals(childControl))
+                {
+                    x += childControl.Width + Style.PanelSpacing;
+                }
             }
 
-            return new Point(x, y);
+            parentControl.Width += Style.FormBorder;
+            parentControl.Height += Style.FormBorder * 2 + Style.PanelSpacing * 2;
+
+            x += Style.PanelSpacing;
+            y += Style.PanelSpacing;
+
+            control.Location = new Point(x, y);
         }
     }
 }

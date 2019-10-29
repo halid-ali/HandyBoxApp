@@ -7,17 +7,9 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         //################################################################################
         #region Constructor
 
-        protected StaticPanel(Control parentControl, bool isVertical) : base(parentControl)
+        protected StaticPanel(Control parentControl, bool isVertical) : base(parentControl, isVertical)
         {
-            IsVertical = isVertical;
         }
-
-        #endregion
-
-        //################################################################################
-        #region Properties
-
-        private bool IsVertical { get; }
 
         #endregion
     }

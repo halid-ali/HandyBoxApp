@@ -6,12 +6,10 @@
 
         public const int PanelSpacing = 1;
 
-        public const int PanelMargin = 2;
-
         public const int PanelPadding = 2; //ok
 
         public const int PanelFontSize = 10; //ok
 
-        public const string FontName = "Consolas";
+        public const string FontName = "Consolas"; //only fixed-width fonts
     }
 }
