@@ -120,7 +120,32 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Functions Initialization
 
-            //AddFunction(Action, buttonImage, "Show functions");
+            void Action_1(ClickImageButton button)
+            {
+                button.Click += (sender, args) => 
+                {
+                    MessageBox.Show(@"Hello from function 1");
+                };
+            }
+            AddFunction(Action_1, "1");
+
+            void Action_2(ClickImageButton button)
+            {
+                button.Click += (sender, args) =>
+                {
+                    MessageBox.Show(@"Hello from function 2");
+                };
+            }
+            AddFunction(Action_2, "2");
+
+            void Action_3(ClickImageButton button)
+            {
+                button.Click += (sender, args) =>
+                {
+                    MessageBox.Show(@"Hello from function 3");
+                };
+            }
+            AddFunction(Action_3, "3");
 
             #endregion
 
