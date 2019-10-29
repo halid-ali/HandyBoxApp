@@ -70,7 +70,6 @@ namespace HandyBoxApp.CustomComponents.Panels
 
             //todo: move border initialization to the base class and parameterized the color
             Border = new Border(Color.FromArgb(22, 22, 22), 1);
-            Paint += PaintBorder;
 
             #endregion
 

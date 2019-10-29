@@ -55,9 +55,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             #region Panel Initialization
 
             Name = "TitlePanel";
-            Visible = true;
             Border = new Border(Color.FromArgb(22, 22, 22), 1);
-            Paint += PaintBorder;
 
             #endregion
 

@@ -41,22 +41,6 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
         protected Border Border { get; set; }
 
-        protected void PaintBorder(object sender, PaintEventArgs e)
-        {
-            var point = new Point(0, 0);
-            var size = new Size(Width - Style.FormBorder, Height - Style.FormBorder);
-            Rectangle borderRectangle = new Rectangle(point, size);
-            CreateGraphics().DrawRectangle(new Pen(Border.Color, Border.Size), borderRectangle);
-        }
-
-        protected void OnControlAdded(object sender, ControlEventArgs e)
-        {
-            if (IsVertical)
-                CustomControlHelper.BoundsForVertical(e.Control, this);
-            else
-                CustomControlHelper.BoundsForHorizontal(e.Control, this);
-        }
-
         protected void ShowBalloonTip(string title, string message, ToolTipIcon toolTipIcon)
         {
             ToolTipIcon icon = toolTipIcon;
@@ -72,10 +56,28 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
         private void InitializeComponent()
         {
+            Visible = true;
+            BackColor = Color.FromArgb(121, 121, 121);
             Border = new Border(Color.White, 1); //default border style
-            BackColor = Color.FromArgb(91, 91, 91);
 
             ControlAdded += OnControlAdded;
+            Paint += PaintBorder;
+        }
+
+        private void OnControlAdded(object sender, ControlEventArgs e)
+        {
+            if (IsVertical)
+                CustomControlHelper.BoundsForVertical(e.Control, this);
+            else
+                CustomControlHelper.BoundsForHorizontal(e.Control, this);
+        }
+
+        private void PaintBorder(object sender, PaintEventArgs e)
+        {
+            var point = new Point(0, 0);
+            var size = new Size(Width - Style.FormBorder, Height - Style.FormBorder);
+            Rectangle borderRectangle = new Rectangle(point, size);
+            CreateGraphics().DrawRectangle(new Pen(Border.Color, Border.Size), borderRectangle);
         }
 
         #endregion

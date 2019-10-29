@@ -34,12 +34,6 @@ namespace HandyBoxApp.CustomComponents.Panels
         {
             BackColor = Color.WhiteSmoke;
             Location = InitialLocation;
-            BorderStyle = BorderStyle.None;
-
-            Width = ParentControl.Width - Style.FormBorder * 2;
-            Height = ParentControl.Height - Style.FormBorder * 2;
-
-            Paint += PaintBorder;
         }
 
         #endregion
