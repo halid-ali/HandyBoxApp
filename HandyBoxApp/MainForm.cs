@@ -1,7 +1,7 @@
 ﻿using HandyBoxApp.CurrencyService;
 using HandyBoxApp.CurrencyService.Types;
-using HandyBoxApp.CustomComponents;
 using HandyBoxApp.CustomComponents.Panels;
+using HandyBoxApp.CustomComponents.Panels.Base;
 using HandyBoxApp.Properties;
 using HandyBoxApp.Utilities;
 
@@ -17,7 +17,6 @@ namespace HandyBoxApp
 
         public MainForm()
         {
-            Paint += PaintBorder;
             Closing += OnFormClosed;
             ControlAdded += OnControlAdd;
 
@@ -41,6 +40,8 @@ namespace HandyBoxApp
 
         private CurrencyPanel UsdTryCurrencyPanel { get; set; }
 
+        private ContainerPanel ContainerPanel { get; set; }
+
         private int LargestContent { get; set; }
 
         #endregion
@@ -50,16 +51,14 @@ namespace HandyBoxApp
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
+            ContainerPanel = new ContainerPanel(this, false)
+            {
+                Location = new Point(0, 0)
+            };
+            Controls.Add(ContainerPanel);
+
             SetFormPosition();
             Opacity = Settings.Default.Transparency;
-        }
-
-        private void PaintBorder(object sender, PaintEventArgs e)
-        {
-            var point = new Point(0, 0);
-            var size = new Size(Width - Style.FormBorder, Height - Style.FormBorder);
-            Rectangle borderRectangle = new Rectangle(point, size);
-            CreateGraphics().DrawRectangle(new Pen(Color.Black, Style.FormBorder), borderRectangle);
         }
 
         private void OnControlAdd(object sender, ControlEventArgs e)
@@ -70,6 +69,8 @@ namespace HandyBoxApp
             }
 
             CustomControlHelper.BoundsForVertical(e.Control, this);
+
+            (e.Control as DynamicPanel)?.InitializeFunctionPanel();
         }
 
         private void OnFormClosed(object sender, System.EventArgs e)

@@ -2,6 +2,7 @@
 
 using System.Drawing;
 using System.Windows.Forms;
+using HandyBoxApp.CustomComponents.Panels;
 
 namespace HandyBoxApp.Utilities
 {
@@ -9,6 +10,8 @@ namespace HandyBoxApp.Utilities
     {
         internal static void BoundsForVertical(Control control, Control parentControl)
         {
+            if (SkipContainer(control)) return;
+
             parentControl.Width = 0;
             parentControl.Height = Style.FormBorder + Style.PanelSpacing;
 
@@ -17,6 +20,8 @@ namespace HandyBoxApp.Utilities
 
             foreach (Control childControl in parentControl.Controls)
             {
+                if (SkipContainer(childControl)) continue;
+
                 if (childControl.Width > parentControl.Width)
                 {
                     parentControl.Width = childControl.Width;
@@ -41,6 +46,8 @@ namespace HandyBoxApp.Utilities
 
         internal static void BoundsForHorizontal(Control control, Control parentControl)
         {
+            if (SkipContainer(control)) return;
+
             parentControl.Width = Style.FormBorder + Style.PanelSpacing;
             parentControl.Height = 0;
 
@@ -49,6 +56,8 @@ namespace HandyBoxApp.Utilities
 
             foreach (Control childControl in parentControl.Controls)
             {
+                if (SkipContainer(childControl)) continue;
+
                 if (childControl.Height > parentControl.Height)
                 {
                     parentControl.Height = childControl.Height;
@@ -69,6 +78,11 @@ namespace HandyBoxApp.Utilities
             y += Style.PanelSpacing;
 
             control.Location = new Point(x, y);
+        }
+
+        private static bool SkipContainer(Control control)
+        {
+            return control is ContainerPanel;
         }
     }
 }

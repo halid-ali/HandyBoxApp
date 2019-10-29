@@ -10,20 +10,12 @@ namespace HandyBoxApp.CustomComponents.Panels
         //################################################################################
         #region Constructor
 
-        public ContainerPanel(Control parentControl, Point location, bool isVertical) : base(parentControl, isVertical)
+        public ContainerPanel(Control parentControl, bool isVertical) : base(parentControl, isVertical)
         {
-            Border = new Border(Color.White, Style.FormBorder);
-            InitialLocation = location;
+            Border = new Border(Color.Black, Style.FormBorder);
 
             InitializeComponents();
         }
-
-        #endregion
-
-        //################################################################################
-        #region Properties
-
-        private Point InitialLocation { get; }
 
         #endregion
 
@@ -32,8 +24,11 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         protected override void InitializeComponents()
         {
-            BackColor = Color.WhiteSmoke;
-            Location = InitialLocation;
+            Visible = true;
+            AutoSize = false;
+            BackColor = Color.White;
+            Width = ParentControl.Width;
+            Height = ParentControl.Height;
         }
 
         #endregion

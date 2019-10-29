@@ -35,7 +35,7 @@ namespace HandyBoxApp
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            //this.TransparencyKey = this.BackColor;
+            this.TransparencyKey = this.BackColor;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.MaximizeBox = false;

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HandyBoxApp.CustomComponents.Panels.Base
@@ -10,18 +11,11 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
     internal abstract class DynamicPanel : CustomBasePanel
     {
         //################################################################################
-        #region Fields
-
-        private readonly List<ClickImageButton> m_FunctionButtonList;
-
-        #endregion
-
-        //################################################################################
         #region Constructor
 
         protected DynamicPanel(Control parentControl, bool isVertical) : base(parentControl, isVertical)
         {
-            m_FunctionButtonList = new List<ClickImageButton>();
+            FunctionList = new List<ClickImageButton>();
 
             BackgroundWorker = new BackgroundWorker();
             InitializeBackgroundWorker();
@@ -33,6 +27,10 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         #region Properties
 
         protected BackgroundWorker BackgroundWorker { get; }
+
+        protected ContainerPanel ContainerPanel { get; private set; }
+
+        protected List<ClickImageButton> FunctionList { get; }
 
         protected bool IsStopped { get; set; }
 
@@ -48,11 +46,34 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         #endregion
 
         //################################################################################
+        #region Internal Members
+
+        internal void InitializeFunctionPanel()
+        {
+            ContainerPanel = new ContainerPanel(this, false)
+            {
+                Location = GetLocation()
+            };
+
+            ParentControl.Controls.Add(ContainerPanel);
+        }
+
+        #endregion
+
+        private Point GetLocation()
+        {
+            var x = Location.X + ParentControl.Width - Width - (Style.PanelSpacing * 2 + Style.FormBorder * 2);
+            var y = Location.Y;
+
+            return new Point(x, y);
+        }
+
+        //################################################################################
         #region Protected Members
 
         protected void AddFunction(Action<ClickImageButton> action, string labelText)
         {
-            m_FunctionButtonList.Add(new ClickImageButton(action, labelText));
+            FunctionList.Add(new ClickImageButton(action, labelText));
         }
 
         #endregion

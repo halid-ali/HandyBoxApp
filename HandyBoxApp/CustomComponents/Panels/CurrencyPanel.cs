@@ -97,16 +97,26 @@ namespace HandyBoxApp.CustomComponents.Panels
             {
                 button.Click += (sender, args) =>
                 {
-                    s_IsActive = !s_IsActive;
+                    //s_IsActive = !s_IsActive;
+                    //var x = ContainerPanel.Location.X;
+                    //var y = ContainerPanel.Location.Y;
 
-                    if (s_IsActive)
-                    {
-                        ParentControl.Width += 50;
-                    }
-                    else
-                    {
-                        ParentControl.Width -= 50;
-                    }
+                    //if (s_IsActive)
+                    //{
+                    //    for (int i = 0; i < FunctionList.Count * 20; i++)
+                    //    {
+                    //        ContainerPanel.Location = new Point(++x, y);
+                    //        Thread.Sleep(50);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    for (int i = 0; i < FunctionList.Count * 20; i++)
+                    //    {
+                    //        ContainerPanel.Location = new Point(--x, y);
+                    //        Thread.Sleep(50);
+                    //    }
+                    //}
 
                     //MessageBox.Show($@"{Currency.Name} is clicked.");
                 };
