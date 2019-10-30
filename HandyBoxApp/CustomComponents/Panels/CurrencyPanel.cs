@@ -92,36 +92,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             {
                 button.Click += (sender, args) =>
                 {
-                    IsActive = !IsActive;
-
-                    var x = ContainerPanel.Location.X;
-                    var y = ContainerPanel.Location.Y;
-                    var slide = ContainerPanel.Width + Style.PanelSpacing;
-
-                    if (IsActive)
-                    {
-                        //expand the main form's visible area
-                        ParentControl.Width += slide;
-
-                        for (int i = 0; i < slide; i++)
-                        {
-                            ContainerPanel.Location = new Point(++x, y);
-                            Thread.Sleep(2);
-                            ContainerPanel.Update();
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < slide; i++)
-                        {
-                            ContainerPanel.Location = new Point(--x, y);
-                            Thread.Sleep(2);
-                            ContainerPanel.Update();
-                        }
-
-                        //narrow the main form's visible area
-                        ParentControl.Width -= slide;
-                    }
+                    SlideFunctionsPanel();
                 };
             }
             FunctionSwitch = new ClickImageButton(Action, "»");
@@ -234,6 +205,40 @@ namespace HandyBoxApp.CustomComponents.Panels
             label.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
 
             Painter<T>.Paint(label, paintMode);
+        }
+
+        private void SlideFunctionsPanel()
+        {
+            IsActive = !IsActive;
+
+            var x = ContainerPanel.Location.X;
+            var y = ContainerPanel.Location.Y;
+            var slide = ContainerPanel.Width + Style.PanelSpacing;
+
+            if (IsActive)
+            {
+                //expand the main form's visible area
+                ParentControl.Width += slide;
+
+                for (int i = 0; i < slide; i++)
+                {
+                    ContainerPanel.Location = new Point(++x, y);
+                    Thread.Sleep(2);
+                    ContainerPanel.Update();
+                }
+            }
+            else
+            {
+                for (int i = 0; i < slide; i++)
+                {
+                    ContainerPanel.Location = new Point(--x, y);
+                    Thread.Sleep(2);
+                    ContainerPanel.Update();
+                }
+
+                //narrow the main form's visible area
+                ParentControl.Width -= slide;
+            }
         }
 
         #endregion

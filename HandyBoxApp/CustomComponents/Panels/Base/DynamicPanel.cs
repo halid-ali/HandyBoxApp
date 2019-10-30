@@ -63,14 +63,6 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
         #endregion
 
-        private Point GetLocation()
-        {
-            var x = Location.X + ParentControl.Width - ContainerPanel.Width - (Style.PanelSpacing * 2 + Style.FormBorder * 2);
-            var y = Location.Y;
-
-            return new Point(x, y);
-        }
-
         //################################################################################
         #region Protected Members
 
@@ -91,6 +83,14 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
             BackgroundWorker.DoWork += BackgroundWorker_DoWork;
             BackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
+        }
+
+        private Point GetLocation()
+        {
+            var x = Location.X + ParentControl.Width - ContainerPanel.Width - (Style.PanelSpacing * 2 + Style.FormBorder * 2);
+            var y = Location.Y;
+
+            return new Point(x, y);
         }
 
         #endregion
