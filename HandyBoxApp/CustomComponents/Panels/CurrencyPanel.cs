@@ -135,7 +135,9 @@ namespace HandyBoxApp.CustomComponents.Panels
                 Painter<Red>.Paint(button, PaintMode.Dark);
                 button.Click += (sender, args) =>
                 {
-                    MessageBox.Show($@"{Currency.Name}: Remove Currency");
+                    if (IsStopped) Start(); else Stop();
+                    SlideFunctionsPanel();
+                    Visible = !Visible;
                 };
             }
             AddFunction(RemoveAction, "R");
@@ -145,6 +147,8 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         protected override void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            Thread.CurrentThread.Name = $"Thread_{Currency.Name}";
+
             CurrencyService = new Yahoo(Currency.SourceUrl.Value);
             CurrencyService.OnCurrencyUpdated += UpdateCurrency;
 
@@ -164,7 +168,7 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //Stop();
+            Stop();
 
             if (e.Error != null)
             {
