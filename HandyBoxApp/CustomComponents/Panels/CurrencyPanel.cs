@@ -7,7 +7,6 @@ using HandyBoxApp.CustomComponents.Panels.Base;
 using HandyBoxApp.EventArgs;
 using HandyBoxApp.Utilities;
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
@@ -51,7 +50,7 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         private ClickImageButton FunctionSwitch { get; set; }
 
-        private bool IsActive { get; set; }
+        private bool IsSlided { get; set; }
 
         #endregion
 
@@ -104,35 +103,42 @@ namespace HandyBoxApp.CustomComponents.Panels
             //------------------------------------------------------------
             #region Functions Initialization
 
-            void Action1(ClickImageButton button)
+            void StopStartAction(ClickImageButton button)
             {
-                Painter<Red>.Paint(button, PaintMode.Light);
+                Painter<Green>.Paint(button, PaintMode.Dark);
                 button.Click += (sender, args) =>
                 {
-                    MessageBox.Show($@"{Currency.Name}: Func_1");
+                    if (IsStopped)
+                    {
+                        Start();
+                    }
+                    else
+                    {
+                        Stop();
+                    }
                 };
             }
-            AddFunction(Action1, "1");
+            AddFunction(StopStartAction, "O");
 
-            void Action2(ClickImageButton button)
+            void SummaryAction(ClickImageButton button)
             {
-                Painter<Green>.Paint(button, PaintMode.Light);
+                Painter<Blue>.Paint(button, PaintMode.Dark);
                 button.Click += (sender, args) =>
                 {
-                    MessageBox.Show($@"{Currency.Name}: Func_2");
+                    MessageBox.Show($@"{Currency.Name}: Show Summary");
                 };
             }
-            AddFunction(Action2, "2");
+            AddFunction(SummaryAction, "S");
 
-            void Action3(ClickImageButton button)
+            void RemoveAction(ClickImageButton button)
             {
-                Painter<Blue>.Paint(button, PaintMode.Light);
+                Painter<Red>.Paint(button, PaintMode.Dark);
                 button.Click += (sender, args) =>
                 {
-                    MessageBox.Show($@"{Currency.Name}: Func_3");
+                    MessageBox.Show($@"{Currency.Name}: Remove Currency");
                 };
             }
-            AddFunction(Action3, "3");
+            AddFunction(RemoveAction, "R");
 
             #endregion
         }
@@ -158,7 +164,20 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         protected override void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            throw new NotImplementedException();
+            //Stop();
+
+            if (e.Error != null)
+            {
+                //todo: log if any error occured
+            }
+            else if (e.Cancelled)
+            {
+                //process cancelled
+            }
+            else
+            {
+                //process finished successfully
+            }
         }
 
         #endregion
@@ -168,11 +187,24 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         private void Start()
         {
-            BackgroundWorker.RunWorkerAsync();
+            IsStopped = false;
+            SetLabel<Black>(ValueLabel, PaintMode.Normal, CurrencyFormatter.Format(0, "tr-TR", "TL"));
+
+            if (!BackgroundWorker.IsBusy)
+                BackgroundWorker.RunWorkerAsync();
+        }
+
+        private void Stop()
+        {
+            IsStopped = true;
+            var zeroValue = CurrencyFormatter.Format(0, "tr-TR", "TL");
+            SetLabel<Black>(ValueLabel, PaintMode.Normal, zeroValue.Replace('0', '#'));
         }
 
         private void UpdateCurrency(object sender, CurrencyUpdatedEventArgs e)
         {
+            if (IsStopped) return;
+
             if (ValueLabel.InvokeRequired)
             {
                 CurrencyUpdateCallback callback = UpdateCurrency;
@@ -209,13 +241,13 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         private void SlideFunctionsPanel()
         {
-            IsActive = !IsActive;
+            IsSlided = !IsSlided;
 
             var x = ContainerPanel.Location.X;
             var y = ContainerPanel.Location.Y;
             var slide = ContainerPanel.Width + Style.PanelSpacing/* + 200*/;
 
-            if (IsActive)
+            if (IsSlided)
             {
                 //expand the main form's visible area
                 ParentControl.Width += slide;
