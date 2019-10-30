@@ -135,6 +135,7 @@ namespace HandyBoxApp.CustomComponents.Panels
 
             void Action1(ClickImageButton button)
             {
+                Painter<Red>.Paint(button, PaintMode.Light);
                 button.Click += (sender, args) =>
                 {
                     MessageBox.Show($@"{Currency.Name}: Func_1");
@@ -144,6 +145,7 @@ namespace HandyBoxApp.CustomComponents.Panels
 
             void Action2(ClickImageButton button)
             {
+                Painter<Green>.Paint(button, PaintMode.Light);
                 button.Click += (sender, args) =>
                 {
                     MessageBox.Show($@"{Currency.Name}: Func_2");
@@ -153,6 +155,7 @@ namespace HandyBoxApp.CustomComponents.Panels
 
             void Action3(ClickImageButton button)
             {
+                Painter<Blue>.Paint(button, PaintMode.Light);
                 button.Click += (sender, args) =>
                 {
                     MessageBox.Show($@"{Currency.Name}: Func_3");

@@ -51,6 +51,7 @@ namespace HandyBoxApp.CustomComponents.Buttons
             Visible = true;
             AutoSize = true;
             Text = labelText;
+            Width = Height;
             Padding = new Padding(Style.PanelPadding);
             Painter<Green>.Paint(this, PaintMode.Light);
             Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
