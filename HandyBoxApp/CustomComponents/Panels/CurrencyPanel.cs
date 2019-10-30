@@ -213,17 +213,17 @@ namespace HandyBoxApp.CustomComponents.Panels
 
             var x = ContainerPanel.Location.X;
             var y = ContainerPanel.Location.Y;
-            var slide = ContainerPanel.Width + Style.PanelSpacing;
+            var slide = ContainerPanel.Width + Style.PanelSpacing/* + 200*/;
 
             if (IsActive)
             {
                 //expand the main form's visible area
                 ParentControl.Width += slide;
+                FunctionSwitch.Text = "«";
 
                 for (int i = 0; i < slide; i++)
                 {
                     ContainerPanel.Location = new Point(++x, y);
-                    Thread.Sleep(2);
                     ContainerPanel.Update();
                 }
             }
@@ -232,12 +232,12 @@ namespace HandyBoxApp.CustomComponents.Panels
                 for (int i = 0; i < slide; i++)
                 {
                     ContainerPanel.Location = new Point(--x, y);
-                    Thread.Sleep(2);
                     ContainerPanel.Update();
                 }
 
                 //narrow the main form's visible area
                 ParentControl.Width -= slide;
+                FunctionSwitch.Text = "»";
             }
         }
 
