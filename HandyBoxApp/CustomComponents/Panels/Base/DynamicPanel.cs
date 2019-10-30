@@ -52,11 +52,11 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         {
             ContainerPanel = new ContainerPanel(this, false);
 
-            foreach (Control control in FunctionList)
+            foreach (ClickImageButton control in FunctionList)
             {
                 ContainerPanel.Controls.Add(control);
             }
-            ContainerPanel.Location = GetLocation();
+            ContainerPanel.Location = GetContainerPanelLocation();
 
             ParentControl.Controls.Add(ContainerPanel);
         }
@@ -71,6 +71,14 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
             FunctionList.Add(new ClickImageButton(action, labelText));
         }
 
+        protected Point GetContainerPanelLocation()
+        {
+            var x = Location.X + Width - ContainerPanel.Width;
+            var y = Location.Y;
+
+            return new Point(x, y);
+        }
+
         #endregion
 
         //################################################################################
@@ -83,14 +91,6 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
             BackgroundWorker.DoWork += BackgroundWorker_DoWork;
             BackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
-        }
-
-        private Point GetLocation()
-        {
-            var x = Location.X + ParentControl.Width - ContainerPanel.Width - (Style.PanelSpacing * 2 + Style.FormBorder * 2);
-            var y = Location.Y;
-
-            return new Point(x, y);
         }
 
         #endregion

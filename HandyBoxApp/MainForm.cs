@@ -2,6 +2,7 @@
 using HandyBoxApp.CurrencyService.Types;
 using HandyBoxApp.CustomComponents.Panels;
 using HandyBoxApp.CustomComponents.Panels.Base;
+using HandyBoxApp.EventArgs;
 using HandyBoxApp.Properties;
 using HandyBoxApp.Utilities;
 
@@ -19,6 +20,7 @@ namespace HandyBoxApp
         {
             Closing += OnFormClosed;
             ControlAdded += OnControlAdd;
+            ControlRemoved += OnControlRemove;
 
             InitializeComponent();
             InitializePanels();
@@ -44,6 +46,8 @@ namespace HandyBoxApp
 
         private int LargestContent { get; set; }
 
+        private int SlidePanelsCunt { get; set; }
+
         #endregion
 
         //################################################################################
@@ -68,9 +72,38 @@ namespace HandyBoxApp
                 LargestContent = e.Control.Width;
             }
 
-            CustomControlHelper.BoundsForVertical(e.Control, this);
+            CustomControlHelper.VerticalAlign(this);
 
             (e.Control as DynamicPanel)?.InitializeFunctionPanel();
+        }
+
+        private void OnControlRemove(object sender, ControlEventArgs e)
+        {
+            SlidePanelsCunt = 0;
+            CustomControlHelper.VerticalAlign(this);
+            ContainerPanel.Height = Height;
+        }
+
+        private void OnFormSlide(object sender, SlideEventArgs args)
+        {
+            if (args.IsSlide)
+            {
+                if (SlidePanelsCunt == 0)
+                {
+                    Width += args.Slide;
+                }
+
+                SlidePanelsCunt++;
+            }
+            else
+            {
+                SlidePanelsCunt--;
+
+                if (SlidePanelsCunt == 0)
+                {
+                    Width += args.Slide;
+                }
+            }
         }
 
         private void OnFormClosed(object sender, System.EventArgs e)
@@ -90,12 +123,15 @@ namespace HandyBoxApp
             Controls.Add(TitlePanel);
 
             EurTryCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), this, false);
+            EurTryCurrencyPanel.OnFormSlide += OnFormSlide;
             Controls.Add(EurTryCurrencyPanel);
 
             UsdTryCurrencyPanel = new CurrencyPanel(new UsdTryCurrency(CurrencyUrls.YahooUsdTry), this, false);
+            UsdTryCurrencyPanel.OnFormSlide += OnFormSlide;
             Controls.Add(UsdTryCurrencyPanel);
 
             EurUsdCurrencyPanel = new CurrencyPanel(new EurUsdCurrency(CurrencyUrls.YahooEurUsd), this, false);
+            EurUsdCurrencyPanel.OnFormSlide += OnFormSlide;
             Controls.Add(EurUsdCurrencyPanel);
         }
 

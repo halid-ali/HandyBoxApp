@@ -7,6 +7,7 @@ using HandyBoxApp.CustomComponents.Panels.Base;
 using HandyBoxApp.EventArgs;
 using HandyBoxApp.Utilities;
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
@@ -16,6 +17,8 @@ namespace HandyBoxApp.CustomComponents.Panels
 {
     internal sealed class CurrencyPanel : DynamicPanel
     {
+        public event EventHandler<SlideEventArgs> OnFormSlide;
+
         //################################################################################
         #region Constructor
 
@@ -50,7 +53,7 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         private ClickImageButton FunctionSwitch { get; set; }
 
-        private bool IsSlided { get; set; }
+        private bool IsSlide { get; set; }
 
         #endregion
 
@@ -63,7 +66,9 @@ namespace HandyBoxApp.CustomComponents.Panels
             #region Panel Initialization
 
             //todo: move border initialization to the base class and parameterized the color
+            Name = $"Panel_{Currency.Name}";
             Border = new Border(Color.FromArgb(22, 22, 22), 1);
+            Paint += OnRedrawn;
 
             #endregion
 
@@ -138,6 +143,8 @@ namespace HandyBoxApp.CustomComponents.Panels
                     if (IsStopped) Start(); else Stop();
                     SlideFunctionsPanel();
                     Visible = !Visible;
+                    ContainerPanel.Visible = !ContainerPanel.Visible;
+                    ParentControl.Controls.Remove(this);
                 };
             }
             AddFunction(RemoveAction, "R");
@@ -181,6 +188,33 @@ namespace HandyBoxApp.CustomComponents.Panels
             else
             {
                 //process finished successfully
+            }
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Event Handlers
+
+        private void OnRedrawn(object sender, System.EventArgs args)
+        {
+            if (ContainerPanel != null)
+            {
+                var slide = ContainerPanel.Width + Style.PanelSpacing;
+                var panelLocation = GetContainerPanelLocation();
+                var x = panelLocation.X;
+                var y = panelLocation.Y;
+
+                if (IsSlide)
+                {
+                    SlideForm(slide, IsSlide);
+                    x += slide;
+                    ContainerPanel.Location = new Point(x, y);
+                }
+                else
+                {
+                    ContainerPanel.Location = panelLocation;
+                }
             }
         }
 
@@ -245,17 +279,17 @@ namespace HandyBoxApp.CustomComponents.Panels
 
         private void SlideFunctionsPanel()
         {
-            IsSlided = !IsSlided;
+            IsSlide = !IsSlide;
 
             var x = ContainerPanel.Location.X;
             var y = ContainerPanel.Location.Y;
-            var slide = ContainerPanel.Width + Style.PanelSpacing/* + 200*/;
+            var slide = ContainerPanel.Width + Style.PanelSpacing;
 
-            if (IsSlided)
+            if (IsSlide)
             {
                 //expand the main form's visible area
-                ParentControl.Width += slide;
-                FunctionSwitch.Text = "«";
+                SlideForm(slide, IsSlide);
+                FunctionSwitch.Text = @"«";
 
                 for (int i = 0; i < slide; i++)
                 {
@@ -272,9 +306,15 @@ namespace HandyBoxApp.CustomComponents.Panels
                 }
 
                 //narrow the main form's visible area
-                ParentControl.Width -= slide;
-                FunctionSwitch.Text = "»";
+                SlideForm(slide * -1, IsSlide);
+                FunctionSwitch.Text = @"»";
             }
+        }
+
+        private void SlideForm(int slide, bool isSlide)
+        {
+            var args = new SlideEventArgs(slide, isSlide);
+            OnFormSlide?.Invoke(this, args);
         }
 
         #endregion

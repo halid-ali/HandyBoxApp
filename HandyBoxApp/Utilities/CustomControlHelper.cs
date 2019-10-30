@@ -1,22 +1,23 @@
 ﻿using HandyBoxApp.CustomComponents;
+using HandyBoxApp.CustomComponents.Panels;
 
 using System.Drawing;
 using System.Windows.Forms;
-using HandyBoxApp.CustomComponents.Panels;
 
 namespace HandyBoxApp.Utilities
 {
     internal class CustomControlHelper
     {
-        internal static void BoundsForVertical(Control control, Control parentControl)
-        {
-            if (SkipContainer(control)) return;
+        //################################################################################
+        #region Internal Members
 
+        internal static void VerticalAlign(Control parentControl)
+        {
             parentControl.Width = 0;
             parentControl.Height = Style.FormBorder + Style.PanelSpacing;
 
-            var x = Style.PanelSpacing;
-            var y = Style.PanelSpacing;
+            var x = Style.FormBorder + Style.PanelSpacing;
+            var y = Style.FormBorder + Style.PanelSpacing;
 
             foreach (Control childControl in parentControl.Controls)
             {
@@ -28,31 +29,22 @@ namespace HandyBoxApp.Utilities
                 }
 
                 parentControl.Height += childControl.Height + Style.PanelSpacing;
+                childControl.Location = new Point(x, y);
 
-                if (!control.Equals(childControl))
-                {
-                    y += childControl.Height + Style.PanelSpacing;
-                }
+                y += childControl.Height + Style.PanelSpacing;
             }
 
             parentControl.Width += Style.FormBorder * 2 + Style.PanelSpacing * 2;
             parentControl.Height += Style.FormBorder;
-
-            x += Style.PanelSpacing;
-            y += Style.PanelSpacing;
-
-            control.Location = new Point(x, y);
         }
 
-        internal static void BoundsForHorizontal(Control control, Control parentControl)
+        internal static void HorizontalAlign(Control parentControl)
         {
-            if (SkipContainer(control)) return;
-
             parentControl.Width = Style.FormBorder + Style.PanelSpacing;
             parentControl.Height = 0;
 
-            var x = Style.PanelSpacing;
-            var y = Style.PanelSpacing;
+            var x = Style.FormBorder + Style.PanelSpacing;
+            var y = Style.FormBorder + Style.PanelSpacing;
 
             foreach (Control childControl in parentControl.Controls)
             {
@@ -64,25 +56,25 @@ namespace HandyBoxApp.Utilities
                 }
 
                 parentControl.Width += childControl.Width + Style.PanelSpacing;
+                childControl.Location = new Point(x, y);
 
-                if (!control.Equals(childControl))
-                {
-                    x += childControl.Width + Style.PanelSpacing;
-                }
+                x += childControl.Width + Style.PanelSpacing;
             }
 
             parentControl.Width += Style.FormBorder;
             parentControl.Height += Style.FormBorder * 2 + Style.PanelSpacing * 2;
-
-            x += Style.PanelSpacing;
-            y += Style.PanelSpacing;
-
-            control.Location = new Point(x, y);
         }
+
+        #endregion
+
+        //################################################################################
+        #region Private Members
 
         private static bool SkipContainer(Control control)
         {
             return control is ContainerPanel;
         }
+
+        #endregion
     }
 }

@@ -67,9 +67,9 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
         private void OnControlAdded(object sender, ControlEventArgs e)
         {
             if (IsVertical)
-                CustomControlHelper.BoundsForVertical(e.Control, this);
+                CustomControlHelper.VerticalAlign(this);
             else
-                CustomControlHelper.BoundsForHorizontal(e.Control, this);
+                CustomControlHelper.HorizontalAlign(this);
         }
 
         private void PaintBorder(object sender, PaintEventArgs e)
