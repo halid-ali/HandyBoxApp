@@ -50,10 +50,13 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
         internal void InitializeFunctionPanel()
         {
-            ContainerPanel = new ContainerPanel(this, false)
+            ContainerPanel = new ContainerPanel(this, false);
+
+            foreach (Control control in FunctionList)
             {
-                Location = GetLocation()
-            };
+                ContainerPanel.Controls.Add(control);
+            }
+            ContainerPanel.Location = GetLocation();
 
             ParentControl.Controls.Add(ContainerPanel);
         }
@@ -62,7 +65,7 @@ namespace HandyBoxApp.CustomComponents.Panels.Base
 
         private Point GetLocation()
         {
-            var x = Location.X + ParentControl.Width - Width - (Style.PanelSpacing * 2 + Style.FormBorder * 2);
+            var x = Location.X + ParentControl.Width - ContainerPanel.Width - (Style.PanelSpacing * 2 + Style.FormBorder * 2);
             var y = Location.Y;
 
             return new Point(x, y);

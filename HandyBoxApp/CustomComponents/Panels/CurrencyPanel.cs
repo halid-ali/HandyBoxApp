@@ -18,13 +18,6 @@ namespace HandyBoxApp.CustomComponents.Panels
     internal sealed class CurrencyPanel : DynamicPanel
     {
         //################################################################################
-        #region Fields
-
-        private static bool s_IsActive;
-
-        #endregion
-
-        //################################################################################
         #region Constructor
 
         public CurrencyPanel(ICurrency currency, Control parentControl, bool isVertical) : this(currency, parentControl, Constants.DefaultRefreshRate, isVertical)
@@ -57,6 +50,8 @@ namespace HandyBoxApp.CustomComponents.Panels
         private Label ValueLabel { get; } = new Label();
 
         private ClickImageButton FunctionSwitch { get; set; }
+
+        private bool IsActive { get; set; }
 
         #endregion
 
@@ -97,32 +92,36 @@ namespace HandyBoxApp.CustomComponents.Panels
             {
                 button.Click += (sender, args) =>
                 {
-                    s_IsActive = !s_IsActive;
+                    IsActive = !IsActive;
+
                     var x = ContainerPanel.Location.X;
                     var y = ContainerPanel.Location.Y;
+                    var slide = ContainerPanel.Width + Style.PanelSpacing;
 
-                    if (s_IsActive)
+                    if (IsActive)
                     {
-                        ParentControl.Width += FunctionList.Count * 20;
+                        //expand the main form's visible area
+                        ParentControl.Width += slide;
 
-                        for (int i = 0; i < FunctionList.Count * 20; i++)
+                        for (int i = 0; i < slide; i++)
                         {
                             ContainerPanel.Location = new Point(++x, y);
                             Thread.Sleep(2);
+                            ContainerPanel.Update();
                         }
                     }
                     else
                     {
-                        for (int i = 0; i < FunctionList.Count * 20; i++)
+                        for (int i = 0; i < slide; i++)
                         {
                             ContainerPanel.Location = new Point(--x, y);
                             Thread.Sleep(2);
+                            ContainerPanel.Update();
                         }
 
-                        ParentControl.Width -= FunctionList.Count * 20;
+                        //narrow the main form's visible area
+                        ParentControl.Width -= slide;
                     }
-
-                    //MessageBox.Show($@"{Currency.Name} is clicked.");
                 };
             }
             FunctionSwitch = new ClickImageButton(Action, "»");
@@ -138,7 +137,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             {
                 button.Click += (sender, args) =>
                 {
-                    MessageBox.Show(@"Hello from function 1");
+                    MessageBox.Show($@"{Currency.Name}: Func_1");
                 };
             }
             AddFunction(Action1, "1");
@@ -147,7 +146,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             {
                 button.Click += (sender, args) =>
                 {
-                    MessageBox.Show(@"Hello from function 2");
+                    MessageBox.Show($@"{Currency.Name}: Func_2");
                 };
             }
             AddFunction(Action2, "2");
@@ -156,7 +155,7 @@ namespace HandyBoxApp.CustomComponents.Panels
             {
                 button.Click += (sender, args) =>
                 {
-                    MessageBox.Show(@"Hello from function 3");
+                    MessageBox.Show($@"{Currency.Name}: Func_3");
                 };
             }
             AddFunction(Action3, "3");
