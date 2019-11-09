@@ -48,11 +48,11 @@ namespace HandyBoxApp.UserControls
 
         private Control ParentControl { get; }
 
-        private ImageButton LogoLabel { get; set; }
+        private ImageButton LogoButton { get; set; }
 
         private Label TitleLabel { get; } = new Label();
 
-        private ImageButton CloseLabel { get; set; }
+        private ImageButton CloseButton { get; set; }
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
@@ -85,9 +85,9 @@ namespace HandyBoxApp.UserControls
                 };
             }
 
-            LogoLabel = new ImageButton(HideAction, "L") { Margin = new Padding(0, 0, 1, 0) };
-            LogoLabel.SetToolTip("Handy Box App v2.4");
-            LogoLabel.SetColor<Blue>(PaintMode.Light);
+            LogoButton = new ImageButton(HideAction, "L") { Margin = new Padding(0, 0, 1, 0) };
+            LogoButton.SetToolTip("Handy Box App v2.4");
+            LogoButton.SetColor<Blue>(PaintMode.Light);
 
             #endregion
 
@@ -116,9 +116,9 @@ namespace HandyBoxApp.UserControls
                 };
             }
 
-            CloseLabel = new ImageButton(CloseAction, "X") { Margin = new Padding(0) };
-            CloseLabel.SetToolTip("Close");
-            CloseLabel.SetColor<Red>(PaintMode.Dark);
+            CloseButton = new ImageButton(CloseAction, "X") { Margin = new Padding(0) };
+            CloseButton.SetToolTip("Close");
+            CloseButton.SetColor<Red>(PaintMode.Dark);
 
             #endregion
 
@@ -133,9 +133,9 @@ namespace HandyBoxApp.UserControls
 
             #endregion
 
-            ContainerPanel.Controls.Add(LogoLabel);
+            ContainerPanel.Controls.Add(LogoButton);
             ContainerPanel.Controls.Add(TitleLabel);
-            ContainerPanel.Controls.Add(CloseLabel);
+            ContainerPanel.Controls.Add(CloseButton);
             Controls.Add(ContainerPanel);
 
             ContainerPanel.ResumeLayout(false);
