@@ -48,11 +48,11 @@ namespace HandyBoxApp.UserControls
 
         private Control ParentControl { get; }
 
-        private Label LogoLabel { get; } = new Label();
+        private ImageButton LogoLabel { get; set; }
 
         private Label TitleLabel { get; } = new Label();
 
-        private Label CloseLabel { get; } = new Label();
+        private ImageButton CloseLabel { get; set; }
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
@@ -73,23 +73,21 @@ namespace HandyBoxApp.UserControls
             ContainerPanel.Location = new Point(0, 0);
             ContainerPanel.FlowDirection = FlowDirection.LeftToRight;
 
-            ContainerPanel.Controls.Add(LogoLabel);
-            ContainerPanel.Controls.Add(TitleLabel);
-            ContainerPanel.Controls.Add(CloseLabel);
-
             #endregion
 
             #region Logo Label
 
-            LogoLabel.Name = "LogoLabel";
-            LogoLabel.Text = "L";
-            LogoLabel.AutoSize = true;
-            LogoLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
-            LogoLabel.Padding = new Padding(Style.PanelPadding);
-            LogoLabel.TextAlign = ContentAlignment.MiddleCenter;
-            LogoLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
-            Painter<Green>.Paint(LogoLabel, PaintMode.Light);
-            LogoLabel.DoubleClick += LogoLabel_DoubleClick;
+            void HideAction(Control button)
+            {
+                button.DoubleClick += (sender, arg) =>
+                {
+                    ParentControl.Visible = false;
+                };
+            }
+
+            LogoLabel = new ImageButton(HideAction, "L") { Margin = new Padding(0, 0, 1, 0) };
+            LogoLabel.SetToolTip("Handy Box App v2.4");
+            LogoLabel.SetColor<Blue>(PaintMode.Light);
 
             #endregion
 
@@ -109,15 +107,18 @@ namespace HandyBoxApp.UserControls
 
             #region Close Label
 
-            CloseLabel.Name = "CloseLabel";
-            CloseLabel.Text = "X";
-            CloseLabel.AutoSize = true;
-            CloseLabel.Margin = new Padding(0, 0, 0, 0);
-            CloseLabel.Padding = new Padding(Style.PanelPadding);
-            CloseLabel.TextAlign = ContentAlignment.MiddleCenter;
-            CloseLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
-            Painter<Red>.Paint(CloseLabel, PaintMode.Dark);
-            CloseLabel.Click += CloseLabel_Click;
+            void CloseAction(Control button)
+            {
+                button.Click += (sender, args) =>
+                {
+                    ((MainForm)ParentControl).Close();
+                    CustomApplicationContext.Exit();
+                };
+            }
+
+            CloseLabel = new ImageButton(CloseAction, "X") { Margin = new Padding(0) };
+            CloseLabel.SetToolTip("Close");
+            CloseLabel.SetColor<Red>(PaintMode.Dark);
 
             #endregion
 
@@ -130,9 +131,12 @@ namespace HandyBoxApp.UserControls
             BorderStyle = BorderStyle.FixedSingle;
             AutoScaleMode = AutoScaleMode.Font;
 
-            Controls.Add(ContainerPanel);
-
             #endregion
+
+            ContainerPanel.Controls.Add(LogoLabel);
+            ContainerPanel.Controls.Add(TitleLabel);
+            ContainerPanel.Controls.Add(CloseLabel);
+            Controls.Add(ContainerPanel);
 
             ContainerPanel.ResumeLayout(false);
             ContainerPanel.PerformLayout();
@@ -154,7 +158,7 @@ namespace HandyBoxApp.UserControls
                 ContainerPanel.Width += control.PreferredSize.Width;
             }
 
-            ContainerPanel.Width += ContainerPanel.Controls.Count - 1;
+            ContainerPanel.Width -= ContainerPanel.Controls.Count + 1;
             Height = ContainerPanel.Height;
             Width = ContainerPanel.Width;
         }
@@ -166,22 +170,10 @@ namespace HandyBoxApp.UserControls
 
         private void DragAndDrop(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(ParentControl.Handle, c_WmNclButtonDown, c_HtCaption, 0);
-            }
-        }
+            if (e.Button != MouseButtons.Left) return;
 
-        private void LogoLabel_DoubleClick(object sender, System.EventArgs e)
-        {
-            ParentControl.Visible = false;
-        }
-
-        private void CloseLabel_Click(object sender, System.EventArgs e)
-        {
-            ((MainForm)ParentControl).Close();
-            CustomApplicationContext.Exit();
+            ReleaseCapture();
+            SendMessage(ParentControl.Handle, c_WmNclButtonDown, c_HtCaption, 0);
         }
 
         #endregion
