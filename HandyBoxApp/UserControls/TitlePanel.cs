@@ -2,7 +2,9 @@
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
 
+using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace HandyBoxApp.UserControls
@@ -10,23 +12,49 @@ namespace HandyBoxApp.UserControls
     public class TitlePanel : UserControl
     {
         //################################################################################
-        #region Fields
+        #region Constants
 
-        private Label logoLabel;
-        private Label titleLabel;
-        private Label closeLabel;
-        private FlowLayoutPanel containerPanel;
+        private const int c_WmNclButtonDown = 0xA1;
+        private const int c_HtCaption = 0x2;
+
+        #endregion
+
+        //################################################################################
+        #region DLL Imports
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
 
         #endregion
 
         //################################################################################
         #region Constructor
 
-        public TitlePanel()
+        public TitlePanel(Control parentControl)
         {
+            ParentControl = parentControl;
+
             InitializeComponent();
             ReorderComponents();
         }
+
+        #endregion
+
+        //################################################################################
+        #region Properties
+
+        private Control ParentControl { get; }
+
+        private Label LogoLabel { get; } = new Label();
+
+        private Label TitleLabel { get; } = new Label();
+
+        private Label CloseLabel { get; } = new Label();
+
+        private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
         #endregion
 
@@ -35,65 +63,66 @@ namespace HandyBoxApp.UserControls
 
         private void InitializeComponent()
         {
-            containerPanel = new FlowLayoutPanel();
-            logoLabel = new Label();
-            titleLabel = new Label();
-            closeLabel = new Label();
-
-            containerPanel.SuspendLayout();
+            ContainerPanel.SuspendLayout();
             SuspendLayout();
 
-            // 
-            // ContainerPanel
-            // 
-            containerPanel.Margin = new Padding(0);
-            containerPanel.Padding = new Padding(0);
-            containerPanel.Location = new Point(0, 0);
-            containerPanel.FlowDirection = FlowDirection.LeftToRight;
+            #region Container Panel
 
-            containerPanel.Controls.Add(logoLabel);
-            containerPanel.Controls.Add(titleLabel);
-            containerPanel.Controls.Add(closeLabel);
+            ContainerPanel.Margin = new Padding(0);
+            ContainerPanel.Padding = new Padding(0);
+            ContainerPanel.Location = new Point(0, 0);
+            ContainerPanel.FlowDirection = FlowDirection.LeftToRight;
 
-            // 
-            // LogoLabel
-            // 
-            logoLabel.Name = "LogoLabel";
-            logoLabel.Text = "L";
-            logoLabel.AutoSize = true;
-            logoLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
-            logoLabel.Padding = new Padding(Style.PanelPadding);
-            logoLabel.TextAlign = ContentAlignment.MiddleCenter;
-            logoLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
-            Painter<Green>.Paint(logoLabel, PaintMode.Light);
+            ContainerPanel.Controls.Add(LogoLabel);
+            ContainerPanel.Controls.Add(TitleLabel);
+            ContainerPanel.Controls.Add(CloseLabel);
 
-            // 
-            // TitleLabel
-            // 
-            titleLabel.Name = "TitleLabel";
-            titleLabel.Text = "Handy Box App";
-            titleLabel.AutoSize = true;
-            titleLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
-            titleLabel.Padding = new Padding(Style.PanelPadding);
-            titleLabel.TextAlign = ContentAlignment.MiddleLeft;
-            titleLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
-            Painter<Black>.Paint(titleLabel, PaintMode.Dark);
+            #endregion
 
-            // 
-            // CloseLabel
-            // 
-            closeLabel.Name = "CloseLabel";
-            closeLabel.Text = "X";
-            closeLabel.AutoSize = true;
-            closeLabel.Margin = new Padding(0, 0, 0, 0);
-            closeLabel.Padding = new Padding(Style.PanelPadding);
-            closeLabel.TextAlign = ContentAlignment.MiddleCenter;
-            closeLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
-            Painter<Red>.Paint(closeLabel, PaintMode.Dark);
+            #region Logo Label
 
-            // 
-            // TitlePanel
-            // 
+            LogoLabel.Name = "LogoLabel";
+            LogoLabel.Text = "L";
+            LogoLabel.AutoSize = true;
+            LogoLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
+            LogoLabel.Padding = new Padding(Style.PanelPadding);
+            LogoLabel.TextAlign = ContentAlignment.MiddleCenter;
+            LogoLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
+            Painter<Green>.Paint(LogoLabel, PaintMode.Light);
+            LogoLabel.DoubleClick += LogoLabel_DoubleClick;
+
+            #endregion
+
+            #region Title Label
+
+            TitleLabel.Name = "TitleLabel";
+            TitleLabel.Text = "Handy Box App";
+            TitleLabel.AutoSize = true;
+            TitleLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
+            TitleLabel.Padding = new Padding(Style.PanelPadding);
+            TitleLabel.TextAlign = ContentAlignment.MiddleLeft;
+            TitleLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
+            Painter<Black>.Paint(TitleLabel, PaintMode.Dark);
+            TitleLabel.MouseDown += DragAndDrop;
+
+            #endregion
+
+            #region Close Label
+
+            CloseLabel.Name = "CloseLabel";
+            CloseLabel.Text = "X";
+            CloseLabel.AutoSize = true;
+            CloseLabel.Margin = new Padding(0, 0, 0, 0);
+            CloseLabel.Padding = new Padding(Style.PanelPadding);
+            CloseLabel.TextAlign = ContentAlignment.MiddleCenter;
+            CloseLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
+            Painter<Red>.Paint(CloseLabel, PaintMode.Dark);
+            CloseLabel.Click += CloseLabel_Click;
+
+            #endregion
+
+            #region Title Panel
+
             Name = "TitlePanel";
             AutoSize = true;
             Margin = new Padding(0, 0, 0, Style.PanelSpacing);
@@ -101,31 +130,58 @@ namespace HandyBoxApp.UserControls
             BorderStyle = BorderStyle.FixedSingle;
             AutoScaleMode = AutoScaleMode.Font;
 
-            Controls.Add(containerPanel);
+            Controls.Add(ContainerPanel);
 
-            containerPanel.ResumeLayout(false);
-            containerPanel.PerformLayout();
+            #endregion
+
+            ContainerPanel.ResumeLayout(false);
+            ContainerPanel.PerformLayout();
             ResumeLayout(false);
         }
 
         private void ReorderComponents()
         {
-            containerPanel.Width = 0;
-            containerPanel.Height = 0;
+            ContainerPanel.Width = 0;
+            ContainerPanel.Height = 0;
 
-            foreach (Control control in containerPanel.Controls)
+            foreach (Control control in ContainerPanel.Controls)
             {
-                if (control.PreferredSize.Height > containerPanel.Height)
+                if (control.PreferredSize.Height > ContainerPanel.Height)
                 {
-                    containerPanel.Height = control.PreferredSize.Height;
+                    ContainerPanel.Height = control.PreferredSize.Height;
                 }
 
-                containerPanel.Width += control.PreferredSize.Width;
+                ContainerPanel.Width += control.PreferredSize.Width;
             }
 
-            containerPanel.Width += containerPanel.Controls.Count - 1;
-            Height = containerPanel.Height;
-            Width = containerPanel.Width;
+            ContainerPanel.Width += ContainerPanel.Controls.Count - 1;
+            Height = ContainerPanel.Height;
+            Width = ContainerPanel.Width;
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Event Handlers
+
+        private void DragAndDrop(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(ParentControl.Handle, c_WmNclButtonDown, c_HtCaption, 0);
+            }
+        }
+
+        private void LogoLabel_DoubleClick(object sender, System.EventArgs e)
+        {
+            ParentControl.Visible = false;
+        }
+
+        private void CloseLabel_Click(object sender, System.EventArgs e)
+        {
+            ((MainForm)ParentControl).Close();
+            CustomApplicationContext.Exit();
         }
 
         #endregion
