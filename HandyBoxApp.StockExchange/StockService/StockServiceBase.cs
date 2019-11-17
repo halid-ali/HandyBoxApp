@@ -1,4 +1,5 @@
 ﻿using HandyBoxApp.StockExchange.EventArgs;
+using HandyBoxApp.StockExchange.Interfaces;
 using HandyBoxApp.StockExchange.Stock;
 
 using HtmlAgilityPack;
@@ -13,9 +14,21 @@ namespace HandyBoxApp.StockExchange.StockService
     internal abstract class StockServiceBase
     {
         //################################################################################
+        #region Constructor
+
+        protected StockServiceBase(IStockInfo stockInfo)
+        {
+            StockInfo = stockInfo;
+        }
+
+        #endregion
+
+        //################################################################################
         #region Protected Members
 
         protected event EventHandler<StockUpdateEventArgs> StockUpdate;
+
+        protected IStockInfo StockInfo { get; }
 
         protected StockData PreviousStockData { get; set; }
 

@@ -14,6 +14,14 @@ namespace HandyBoxApp.StockExchange.StockService
     internal class YahooStockService : StockServiceBase, IStockService
     {
         //################################################################################
+        #region Constructor
+
+        public YahooStockService(IStockInfo stockInfo) : base(stockInfo)
+        { }
+
+        #endregion
+
+        //################################################################################
         #region IStockService Members
 
         event EventHandler<StockUpdateEventArgs> IStockService.StockUpdated
@@ -22,9 +30,11 @@ namespace HandyBoxApp.StockExchange.StockService
             remove => StockUpdate -= value;
         }
 
-        void IStockService.GetStockData(IStockInfo stock)
+        IStockInfo IStockService.GetStockInfo => StockInfo;
+
+        void IStockService.GetStockData()
         {
-            var htmlDoc = ReadHtmlDocument(stock.SourceUrl);
+            var htmlDoc = ReadHtmlDocument(StockInfo.SourceUrl);
             var parsedHtml = ParseHtmlDocument(htmlDoc);
 
             if (parsedHtml.Count != 2)

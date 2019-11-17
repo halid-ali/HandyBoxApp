@@ -8,6 +8,8 @@ namespace HandyBoxApp.StockExchange.Interfaces
     {
         event EventHandler<StockUpdateEventArgs> StockUpdated;
 
-        void GetStockData(IStockInfo stock);
+        IStockInfo GetStockInfo { get; }
+
+        void GetStockData();
     }
 }
