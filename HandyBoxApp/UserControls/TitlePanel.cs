@@ -36,9 +36,10 @@ namespace HandyBoxApp.UserControls
         public TitlePanel(Control parentControl)
         {
             ParentControl = parentControl;
+            //ParentControl.SizeChanged += ParentControl_SizeChanged;
 
             InitializeComponent();
-            ReorderComponents();
+            OrderControls();
         }
 
         #endregion
@@ -75,7 +76,7 @@ namespace HandyBoxApp.UserControls
 
             #endregion
 
-            #region Logo Label
+            #region Logo Button
 
             void HideAction(Control button)
             {
@@ -85,7 +86,7 @@ namespace HandyBoxApp.UserControls
                 };
             }
 
-            LogoButton = new ImageButton(HideAction, "L") { Margin = new Padding(0, 0, 1, 0) };
+            LogoButton = new ImageButton(HideAction, "L") { Margin = new Padding(0, 0, Style.PanelSpacing, 0) };
             LogoButton.SetToolTip("Handy Box App v2.4");
             LogoButton.SetColor<Blue>(PaintMode.Light);
 
@@ -94,7 +95,7 @@ namespace HandyBoxApp.UserControls
             #region Title Label
 
             TitleLabel.Name = "TitleLabel";
-            TitleLabel.Text = "Handy Box App";
+            TitleLabel.Text = "Handy Box App v2.4";
             TitleLabel.AutoSize = true;
             TitleLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             TitleLabel.Padding = new Padding(Style.PanelPadding);
@@ -105,7 +106,7 @@ namespace HandyBoxApp.UserControls
 
             #endregion
 
-            #region Close Label
+            #region Close Button
 
             void CloseAction(Control button)
             {
@@ -143,9 +144,9 @@ namespace HandyBoxApp.UserControls
             ResumeLayout(false);
         }
 
-        private void ReorderComponents()
+        private void OrderControls()
         {
-            ContainerPanel.Width = 0;
+            ContainerPanel.Width = ContainerPanel.Controls.Count * 2 - 1;
             ContainerPanel.Height = 0;
 
             foreach (Control control in ContainerPanel.Controls)
@@ -155,13 +156,26 @@ namespace HandyBoxApp.UserControls
                     ContainerPanel.Height = control.PreferredSize.Height;
                 }
 
-                ContainerPanel.Width += control.PreferredSize.Width;
+                ContainerPanel.Width += control.PreferredSize.Width - Style.PanelSpacing;
             }
 
-            ContainerPanel.Width -= ContainerPanel.Controls.Count + 1;
             Height = ContainerPanel.Height;
             Width = ContainerPanel.Width;
         }
+
+        //private void UpdateControls(Control adaptingControl)
+        //{
+        //    var borderSpacing = 2 * Style.FormBorder + 2 * Style.PanelSpacing;
+        //    var enlarged = ParentControl.Width - Width - borderSpacing;
+
+        //    var width = adaptingControl.Width + enlarged;
+        //    var height = adaptingControl.Height;
+
+        //    adaptingControl.Width = width;
+        //    adaptingControl.Height = height;
+
+        //    Width = ParentControl.Width - borderSpacing;
+        //}
 
         #endregion
 
@@ -175,6 +189,16 @@ namespace HandyBoxApp.UserControls
             ReleaseCapture();
             SendMessage(ParentControl.Handle, c_WmNclButtonDown, c_HtCaption, 0);
         }
+
+        //private void ParentControl_SizeChanged(object sender, System.EventArgs e)
+        //{
+        //    var borderSpacing = 2 * Style.FormBorder + 2 * Style.PanelSpacing;
+
+        //    if (ParentControl.Width > Width + borderSpacing)
+        //    {
+        //        //UpdateControls(TitleLabel);
+        //    }
+        //}
 
         #endregion
     }

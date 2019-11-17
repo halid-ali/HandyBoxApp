@@ -57,6 +57,7 @@ namespace HandyBoxApp.UserControls
             #region LayoutPanel
 
             Name = "LayoutPanel";
+            Margin = new Padding(0);
             AutoScaleMode = AutoScaleMode.Font;
 
             Controls.Add(ContainerPanel);

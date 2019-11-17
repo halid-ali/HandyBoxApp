@@ -1,10 +1,5 @@
-﻿using HandyBoxApp.CurrencyService;
-using HandyBoxApp.CurrencyService.Types;
-using HandyBoxApp.CustomComponents.Panels;
-using HandyBoxApp.CustomComponents.Panels.Base;
-using HandyBoxApp.EventArgs;
-using HandyBoxApp.Properties;
-using HandyBoxApp.Utilities;
+﻿using HandyBoxApp.Properties;
+using HandyBoxApp.UserControls;
 
 using System.Drawing;
 using System.Windows.Forms;
@@ -19,14 +14,9 @@ namespace HandyBoxApp
         public MainForm()
         {
             Closing += OnFormClosed;
-            ControlAdded += OnControlAdd;
-            ControlRemoved += OnControlRemove;
 
             InitializeComponent();
             InitializePanels();
-
-            //todo: this call title panel specific, make more generic
-            TitlePanel.UpdatePanelContent(LargestContent);
         }
 
         #endregion
@@ -38,15 +28,7 @@ namespace HandyBoxApp
 
         private CurrencyPanel EurTryCurrencyPanel { get; set; }
 
-        private CurrencyPanel EurUsdCurrencyPanel { get; set; }
-
-        private CurrencyPanel UsdTryCurrencyPanel { get; set; }
-
-        private ContainerPanel ContainerPanel { get; set; }
-
-        private int LargestContent { get; set; }
-
-        private int SlidePanelsCunt { get; set; }
+        private LayoutPanel LayoutPanel { get; set; }
 
         #endregion
 
@@ -55,55 +37,8 @@ namespace HandyBoxApp
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
-            ContainerPanel = new ContainerPanel(this, false)
-            {
-                Location = new Point(0, 0)
-            };
-            Controls.Add(ContainerPanel);
-
             SetFormPosition();
             Opacity = Settings.Default.Transparency;
-        }
-
-        private void OnControlAdd(object sender, ControlEventArgs e)
-        {
-            if (e.Control.Width > LargestContent)
-            {
-                LargestContent = e.Control.Width;
-            }
-
-            CustomControlHelper.VerticalAlign(this);
-
-            (e.Control as DynamicPanel)?.InitializeFunctionPanel();
-        }
-
-        private void OnControlRemove(object sender, ControlEventArgs e)
-        {
-            SlidePanelsCunt = 0;
-            CustomControlHelper.VerticalAlign(this);
-            ContainerPanel.Height = Height;
-        }
-
-        private void OnFormSlide(object sender, SlideEventArgs args)
-        {
-            if (args.IsSlide)
-            {
-                if (SlidePanelsCunt == 0)
-                {
-                    Width += args.Slide;
-                }
-
-                SlidePanelsCunt++;
-            }
-            else
-            {
-                SlidePanelsCunt--;
-
-                if (SlidePanelsCunt == 0)
-                {
-                    Width += args.Slide;
-                }
-            }
         }
 
         private void OnFormClosed(object sender, System.EventArgs e)
@@ -119,20 +54,14 @@ namespace HandyBoxApp
 
         private void InitializePanels()
         {
-            TitlePanel = new TitlePanel(this, false);
-            Controls.Add(TitlePanel);
+            LayoutPanel = new LayoutPanel();
+            TitlePanel = new TitlePanel(this);
+            EurTryCurrencyPanel = new CurrencyPanel(this);
 
-            EurTryCurrencyPanel = new CurrencyPanel(new EurTryCurrency(CurrencyUrls.YahooEurTry), this, false);
-            EurTryCurrencyPanel.OnFormSlide += OnFormSlide;
-            Controls.Add(EurTryCurrencyPanel);
+            LayoutPanel.Add(TitlePanel);
+            LayoutPanel.Add(EurTryCurrencyPanel);
 
-            UsdTryCurrencyPanel = new CurrencyPanel(new UsdTryCurrency(CurrencyUrls.YahooUsdTry), this, false);
-            UsdTryCurrencyPanel.OnFormSlide += OnFormSlide;
-            Controls.Add(UsdTryCurrencyPanel);
-
-            EurUsdCurrencyPanel = new CurrencyPanel(new EurUsdCurrency(CurrencyUrls.YahooEurUsd), this, false);
-            EurUsdCurrencyPanel.OnFormSlide += OnFormSlide;
-            Controls.Add(EurUsdCurrencyPanel);
+            Controls.Add(LayoutPanel);
         }
 
         private void SetFormPosition()

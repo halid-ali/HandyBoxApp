@@ -1,4 +1,5 @@
-﻿using HandyBoxApp.Properties;
+﻿using System.Windows.Forms;
+using HandyBoxApp.Properties;
 
 namespace HandyBoxApp
 {
@@ -35,13 +36,13 @@ namespace HandyBoxApp
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.TransparencyKey = this.BackColor;
+            //this.TransparencyKey = this.BackColor;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "MainForm";
+            this.Size = new System.Drawing.Size(0, 0);
             this.ShowIcon = false;
+            this.AutoSize = true;
             this.Text = "Handy Box v1.0 by Halit Yurtsever";
             this.TopMost = Settings.Default.OnTop;
             this.ShowInTaskbar = false;

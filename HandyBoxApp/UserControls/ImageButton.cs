@@ -61,6 +61,8 @@ namespace HandyBoxApp.UserControls
 
             TextLabel.AutoSize = true;
             TextLabel.Text = labelText;
+            TextLabel.Margin=new Padding(0);
+            TextLabel.Height = TextLabel.Width;
             TextLabel.TextAlign = ContentAlignment.MiddleCenter;
             TextLabel.Padding = new Padding(Style.PanelPadding);
             TextLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
