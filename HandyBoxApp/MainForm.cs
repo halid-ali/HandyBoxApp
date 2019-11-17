@@ -26,7 +26,11 @@ namespace HandyBoxApp
 
         private TitlePanel TitlePanel { get; set; }
 
-        private CurrencyPanel EurTryCurrencyPanel { get; set; }
+        private StockPanel EurTryStockPanel { get; set; }
+
+        private StockPanel UsdTryStockPanel { get; set; }
+
+        private StockPanel EurUsdStockPanel { get; set; }
 
         private LayoutPanel LayoutPanel { get; set; }
 
@@ -56,10 +60,14 @@ namespace HandyBoxApp
         {
             LayoutPanel = new LayoutPanel();
             TitlePanel = new TitlePanel(this);
-            EurTryCurrencyPanel = new CurrencyPanel(this);
+            EurTryStockPanel = new StockPanel(this);
+            UsdTryStockPanel = new StockPanel(this);
+            EurUsdStockPanel = new StockPanel(this);
 
             LayoutPanel.Add(TitlePanel);
-            LayoutPanel.Add(EurTryCurrencyPanel);
+            LayoutPanel.Add(EurTryStockPanel);
+            LayoutPanel.Add(UsdTryStockPanel);
+            LayoutPanel.Add(EurUsdStockPanel);
 
             Controls.Add(LayoutPanel);
         }
