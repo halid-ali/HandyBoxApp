@@ -78,49 +78,11 @@
     <Compile Include="ColorScheme\Colors\Red.cs" />
     <Compile Include="ColorScheme\Painter.cs" />
     <Compile Include="ColorScheme\PaintMode.cs" />
-    <Compile Include="CurrencyService\CurrencySummaryData.cs" />
-    <Compile Include="CurrencyService\CurrencyUrls.cs" />
-    <Compile Include="CurrencyService\ICurrency.cs" />
-    <Compile Include="CurrencyService\ICurrencyService.cs" />
-    <Compile Include="CurrencyService\Services\Yahoo.cs" />
-    <Compile Include="CurrencyService\Types\EurTryCurrency.cs" />
-    <Compile Include="CurrencyService\Types\EurUsdCurrency.cs" />
-    <Compile Include="CurrencyService\Types\UsdTryCurrency.cs" />
     <Compile Include="CustomApplicationContext.cs" />
-    <Compile Include="CustomComponents\Border.cs" />
-    <Compile Include="CustomComponents\Buttons\SwitchImageButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="CustomComponents\CustomContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomComponents\Buttons\ClickImageButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomComponents\Panels\Base\CustomBasePanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomComponents\Panels\Base\DraggablePanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomComponents\Panels\Base\DynamicPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomComponents\Panels\Base\StaticPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomComponents\Panels\ContainerPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomComponents\Panels\CurrencyPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomComponents\Panels\TitlePanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="CustomComponents\Style.cs" />
-    <Compile Include="EventArgs\CurrencyUpdatedEventArgs.cs" />
-    <Compile Include="EventArgs\SlideEventArgs.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,7 +106,6 @@
     <Compile Include="Utilities\BalloonTip.cs" />
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Utilities\CurrencyFormatter.cs" />
-    <Compile Include="Utilities\CustomControlHelper.cs" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
