@@ -179,5 +179,11 @@
   <ItemGroup>
     <None Include="Resources\Logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HandyBoxApp.StockExchange\HandyBoxApp.StockExchange.csproj">
+      <Project>{33a76ad9-649c-433c-8707-0526c4c3518e}</Project>
+      <Name>HandyBoxApp.StockExchange</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,6 +4,7 @@ using HandyBoxApp.StockExchange.StockService;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace HandyBoxApp.StockExchange
@@ -11,14 +12,19 @@ namespace HandyBoxApp.StockExchange
     public class StockServiceFactory
     {
         private static IList<IStockInfo> s_StockInfoList;
-        private readonly StockInfoLoader m_Loader = new StockInfoLoader();
+        private static readonly StockInfoLoader s_Loader;
 
         //################################################################################
         #region Constructor
 
+        static StockServiceFactory()
+        {
+            s_Loader = new StockInfoLoader();
+        }
+
         private StockServiceFactory()
         {
-            s_StockInfoList = m_Loader.GetStockList().ToList();
+            
         }
 
         #endregion
@@ -28,6 +34,11 @@ namespace HandyBoxApp.StockExchange
 
         public static IStockService CreateService(string serviceName, string stockName)
         {
+            if (s_StockInfoList == null)
+            {
+                s_StockInfoList = s_Loader.GetStockList().ToList();
+            }
+
             switch (serviceName)
             {
                 case "Yahoo":
@@ -43,7 +54,7 @@ namespace HandyBoxApp.StockExchange
         private static IStockInfo GetStockInfo(string serviceName, string stockName)
         {
             var stockInfo = from stock in s_StockInfoList
-                            where stock.Name == stockName && stock.Service == serviceName
+                            where stock.Tag == stockName && stock.Service == serviceName
                             select stock;
 
             return stockInfo.First();

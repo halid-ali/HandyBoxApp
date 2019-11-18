@@ -45,7 +45,7 @@ namespace HandyBoxApp.StockExchange.Stock
         private XmlDocument LoadXmlDocument()
         {
             var xmlDocument = new XmlDocument();
-            xmlDocument.Load(GetType().Assembly.GetManifestResourceStream("HandyTool.Stock.StockServices.xml") ?? throw new InvalidOperationException());
+            xmlDocument.Load(GetType().Assembly.GetManifestResourceStream("HandyBoxApp.StockExchange.StockServices.xml") ?? throw new InvalidOperationException());
 
             return xmlDocument;
         }
@@ -53,6 +53,7 @@ namespace HandyBoxApp.StockExchange.Stock
         private XmlNodeList GetServiceList(XmlDocument xmlDoc)
         {
             var stockServices = xmlDoc.GetElementsByTagName(XmlConstants.ServiceListTag);
+
             return stockServices[0].ChildNodes;
         }
 
@@ -71,6 +72,7 @@ namespace HandyBoxApp.StockExchange.Stock
                     var stockUrl = stockNodeAttributes?.GetNamedItem(XmlConstants.UrlAttribute).Value;
 
                     var stock = new StockInfo(stockName, serviceName, stockTag, stockUrl);
+
                     m_StockList.Add(stock);
                 }
             }

@@ -1,4 +1,6 @@
 ﻿using HandyBoxApp.Properties;
+using HandyBoxApp.StockExchange;
+using HandyBoxApp.StockExchange.Interfaces;
 using HandyBoxApp.UserControls;
 
 using System.Drawing;
@@ -60,9 +62,10 @@ namespace HandyBoxApp
         {
             LayoutPanel = new LayoutPanel();
             TitlePanel = new TitlePanel(this);
-            EurTryStockPanel = new StockPanel(this);
-            UsdTryStockPanel = new StockPanel(this);
-            EurUsdStockPanel = new StockPanel(this);
+
+            EurTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURTRY"));
+            UsdTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "USDTRY"));
+            EurUsdStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURUSD"));
 
             LayoutPanel.Add(TitlePanel);
             LayoutPanel.Add(EurTryStockPanel);

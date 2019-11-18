@@ -5,6 +5,7 @@
     <Stock name="EUR/USD" tag="EURUSD" url="https://finance.yahoo.com/quote/EURUSD%3DX?p=EURUSD%3DX"/>
     <Stock name="SIE.DE" tag="SIEMENS" url="https://finance.yahoo.com/quote/SIE.DE?p=SIE.DE"/>
   </StockService>
+</StockServices>
   <!--
   <StockService name="Garanti">
     <Stock name="EUR/TRY" tag="EURTRY" url="https://www.paragaranti.com/doviz-eur"/>
@@ -12,4 +13,3 @@
     <Stock name="ALTIN" tag="ALT" url="https://www.garantibbva.com.tr/doviz-kurlari"/>
   </StockService>
   -->
-</StockServices>

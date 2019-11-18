@@ -39,5 +39,10 @@ namespace HandyBoxApp.StockExchange.Stock
         string IStockInfo.SourceUrl => m_Url;
 
         #endregion
+
+        public override string ToString()
+        {
+            return $"Name:{m_Name}, Service:{m_Service}, Tag:{m_Tag}";
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
+using HandyBoxApp.StockExchange.Interfaces;
 
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,9 +13,10 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Constructor
 
-        public StockPanel(Control parentControl)
+        public StockPanel(Control parentControl, IStockService stockService)
         {
             ParentControl = parentControl;
+            StockService = stockService;
 
             InitializeComponent();
             OrderControls();
@@ -26,6 +28,8 @@ namespace HandyBoxApp.UserControls
         #region Properties
 
         private Control ParentControl { get; }
+
+        private IStockService StockService { get; }
 
         private Label NameLabel { get; } = new Label();
 
@@ -57,7 +61,7 @@ namespace HandyBoxApp.UserControls
             #region Name Label
 
             NameLabel.Name = "NameLabel";
-            NameLabel.Text = "EUR/TRY";
+            NameLabel.Text = StockService.GetStockInfo.Name;
             NameLabel.Width = 90;
             NameLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             NameLabel.Padding = new Padding(Style.PanelPadding);
@@ -70,7 +74,7 @@ namespace HandyBoxApp.UserControls
             #region Value Label
 
             ValueLabel.Name = "ValueLabel";
-            ValueLabel.Text = "6.4167 TL";
+            ValueLabel.Text = "0.0000 TL";
             ValueLabel.Width = 100;
             ValueLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             ValueLabel.Padding = new Padding(Style.PanelPadding);
@@ -96,9 +100,9 @@ namespace HandyBoxApp.UserControls
 
             #endregion
 
-            #region Currency Panel
+            #region Stock Panel
 
-            Name = "CurrencyPanel";
+            Name = $"StockPanel_{StockService.GetStockInfo.Tag}";
             AutoSize = true;
             Margin = new Padding(0, 0, 0, Style.PanelSpacing);
             BackColor = Color.FromArgb(100, 100, 100);
@@ -141,7 +145,7 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Event Handlers
 
-        
+
 
         #endregion
     }
