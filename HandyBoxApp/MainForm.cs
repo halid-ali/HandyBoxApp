@@ -63,9 +63,9 @@ namespace HandyBoxApp
             LayoutPanel = new LayoutPanel();
             TitlePanel = new TitlePanel(this);
 
-            EurTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURTRY"));
-            UsdTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "USDTRY"));
-            EurUsdStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURUSD"));
+            EurTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURTRY"), 2000);
+            UsdTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "USDTRY"), 2000);
+            EurUsdStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURUSD"), 2000);
 
             LayoutPanel.Add(TitlePanel);
             LayoutPanel.Add(EurTryStockPanel);

@@ -1,9 +1,14 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
+using HandyBoxApp.StockExchange.EventArgs;
 using HandyBoxApp.StockExchange.Interfaces;
-
+using HandyBoxApp.StockExchange.Stock;
+using HandyBoxApp.StockExchange.StockService;
+using System;
+using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace HandyBoxApp.UserControls
@@ -13,13 +18,19 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Constructor
 
-        public StockPanel(Control parentControl, IStockService stockService)
+        public StockPanel(Control parentControl, IStockService stockService, int refreshRate)
         {
             ParentControl = parentControl;
             StockService = stockService;
+            RefreshRate = refreshRate;
+
+            Worker.DoWork += FetchStockData;
+            Worker.RunWorkerCompleted += FetchStockDataCompleted;
 
             InitializeComponent();
             OrderControls();
+
+            StartStockDataFetching();
         }
 
         #endregion
@@ -40,6 +51,72 @@ namespace HandyBoxApp.UserControls
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
         #endregion
+
+        private BackgroundWorker Worker { get; } = new BackgroundWorker();
+        private bool IsFetchCancelled { get; set; }
+        private StockData PreviousStockData { get; set; }
+        private int RefreshRate { get; }
+
+        private delegate void StockUpdateCallback(object sender, StockUpdateEventArgs args);
+
+        private void FetchStockData(object sender, DoWorkEventArgs args)
+        {
+            IsFetchCancelled = true;
+            StockService.StockUpdated += UpdateStockData;
+
+            try
+            {
+                while (IsFetchCancelled)
+                {
+                    StockService.GetStockData();
+                    Thread.Sleep(RefreshRate);
+                }
+            }
+            finally
+            {
+                StockService.StockUpdated -= UpdateStockData;
+            }
+        }
+
+        private void UpdateStockData(object sender, StockUpdateEventArgs args)
+        {
+            if (ValueLabel.InvokeRequired)
+            {
+                StockUpdateCallback callback = UpdateStockData;
+                Invoke(callback, this, args);
+            }
+            else
+            {
+                var stockData = args.StockData;
+
+                if (stockData.ActualData > PreviousStockData.ActualData)
+                {
+                    Painter<Green>.Paint(ValueLabel, PaintMode.Light);
+                }
+                else if (stockData.ActualData < PreviousStockData.ActualData)
+                {
+                    Painter<Red>.Paint(ValueLabel, PaintMode.Light);
+                }
+
+                ValueLabel.Text = $@"{stockData.ActualData:F4} TL";
+                PreviousStockData = stockData;
+            }
+        }
+
+        private void FetchStockDataCompleted(object sender, RunWorkerCompletedEventArgs args)
+        {
+
+        }
+
+        private void StartStockDataFetching()
+        {
+            Worker.RunWorkerAsync();
+        }
+
+        private void StopStockDataFetching()
+        {
+
+        }
 
         //################################################################################
         #region Private Members
@@ -74,7 +151,7 @@ namespace HandyBoxApp.UserControls
             #region Value Label
 
             ValueLabel.Name = "ValueLabel";
-            ValueLabel.Text = "0.0000 TL";
+            ValueLabel.Text = "#.#### TL";
             ValueLabel.Width = 100;
             ValueLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             ValueLabel.Padding = new Padding(Style.PanelPadding);
