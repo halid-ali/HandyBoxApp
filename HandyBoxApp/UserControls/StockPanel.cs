@@ -60,6 +60,8 @@ namespace HandyBoxApp.UserControls
 
         private int RefreshRate { get; }
 
+        private ToolTip ToolTip { get; } = new ToolTip();
+
         #endregion
 
         //################################################################################
@@ -189,6 +191,7 @@ namespace HandyBoxApp.UserControls
                 }
 
                 ValueLabel.Text = Formatter.FormatDouble(args.StockData.ActualData, Pad.Left, 12);
+                ToolTip.SetToolTip(ValueLabel, $"Change Rate: %{args.StockData.ChangeRate}");
                 PreviousStockData = stockData;
             }
         }
