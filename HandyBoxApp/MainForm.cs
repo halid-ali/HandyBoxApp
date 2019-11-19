@@ -1,6 +1,5 @@
 ﻿using HandyBoxApp.Properties;
 using HandyBoxApp.StockExchange;
-using HandyBoxApp.StockExchange.Interfaces;
 using HandyBoxApp.UserControls;
 
 using System.Drawing;

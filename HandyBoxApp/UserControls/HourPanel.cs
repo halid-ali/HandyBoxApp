@@ -6,16 +6,10 @@ using HandyBoxApp.Utilities;
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace HandyBoxApp.UserControls
 {
-    internal class HourUpdateEventArgs : EventArgs
-    {
-        internal TimeSpan ElapsedTime { get; set; }
-    }
-
     public class HourPanel : UserControl
     {
         private delegate void HourUpdateCallback(object sender, HourUpdateEventArgs args);
@@ -26,9 +20,10 @@ namespace HandyBoxApp.UserControls
         public HourPanel(Control parentControl)
         {
             ParentControl = parentControl;
+            DoubleClick += HourPanel_DoubleClick;
 
-            Worker.DoWork += TickTockHour;
-            Worker.RunWorkerCompleted += TickTockHourCompleted;
+            Worker.DoWork += HourTicking;
+            Worker.RunWorkerCompleted += HourTickingCompleted;
 
             InitializeComponent();
             OrderControls();
@@ -45,7 +40,11 @@ namespace HandyBoxApp.UserControls
 
         private ImageButton QuickSwitchButton { get; set; }
 
-        private Label ValueLabel { get; } = new Label();
+        private Label FunctionText { get; } = new Label();
+
+        private TextBox HourText { get; } = new TextBox();
+
+        private FlowLayoutPanel HourContainer { get; } = new FlowLayoutPanel();
 
         private ImageButton FunctionButton { get; set; }
 
@@ -53,7 +52,7 @@ namespace HandyBoxApp.UserControls
 
         private BackgroundWorker Worker { get; } = new BackgroundWorker();
 
-        private bool IsTickCancelled { get; set; }
+        private bool IsTicking { get; set; }
 
         private ToolTip ToolTip { get; } = new ToolTip();
 
@@ -76,32 +75,45 @@ namespace HandyBoxApp.UserControls
 
             #endregion
 
-            #region Quick Switch Button
+            #region Hour TextBox
 
-            void SwitchAction(Control button)
+            FunctionText.Name = "HourText";
+            FunctionText.Text = Formatter.FormatString("Stopped:", Pad.Right, 9);
+            FunctionText.AutoSize = true;
+            FunctionText.BorderStyle = BorderStyle.None;
+            FunctionText.Padding = new Padding(Style.PanelPadding);
+            FunctionText.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
+            FunctionText.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
+            Painter<Black>.Paint(FunctionText, PaintMode.Normal);
+            FunctionText.DoubleClick += FunctionText_DoubleClick;
+
+            var hourTextGuideLabel = new Label
             {
-                button.Click += (sender, args) =>
-                {
+                AutoSize = true,
+                Text = new string(' ', 12),
+                Margin = new Padding(0),
+                Padding = new Padding(Style.PanelPadding),
+                Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold)
+            };
 
-                };
-            }
+            HourText.Text = "00:00.00";
+            HourText.ReadOnly = true;
+            HourText.AutoSize = false;
+            HourText.Margin = new Padding(0);
+            HourText.BorderStyle = BorderStyle.None;
+            HourText.Size = hourTextGuideLabel.PreferredSize;
+            HourText.TextAlign = HorizontalAlignment.Center;
+            HourText.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize + 2, FontStyle.Bold);
+            Painter<Blue>.Paint(HourText, PaintMode.Normal);
 
-            QuickSwitchButton = new ImageButton(SwitchAction, "S") { Margin = new Padding(0, 0, Style.PanelSpacing, 0) };
-            QuickSwitchButton.SetToolTip("Switch hour");
-            QuickSwitchButton.SetColor<Red>(PaintMode.Dark);
-
-            #endregion
-
-            #region Value Label
-
-            ValueLabel.Name = "ValueLabel";
-            ValueLabel.Text = SetHourText("00:00.00");
-            ValueLabel.AutoSize = true;
-            ValueLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
-            ValueLabel.Padding = new Padding(Style.PanelPadding);
-            ValueLabel.TextAlign = ContentAlignment.MiddleCenter;
-            ValueLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
-            Painter<Black>.Paint(ValueLabel, PaintMode.Normal);
+            HourContainer.Width = FunctionText.PreferredWidth + Style.PanelSpacing + HourText.Width;
+            HourContainer.Height = FunctionText.PreferredHeight;
+            HourContainer.Padding = new Padding(0);
+            HourContainer.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
+            HourContainer.BorderStyle = BorderStyle.None;
+            HourContainer.FlowDirection = FlowDirection.LeftToRight;
+            HourContainer.Controls.Add(FunctionText);
+            HourContainer.Controls.Add(HourText);
 
             #endregion
 
@@ -132,8 +144,7 @@ namespace HandyBoxApp.UserControls
 
             #endregion
 
-            ContainerPanel.Controls.Add(QuickSwitchButton);
-            ContainerPanel.Controls.Add(ValueLabel);
+            ContainerPanel.Controls.Add(HourContainer);
             ContainerPanel.Controls.Add(FunctionButton);
             Controls.Add(ContainerPanel);
 
@@ -142,26 +153,26 @@ namespace HandyBoxApp.UserControls
             ResumeLayout(false);
         }
 
-        private void TickTockHour(object sender, DoWorkEventArgs args)
+        private void HourTicking(object sender, DoWorkEventArgs args)
         {
-            
+            IsTicking = true;
         }
 
-        private void TickTockHourCompleted(object sender, RunWorkerCompletedEventArgs args)
+        private void HourTickingCompleted(object sender, RunWorkerCompletedEventArgs args)
         {
-
+            IsTicking = false;
         }
 
-        private void UpdateStockData(object sender, HourUpdateEventArgs args)
+        private void UpdateHour(object sender, HourUpdateEventArgs args)
         {
-            if (ValueLabel.InvokeRequired)
+            if (FunctionText.InvokeRequired)
             {
-                HourUpdateCallback callback = UpdateStockData;
+                HourUpdateCallback callback = UpdateHour;
                 Invoke(callback, this, args);
             }
             else
             {
-                
+
             }
         }
 
@@ -187,8 +198,7 @@ namespace HandyBoxApp.UserControls
                     ContainerPanel.Height = control.PreferredSize.Height;
                 }
 
-                //ContainerPanel.Width += control.Width - Style.PanelSpacing;
-                ContainerPanel.Width += control.PreferredSize.Width - Style.PanelSpacing;
+                ContainerPanel.Width += control.Width - Style.PanelSpacing;
             }
 
             Height = ContainerPanel.Height;
@@ -209,7 +219,19 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Event Handlers
 
+        private void HourPanel_DoubleClick(object sender, EventArgs e)
+        {
 
+        }
+
+        private void FunctionText_DoubleClick(object sender, EventArgs e)
+        {
+            if (IsTicking)
+            {
+                var text = FunctionText.Text.Trim().Equals("Remains:") ? "Elapsed:" : "Remains:";
+                FunctionText.Text = Formatter.FormatString(text, Pad.Right, 9);
+            }
+        }
 
         #endregion
     }
