@@ -95,8 +95,9 @@ namespace HandyBoxApp.UserControls
             #region Title Label
 
             TitleLabel.Name = "TitleLabel";
-            TitleLabel.Text = "Handy Box App v2.4";
-            TitleLabel.Width = 190 - LogoButton.Width;
+            TitleLabel.Text = "Handy Box App  ";
+            //TitleLabel.Width = 190 - LogoButton.Width;
+            TitleLabel.AutoSize = true;
             TitleLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             TitleLabel.Padding = new Padding(Style.PanelPadding);
             TitleLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -156,7 +157,8 @@ namespace HandyBoxApp.UserControls
                     ContainerPanel.Height = control.PreferredSize.Height;
                 }
 
-                ContainerPanel.Width += control.Width - Style.PanelSpacing;
+                //ContainerPanel.Width += control.Width - Style.PanelSpacing;
+                ContainerPanel.Width += control.PreferredSize.Width - Style.PanelSpacing;
             }
 
             Height = ContainerPanel.Height;

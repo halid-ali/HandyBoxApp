@@ -83,7 +83,8 @@ namespace HandyBoxApp.UserControls
 
             NameLabel.Name = "NameLabel";
             NameLabel.Text = StockService.GetStockInfo.Name;
-            NameLabel.Width = 90;
+            //NameLabel.Width = 90;
+            NameLabel.AutoSize = true;
             NameLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             NameLabel.Padding = new Padding(Style.PanelPadding);
             NameLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -96,7 +97,8 @@ namespace HandyBoxApp.UserControls
 
             ValueLabel.Name = "ValueLabel";
             ValueLabel.Text = "#,#### TL";
-            ValueLabel.Width = 100;
+            //ValueLabel.Width = 100;
+            ValueLabel.AutoSize = true;
             ValueLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             ValueLabel.Padding = new Padding(Style.PanelPadding);
             ValueLabel.TextAlign = ContentAlignment.MiddleRight;
@@ -213,7 +215,8 @@ namespace HandyBoxApp.UserControls
                     ContainerPanel.Height = control.PreferredSize.Height;
                 }
 
-                ContainerPanel.Width += control.Width - Style.PanelSpacing;
+                //ContainerPanel.Width += control.Width - Style.PanelSpacing;
+                ContainerPanel.Width += control.PreferredSize.Width - Style.PanelSpacing;
             }
 
             Height = ContainerPanel.Height;
