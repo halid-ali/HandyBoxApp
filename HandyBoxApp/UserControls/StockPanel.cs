@@ -82,7 +82,7 @@ namespace HandyBoxApp.UserControls
             #region Name Label
 
             NameLabel.Name = "NameLabel";
-            NameLabel.Text = StockService.GetStockInfo.Name;
+            NameLabel.Text = Formatter.FormatString(StockService.GetStockInfo.Name, Pad.Right, 9);
             //NameLabel.Width = 90;
             NameLabel.AutoSize = true;
             NameLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
@@ -96,7 +96,7 @@ namespace HandyBoxApp.UserControls
             #region Value Label
 
             ValueLabel.Name = "ValueLabel";
-            ValueLabel.Text = "#,#### TL";
+            ValueLabel.Text = Formatter.FormatString("#,#### TL", Pad.Left, 12);
             //ValueLabel.Width = 100;
             ValueLabel.AutoSize = true;
             ValueLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
@@ -188,7 +188,7 @@ namespace HandyBoxApp.UserControls
                     Painter<Red>.Paint(ValueLabel, PaintMode.Light);
                 }
 
-                ValueLabel.Text = CurrencyFormatter.Format(args.StockData.ActualData, "tr-TR", "TL");
+                ValueLabel.Text = Formatter.FormatDouble(args.StockData.ActualData, Pad.Left, 12);
                 PreviousStockData = stockData;
             }
         }

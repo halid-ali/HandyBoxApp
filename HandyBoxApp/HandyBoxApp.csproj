@@ -105,7 +105,7 @@
     </Compile>
     <Compile Include="Utilities\BalloonTip.cs" />
     <Compile Include="Utilities\Constants.cs" />
-    <Compile Include="Utilities\CurrencyFormatter.cs" />
+    <Compile Include="Utilities\Formatter.cs" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -34,6 +34,8 @@ namespace HandyBoxApp
 
         private StockPanel EurUsdStockPanel { get; set; }
 
+        private StockPanel SiemensStockPanel { get; set; }
+
         private LayoutPanel LayoutPanel { get; set; }
 
         #endregion
@@ -63,14 +65,16 @@ namespace HandyBoxApp
             LayoutPanel = new LayoutPanel();
             TitlePanel = new TitlePanel(this);
 
-            EurTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURTRY"), 2000);
-            UsdTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "USDTRY"), 2000);
-            EurUsdStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURUSD"), 2000);
+            EurTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURTRY"));
+            UsdTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "USDTRY"));
+            EurUsdStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURUSD"), 5000);
+            SiemensStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "SIEMENS"), 10000);
 
             LayoutPanel.Add(TitlePanel);
             LayoutPanel.Add(EurTryStockPanel);
             LayoutPanel.Add(UsdTryStockPanel);
             LayoutPanel.Add(EurUsdStockPanel);
+            LayoutPanel.Add(SiemensStockPanel);
 
             Controls.Add(LayoutPanel);
         }
