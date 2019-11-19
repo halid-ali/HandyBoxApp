@@ -6,9 +6,9 @@
 
         public const int PanelSpacing = 1;
 
-        public const int PanelPadding = 1; //ok
+        public const int PanelPadding = 2; //ok
 
-        public const int PanelFontSize = 8; //ok
+        public const int PanelFontSize = 9; //ok
 
         //public const string FontName = "Courier New"; //only fixed-width fonts
         public const string FontName = "Consolas"; //only fixed-width fonts
