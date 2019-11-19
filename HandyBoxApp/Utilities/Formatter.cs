@@ -22,14 +22,14 @@ namespace HandyBoxApp.Utilities
             return FormatString(result, padding, totalWidth);
         }
 
-        internal static string FormatString(string value, Pad padding, int totalWidth)
+        internal static string FormatString(string value, Pad padding, int totalWidth, char paddingChar = Constants.DefaultPaddingChar)
         {
             if (padding == Pad.Right)
             {
-                return value.PadRight(totalWidth, Constants.DefaultPaddingChar);
+                return value.PadRight(totalWidth, paddingChar);
             }
 
-            return value.PadLeft(totalWidth, Constants.DefaultPaddingChar);
+            return value.PadLeft(totalWidth, paddingChar);
         }
     }
 
