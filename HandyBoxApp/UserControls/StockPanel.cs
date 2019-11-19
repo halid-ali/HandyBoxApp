@@ -5,6 +5,7 @@ using HandyBoxApp.StockExchange.EventArgs;
 using HandyBoxApp.StockExchange.Interfaces;
 using HandyBoxApp.StockExchange.Stock;
 using HandyBoxApp.StockExchange.StockService;
+using HandyBoxApp.Utilities;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -18,7 +19,7 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Constructor
 
-        public StockPanel(Control parentControl, IStockService stockService, int refreshRate)
+        public StockPanel(Control parentControl, IStockService stockService, int refreshRate = Constants.DefaultRefreshRate)
         {
             ParentControl = parentControl;
             StockService = stockService;
