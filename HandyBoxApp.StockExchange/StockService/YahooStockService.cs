@@ -5,6 +5,7 @@ using HandyBoxApp.StockExchange.Stock;
 using HtmlAgilityPack;
 
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -87,7 +88,7 @@ namespace HandyBoxApp.StockExchange.StockService
 
             try
             {
-                actualData = double.Parse(actualDataText);
+                actualData = double.Parse(actualDataText, CultureInfo.InvariantCulture);
             }
             catch (FormatException)
             {
@@ -104,7 +105,7 @@ namespace HandyBoxApp.StockExchange.StockService
 
             try
             {
-                changeRate = double.Parse(changeRateText);
+                changeRate = double.Parse(changeRateText, CultureInfo.InvariantCulture);
             }
             catch (FormatException)
             {

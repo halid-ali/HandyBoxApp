@@ -4,9 +4,8 @@ using HandyBoxApp.CustomComponents;
 using HandyBoxApp.StockExchange.EventArgs;
 using HandyBoxApp.StockExchange.Interfaces;
 using HandyBoxApp.StockExchange.Stock;
-using HandyBoxApp.StockExchange.StockService;
 using HandyBoxApp.Utilities;
-using System;
+
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
@@ -16,6 +15,8 @@ namespace HandyBoxApp.UserControls
 {
     public class StockPanel : UserControl
     {
+        private delegate void StockUpdateCallback(object sender, StockUpdateEventArgs args);
+
         //################################################################################
         #region Constructor
 
@@ -51,73 +52,15 @@ namespace HandyBoxApp.UserControls
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
-        #endregion
-
         private BackgroundWorker Worker { get; } = new BackgroundWorker();
+
         private bool IsFetchCancelled { get; set; }
+
         private StockData PreviousStockData { get; set; }
+
         private int RefreshRate { get; }
 
-        private delegate void StockUpdateCallback(object sender, StockUpdateEventArgs args);
-
-        private void FetchStockData(object sender, DoWorkEventArgs args)
-        {
-            IsFetchCancelled = true;
-            StockService.StockUpdated += UpdateStockData;
-
-            try
-            {
-                while (IsFetchCancelled)
-                {
-                    StockService.GetStockData();
-                    Thread.Sleep(RefreshRate);
-                }
-            }
-            finally
-            {
-                StockService.StockUpdated -= UpdateStockData;
-            }
-        }
-
-        private void UpdateStockData(object sender, StockUpdateEventArgs args)
-        {
-            if (ValueLabel.InvokeRequired)
-            {
-                StockUpdateCallback callback = UpdateStockData;
-                Invoke(callback, this, args);
-            }
-            else
-            {
-                var stockData = args.StockData;
-
-                if (stockData.ActualData > PreviousStockData.ActualData)
-                {
-                    Painter<Green>.Paint(ValueLabel, PaintMode.Light);
-                }
-                else if (stockData.ActualData < PreviousStockData.ActualData)
-                {
-                    Painter<Red>.Paint(ValueLabel, PaintMode.Light);
-                }
-
-                ValueLabel.Text = $@"{stockData.ActualData:F4} TL";
-                PreviousStockData = stockData;
-            }
-        }
-
-        private void FetchStockDataCompleted(object sender, RunWorkerCompletedEventArgs args)
-        {
-
-        }
-
-        private void StartStockDataFetching()
-        {
-            Worker.RunWorkerAsync();
-        }
-
-        private void StopStockDataFetching()
-        {
-
-        }
+        #endregion
 
         //################################################################################
         #region Private Members
@@ -152,7 +95,7 @@ namespace HandyBoxApp.UserControls
             #region Value Label
 
             ValueLabel.Name = "ValueLabel";
-            ValueLabel.Text = "#.#### TL";
+            ValueLabel.Text = "#,#### TL";
             ValueLabel.Width = 100;
             ValueLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             ValueLabel.Padding = new Padding(Style.PanelPadding);
@@ -197,6 +140,65 @@ namespace HandyBoxApp.UserControls
             ContainerPanel.ResumeLayout(false);
             ContainerPanel.PerformLayout();
             ResumeLayout(false);
+        }
+
+        private void FetchStockData(object sender, DoWorkEventArgs args)
+        {
+            IsFetchCancelled = true;
+            StockService.StockUpdated += UpdateStockData;
+
+            try
+            {
+                while (IsFetchCancelled)
+                {
+                    StockService.GetStockData();
+                    Thread.Sleep(RefreshRate);
+                }
+            }
+            finally
+            {
+                StockService.StockUpdated -= UpdateStockData;
+            }
+        }
+
+        private void FetchStockDataCompleted(object sender, RunWorkerCompletedEventArgs args)
+        {
+
+        }
+
+        private void UpdateStockData(object sender, StockUpdateEventArgs args)
+        {
+            if (ValueLabel.InvokeRequired)
+            {
+                StockUpdateCallback callback = UpdateStockData;
+                Invoke(callback, this, args);
+            }
+            else
+            {
+                var stockData = args.StockData;
+
+                if (stockData.ActualData > PreviousStockData.ActualData)
+                {
+                    Painter<Green>.Paint(ValueLabel, PaintMode.Light);
+                }
+                else if (stockData.ActualData < PreviousStockData.ActualData)
+                {
+                    Painter<Red>.Paint(ValueLabel, PaintMode.Light);
+                }
+
+                ValueLabel.Text = CurrencyFormatter.Format(args.StockData.ActualData, "tr-TR", "TL");
+                PreviousStockData = stockData;
+            }
+        }
+
+        private void StartStockDataFetching()
+        {
+            Worker.RunWorkerAsync();
+        }
+
+        private void StopStockDataFetching()
+        {
+
         }
 
         private void OrderControls()
