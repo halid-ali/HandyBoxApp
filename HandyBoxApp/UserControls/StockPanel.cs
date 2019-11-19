@@ -190,8 +190,9 @@ namespace HandyBoxApp.UserControls
                     Painter<Red>.Paint(ValueLabel, PaintMode.Light);
                 }
 
-                ValueLabel.Text = Formatter.FormatDouble(args.StockData.ActualData, Pad.Left, 12);
-                ToolTip.SetToolTip(ValueLabel, $"Change Rate: %{args.StockData.ChangeRate}");
+                ValueLabel.Text = Formatter.FormatCurrency(args.StockData.ActualData, Pad.Left, 12);
+                var changeRate = Formatter.FormatChangeRate(args.StockData.ChangeRate, Pad.Right, 0);
+                ToolTip.SetToolTip(ValueLabel, changeRate);
                 PreviousStockData = stockData;
             }
         }

@@ -118,7 +118,7 @@ namespace HandyBoxApp.StockExchange.StockService
         private static string ParseChangeRate(HtmlNode node)
         {
             var innerText = node.InnerText;
-            var rateMatch = Regex.Match(innerText, @"(\d.\d*%)");
+            var rateMatch = Regex.Match(innerText, @"([-+]\d.\d*%)");
             var changeRate = Regex.Replace(rateMatch.Value, "%", "");
 
             return changeRate;
