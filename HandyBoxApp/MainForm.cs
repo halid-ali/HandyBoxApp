@@ -35,7 +35,7 @@ namespace HandyBoxApp
 
         private StockPanel SiemensStockPanel { get; set; }
 
-        private HourPanel HourPanel { get; set; }
+        private TimerPanel HourPanel { get; set; }
 
         private LayoutPanel LayoutPanel { get; set; }
 
@@ -66,18 +66,20 @@ namespace HandyBoxApp
             LayoutPanel = new LayoutPanel();
             TitlePanel = new TitlePanel(this);
 
-            EurTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURTRY"));
-            UsdTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "USDTRY"));
-            EurUsdStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURUSD"), 5000);
-            SiemensStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "SIEMENS"), 10000);
+            //EurTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURTRY"));
+            //UsdTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "USDTRY"));
+            //EurUsdStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURUSD"), 5000);
+            //SiemensStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "SIEMENS"), 10000);
 
-            HourPanel = new HourPanel(this);
+            HourPanel = new TimerPanel(this);
 
             LayoutPanel.Add(TitlePanel);
-            LayoutPanel.Add(EurTryStockPanel);
-            LayoutPanel.Add(UsdTryStockPanel);
-            LayoutPanel.Add(EurUsdStockPanel);
-            LayoutPanel.Add(SiemensStockPanel);
+
+            //LayoutPanel.Add(EurTryStockPanel);
+            //LayoutPanel.Add(UsdTryStockPanel);
+            //LayoutPanel.Add(EurUsdStockPanel);
+            //LayoutPanel.Add(SiemensStockPanel);
+
             LayoutPanel.Add(HourPanel);
 
             Controls.Add(LayoutPanel);
