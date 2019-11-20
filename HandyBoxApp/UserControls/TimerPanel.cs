@@ -265,6 +265,10 @@ namespace HandyBoxApp.UserControls
                     WorkTimer.TimerUpdated += UpdateTimer;
                     WorkTimer.Start();
                 }
+                else
+                {
+                    TimerText.Text = Initial;
+                }
             }
         }
 
