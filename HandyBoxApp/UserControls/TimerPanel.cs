@@ -5,7 +5,6 @@ using HandyBoxApp.Timer;
 using HandyBoxApp.Utilities;
 
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -28,9 +27,6 @@ namespace HandyBoxApp.UserControls
         {
             ParentControl = parentControl;
 
-            Worker.DoWork += TimerTicking;
-            Worker.RunWorkerCompleted += TimerTickingCompleted;
-
             InitializeComponent();
             OrderControls();
         }
@@ -42,8 +38,6 @@ namespace HandyBoxApp.UserControls
 
         private Control ParentControl { get; }
 
-        private ImageButton QuickSwitchButton { get; set; }
-
         private Label FunctionText { get; } = new Label();
 
         private TextBox TimerText { get; } = new TextBox();
@@ -53,14 +47,6 @@ namespace HandyBoxApp.UserControls
         private ImageButton FunctionButton { get; set; }
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
-
-        private BackgroundWorker Worker { get; } = new BackgroundWorker();
-
-        private bool IsStopped { get; set; }
-
-        private bool IsPaused { get; set; }
-
-        private ToolTip ToolTip { get; } = new ToolTip();
 
         private Timer.Timer WorkTimer { get; set; }
 
@@ -168,16 +154,6 @@ namespace HandyBoxApp.UserControls
             ResumeLayout(false);
         }
 
-        private void TimerTicking(object sender, DoWorkEventArgs args)
-        {
-            IsStopped = true;
-        }
-
-        private void TimerTickingCompleted(object sender, RunWorkerCompletedEventArgs args)
-        {
-            
-        }
-
         private void UpdateTimer(object sender, TimerUpdateEventArgs args)
         {
             if (FunctionText.InvokeRequired)
@@ -200,18 +176,6 @@ namespace HandyBoxApp.UserControls
                                      $"{string.Format("{0:D2}", args.RemainingTime.Seconds)}";
                 }
             }
-        }
-
-        private void StartTimer()
-        {
-            IsStopped = true;
-            Worker.RunWorkerAsync();
-        }
-
-        private void StopTimer()
-        {
-            IsStopped = false;
-            FunctionText.Text = Formatter.FormatString(Stopped, Pad.Right, 9);
         }
 
         private void OrderControls()
