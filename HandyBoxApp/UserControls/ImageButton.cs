@@ -38,6 +38,11 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Internal Members
 
+        internal void SetText(string text)
+        {
+            TextLabel.Text = text;
+        }
+
         internal void SetToolTip(string toolTipText)
         {
             m_ToolTip.SetToolTip(TextLabel, toolTipText);
