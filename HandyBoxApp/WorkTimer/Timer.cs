@@ -27,6 +27,8 @@ namespace HandyBoxApp.WorkTimer
             FinishTime = StartTime.Add(m_BaseWorkhour).Add(m_LunchBreak);
             DeadlineTime = FinishTime.Add(m_MaximumOverwork);
 
+            Worker.WorkerReportsProgress = false;
+            Worker.WorkerSupportsCancellation = true;
             Worker.DoWork += Worker_DoWork;
             Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
         }
@@ -65,29 +67,21 @@ namespace HandyBoxApp.WorkTimer
 
         internal void Start()
         {
+            ResetFlags();
             IsStarted = true;
-            IsPaused = false;
-            IsStopped = false;
 
             Worker.RunWorkerAsync();
         }
 
         internal void Stop()
         {
-            StartTime = DateTime.MinValue;
-            FinishTime = DateTime.MinValue;
-            DeadlineTime = DateTime.MinValue;
-
-            IsStarted = false;
-            IsPaused = false;
+            ResetFlags();
             IsStopped = true;
         }
 
         internal void Pause()
         {
-            IsStarted = false;
-            IsPaused = true;
-            IsStopped = false;
+            Worker.CancelAsync();
         }
 
         #endregion
@@ -97,8 +91,18 @@ namespace HandyBoxApp.WorkTimer
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            var bgWorker = sender as BackgroundWorker;
+
             while (IsStarted)
             {
+                if (bgWorker.CancellationPending)
+                {
+                    ResetFlags();
+                    IsPaused = true;
+                    e.Cancel = true;
+                    return;
+                }
+
                 OnTimerUpdate();
                 Thread.Sleep(1000);
             }
@@ -106,7 +110,23 @@ namespace HandyBoxApp.WorkTimer
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (e.Cancelled)
+            {
+                //log pause
+                return;
+            }
+
+            if (e.Error != null)
+            {
+                //log error
+            }
+
+            ResetFlags();
+            IsStopped = true;
+
+            StartTime = new DateTime();
+            FinishTime = new DateTime();
+            DeadlineTime = new DateTime();
         }
 
         #endregion
@@ -118,9 +138,17 @@ namespace HandyBoxApp.WorkTimer
         {
             var elapsedTime = DateTime.Now.Subtract(StartTimeWithLunchBreak);
             var remainingTime = FinishTime.Subtract(DateTime.Now);
+            var overtime = DateTime.Now.Subtract(FinishTime);
 
-            var args = new TimerUpdateEventArgs(elapsedTime, remainingTime);
+            var args = new TimerUpdateEventArgs(elapsedTime, remainingTime, overtime);
             Volatile.Read(ref TimerUpdate)?.Invoke(this, args);
+        }
+
+        private void ResetFlags()
+        {
+            IsStarted = false;
+            IsStopped = false;
+            IsPaused = false;
         }
 
         #endregion
