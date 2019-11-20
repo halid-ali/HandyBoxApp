@@ -1,4 +1,4 @@
-﻿namespace HandyBoxApp.Timer
+﻿namespace HandyBoxApp.WorkTimer
 {
     internal enum TimerMode
     {

@@ -1,12 +1,13 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
-using HandyBoxApp.Timer;
+using HandyBoxApp.WorkTimer;
 using HandyBoxApp.Utilities;
 
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Timer = HandyBoxApp.WorkTimer.Timer;
 
 namespace HandyBoxApp.UserControls
 {
@@ -48,7 +49,7 @@ namespace HandyBoxApp.UserControls
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
-        private Timer.Timer WorkTimer { get; set; }
+        private Timer WorkTimer { get; set; }
 
         private TimerMode Mode { get; set; } = TimerMode.Elapsed;
 
@@ -261,7 +262,7 @@ namespace HandyBoxApp.UserControls
                     FunctionText.Text = Formatter.FormatString(Elapsed, Pad.Right, 9);
                     Painter<Blue>.Paint(TimerText, PaintMode.Light);
 
-                    WorkTimer = new Timer.Timer(startTime);
+                    WorkTimer = new Timer(startTime);
                     WorkTimer.TimerUpdated += UpdateTimer;
                     WorkTimer.Start();
                 }

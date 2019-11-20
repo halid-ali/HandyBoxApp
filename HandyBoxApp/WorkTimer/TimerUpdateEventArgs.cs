@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HandyBoxApp.Timer
+namespace HandyBoxApp.WorkTimer
 {
     internal class TimerUpdateEventArgs
     {

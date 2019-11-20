@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Threading;
 
-namespace HandyBoxApp.Timer
+namespace HandyBoxApp.WorkTimer
 {
     internal class Timer
     {
