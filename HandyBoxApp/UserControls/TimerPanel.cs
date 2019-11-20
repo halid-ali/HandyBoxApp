@@ -15,11 +15,17 @@ namespace HandyBoxApp.UserControls
     {
         private delegate void TimerUpdateCallback(object sender, TimerUpdateEventArgs args);
 
+        //################################################################################
+        #region Constants
+
         private const string Initial = "00:00.00";
         private const string Elapsed = "Elapsed:";
         private const string Remains = "Remains:";
         private const string Stopped = "Stopped:";
         private const string Paused = "Paused:";
+        private const string Overtime = "Overtime:";
+
+        #endregion
 
         //################################################################################
         #region Constructor
@@ -120,16 +126,28 @@ namespace HandyBoxApp.UserControls
 
             #region Function Button
 
-            void SlideAction(Control button)
+            void PauseAction(Control button)
             {
                 button.Click += (sender, args) =>
                 {
-
+                    if (WorkTimer != null)
+                    {
+                        if (WorkTimer.IsStarted)
+                        {
+                            WorkTimer.Pause();
+                            FunctionButton.SetText("R");
+                        }
+                        else if (WorkTimer.IsPaused)
+                        {
+                            WorkTimer.Start();
+                            FunctionButton.SetText("P");
+                        } 
+                    }
                 };
             }
 
             var functionButtonText = 
-            FunctionButton = new ImageButton(SlideAction, ">") { Margin = new Padding(0) };
+            FunctionButton = new ImageButton(PauseAction, "S") { Margin = new Padding(0) };
             FunctionButton.SetToolTip("Open panel");
             FunctionButton.SetColor<Red>(PaintMode.Dark);
 
@@ -238,6 +256,24 @@ namespace HandyBoxApp.UserControls
             return true;
         }
 
+        private void StartTimer(DateTime startTime)
+        {
+            //adjust timer text
+            TimerText.ReadOnly = true;
+            Painter<Blue>.Paint(TimerText, PaintMode.Light);
+
+            //adjust function text
+            FunctionText.Text = Formatter.FormatString(Elapsed, Pad.Right, 9);
+
+            //adjust function button
+            FunctionButton.SetText("P");
+            Painter<Red>.Paint(FunctionButton, PaintMode.Normal);
+
+            WorkTimer = new Timer(startTime);
+            WorkTimer.TimerUpdated += UpdateTimer;
+            WorkTimer.Start();
+        }
+
         #endregion
 
         //################################################################################
@@ -258,13 +294,7 @@ namespace HandyBoxApp.UserControls
             {
                 if (VerifyTimerText(TimerText.Text, out startTime))
                 {
-                    TimerText.ReadOnly = true;
-                    FunctionText.Text = Formatter.FormatString(Elapsed, Pad.Right, 9);
-                    Painter<Blue>.Paint(TimerText, PaintMode.Light);
-
-                    WorkTimer = new Timer(startTime);
-                    WorkTimer.TimerUpdated += UpdateTimer;
-                    WorkTimer.Start();
+                    StartTimer(startTime);
                 }
                 else
                 {
