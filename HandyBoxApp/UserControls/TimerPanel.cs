@@ -1,12 +1,13 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
-using HandyBoxApp.WorkTimer;
 using HandyBoxApp.Utilities;
+using HandyBoxApp.WorkTimer;
 
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+
 using Timer = HandyBoxApp.WorkTimer.Timer;
 
 namespace HandyBoxApp.UserControls
@@ -136,21 +137,20 @@ namespace HandyBoxApp.UserControls
                         {
                             WorkTimer.Pause();
                             FunctionButton.SetText("R");
-                            TimerText.HideSelection = true;
-                            button.Focus();
                         }
                         else if (WorkTimer.IsPaused)
                         {
                             WorkTimer.Start();
                             FunctionButton.SetText("P");
-                            TimerText.HideSelection = true;
-                            button.Focus();
-                        } 
+                        }
+
+                        TimerText.HideSelection = true;
+                        button.Focus();
                     }
                 };
             }
 
-            var functionButtonText = 
+            var functionButtonText =
             FunctionButton = new ImageButton(PauseAction, "S") { Margin = new Padding(0) };
             FunctionButton.SetToolTip("Open panel");
             FunctionButton.SetColor<Red>(PaintMode.Dark);
@@ -188,18 +188,11 @@ namespace HandyBoxApp.UserControls
             {
                 if (args.Overtime.Ticks < 0)
                 {
-                    if (Mode == TimerMode.Elapsed)
-                    {
-                        TimerText.Text = Formatter.FormatHour(args.ElapsedTime);
-                    }
-                    else
-                    {
-                        TimerText.Text = Formatter.FormatHour(args.RemainingTime);
-                    }
+                    TimerText.Text = Formatter.FormatHour(Mode == TimerMode.Elapsed ? args.ElapsedTime : args.RemainingTime);
                 }
                 else
                 {
-                    if (args.Overtime.Hours == 2)
+                    if (args.Overtime.Hours >= 2)
                     {
                         StopTimer();
                         return;
@@ -209,7 +202,7 @@ namespace HandyBoxApp.UserControls
                     {
                         Mode = TimerMode.Overtime;
                         Painter<Green>.Paint(TimerText, PaintMode.Dark);
-                        FunctionText.Text = Formatter.FormatString(Overtime, Pad.Right, 9); 
+                        FunctionText.Text = Formatter.FormatString(Overtime, Pad.Right, 9);
                     }
 
                     TimerText.Text = Formatter.FormatHour(args.Overtime);
@@ -294,6 +287,7 @@ namespace HandyBoxApp.UserControls
         private void StopTimer()
         {
             //adjust timer text
+            TimerText.Text = Initial;
             TimerText.ReadOnly = true;
             Painter<Blue>.Paint(TimerText, PaintMode.Normal);
 
@@ -303,6 +297,9 @@ namespace HandyBoxApp.UserControls
             //adjust function button
             FunctionButton.SetText("S");
             Painter<Red>.Paint(FunctionButton, PaintMode.Dark);
+
+            //adjust mode
+            Mode = TimerMode.Elapsed;
 
             WorkTimer.Stop();
             WorkTimer.TimerUpdated -= UpdateTimer;
@@ -322,11 +319,17 @@ namespace HandyBoxApp.UserControls
 
         private void TimerText_KeyPress(object sender, KeyPressEventArgs e)
         {
+            var timeText = TimerText.Text;
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
 
             if (e.KeyChar == (char)13)
             {
-                if (VerifyTimerText(TimerText.Text, out DateTime startTime))
+                if (WorkTimer != null && (WorkTimer.IsStarted || WorkTimer.IsPaused))
+                {
+                    StopTimer();
+                }
+
+                if (VerifyTimerText(timeText, out DateTime startTime))
                 {
                     StartTimer(startTime);
                 }
