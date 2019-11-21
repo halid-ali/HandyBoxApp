@@ -150,7 +150,6 @@ namespace HandyBoxApp.UserControls
                 };
             }
 
-            var functionButtonText =
             FunctionButton = new ImageButton(PauseAction, "S") { Margin = new Padding(0) };
             FunctionButton.SetToolTip("Open panel");
             FunctionButton.SetColor<Red>(PaintMode.Dark);
@@ -192,17 +191,33 @@ namespace HandyBoxApp.UserControls
                 }
                 else
                 {
+                    //when overtime reaches to 2 hours, stop timer
                     if (args.Overtime.Hours >= 2)
                     {
                         StopTimer();
                         return;
                     }
 
+                    //set mode and adjust timer values only once
                     if (Mode != TimerMode.Overtime)
                     {
                         Mode = TimerMode.Overtime;
                         Painter<Green>.Paint(TimerText, PaintMode.Dark);
                         FunctionText.Text = Formatter.FormatString(Overtime, Pad.Right, 9);
+                    }
+
+                    //change color of TimerText if not changed
+                    if (args.Overtime > TimeSpan.FromMinutes(90))
+                    {
+                        Painter<Red>.Paint(TimerText, PaintMode.Dark);
+                    }
+
+                    //display reminder after 90 minutes of overtime for every defined time slot
+                    if (args.Overtime.Minutes % Constants.TimerReminderInterval == 0 &&
+                        args.Overtime.Seconds == 0)
+                    {
+                        var message = $"Last {60 - args.Overtime.Minutes} minutes for leaving the office.";
+                        BalloonTip.Show("Work Hour Deadline", message, ToolTipIcon.Info, 2000);
                     }
 
                     TimerText.Text = Formatter.FormatHour(args.Overtime);
@@ -278,6 +293,14 @@ namespace HandyBoxApp.UserControls
             //adjust function button
             FunctionButton.SetText("P");
             Painter<Red>.Paint(FunctionButton, PaintMode.Normal);
+
+#if false
+            //startTime = DateTime.Now.Subtract(new TimeSpan(8, 44, 57)); //3 seconds before overtime
+            //startTime = DateTime.Now.Subtract(new TimeSpan(9, 14, 57)); //3 seconds before between overtime and reminder
+            //startTime = DateTime.Now.Subtract(new TimeSpan(10, 14, 57)); //3 seconds before reminder
+            //startTime = DateTime.Now.Subtract(new TimeSpan(10, 24, 57)); //3 seconds before between reminder and deadline
+            //startTime = DateTime.Now.Subtract(new TimeSpan(10, 44, 57)); //3 seconds before deadline
+#endif
 
             WorkTimer = new Timer(startTime);
             WorkTimer.TimerUpdated += UpdateTimer;
