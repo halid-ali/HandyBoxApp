@@ -136,11 +136,15 @@ namespace HandyBoxApp.UserControls
                         {
                             WorkTimer.Pause();
                             FunctionButton.SetText("R");
+                            TimerText.HideSelection = true;
+                            button.Focus();
                         }
                         else if (WorkTimer.IsPaused)
                         {
                             WorkTimer.Start();
                             FunctionButton.SetText("P");
+                            TimerText.HideSelection = true;
+                            button.Focus();
                         } 
                     }
                 };
@@ -201,8 +205,14 @@ namespace HandyBoxApp.UserControls
                         return;
                     }
 
+                    if (Mode != TimerMode.Overtime)
+                    {
+                        Mode = TimerMode.Overtime;
+                        Painter<Green>.Paint(TimerText, PaintMode.Dark);
+                        FunctionText.Text = Formatter.FormatString(Overtime, Pad.Right, 9); 
+                    }
+
                     TimerText.Text = Formatter.FormatHour(args.Overtime);
-                    FunctionText.Text = Formatter.FormatString(Overtime, Pad.Right, 9);
                 }
             }
         }
@@ -343,10 +353,15 @@ namespace HandyBoxApp.UserControls
                     Mode = TimerMode.Remaining;
                     modeText = Remains;
                 }
-                else
+                else if (Mode == TimerMode.Remaining)
                 {
                     Mode = TimerMode.Elapsed;
                     modeText = Elapsed;
+                }
+                else
+                {
+                    Mode = TimerMode.Overtime;
+                    modeText = Overtime;
                 }
 
                 FunctionText.Text = Formatter.FormatString(modeText, Pad.Right, 9);
