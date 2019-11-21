@@ -2,6 +2,7 @@
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
 using HandyBoxApp.Properties;
+
 using System;
 using System.Drawing;
 using System.Drawing.Text;
@@ -66,8 +67,6 @@ namespace HandyBoxApp.UserControls
 
         //################################################################################
         #region Private Members
-
-        
 
         private void InitializeComponent()
         {
@@ -156,7 +155,7 @@ namespace HandyBoxApp.UserControls
 
         private FontFamily AddFontFromMemory()
         {
-            var pfc = new PrivateFontCollection();
+            var privateFontCollection = new PrivateFontCollection();
 
             using (var fontStream = new MemoryStream(Resources.Courier_Prime))
             {
@@ -173,7 +172,7 @@ namespace HandyBoxApp.UserControls
                 Marshal.Copy(fontdata, 0, data, (int)fontStream.Length);
 
                 // pass the font to the font collection
-                pfc.AddMemoryFont(data, (int)fontStream.Length);
+                privateFontCollection.AddMemoryFont(data, (int)fontStream.Length);
 
                 // close the resource stream
                 fontStream.Close();
@@ -182,7 +181,7 @@ namespace HandyBoxApp.UserControls
                 Marshal.FreeCoTaskMem(data);
             }
 
-            return pfc.Families[0];
+            return privateFontCollection.Families[0];
         }
 
         private void OrderControls()
