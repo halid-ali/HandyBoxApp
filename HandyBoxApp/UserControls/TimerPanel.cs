@@ -334,7 +334,7 @@ namespace HandyBoxApp.UserControls
 
         private void FunctionText_DoubleClick(object sender, EventArgs e)
         {
-            if (WorkTimer.IsStarted)
+            if (WorkTimer != null && WorkTimer.IsStarted)
             {
                 string modeText;
 
