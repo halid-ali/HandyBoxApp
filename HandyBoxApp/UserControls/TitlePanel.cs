@@ -1,9 +1,11 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
-
+using HandyBoxApp.Properties;
 using System;
 using System.Drawing;
+using System.Drawing.Text;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -65,6 +67,8 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Private Members
 
+        
+
         private void InitializeComponent()
         {
             ContainerPanel.SuspendLayout();
@@ -101,10 +105,12 @@ namespace HandyBoxApp.UserControls
             TitleLabel.Text = "Handy Box App v2.4  ";
             //TitleLabel.Width = 190 - LogoButton.Width;
             TitleLabel.AutoSize = true;
+            TitleLabel.UseCompatibleTextRendering = true;
             TitleLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             TitleLabel.Padding = new Padding(Style.PanelPadding);
             TitleLabel.TextAlign = ContentAlignment.MiddleLeft;
-            TitleLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
+            TitleLabel.Font = new Font(AddFontFromMemory(), Style.PanelFontSize, FontStyle.Regular);
+            //TitleLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
             Painter<Black>.Paint(TitleLabel, PaintMode.Dark);
             TitleLabel.MouseDown += DragAndDrop;
 
@@ -146,6 +152,37 @@ namespace HandyBoxApp.UserControls
             ContainerPanel.ResumeLayout(false);
             ContainerPanel.PerformLayout();
             ResumeLayout(false);
+        }
+
+        private FontFamily AddFontFromMemory()
+        {
+            var pfc = new PrivateFontCollection();
+
+            using (var fontStream = new MemoryStream(Resources.Courier_Prime))
+            {
+                // create an unsafe memory block for the font data
+                IntPtr data = Marshal.AllocCoTaskMem((int)fontStream.Length);
+
+                // create a buffer to read in to
+                byte[] fontdata = new byte[fontStream.Length];
+
+                // read the font data from the resource
+                fontStream.Read(fontdata, 0, (int)fontStream.Length);
+
+                // copy the bytes to the unsafe memory block
+                Marshal.Copy(fontdata, 0, data, (int)fontStream.Length);
+
+                // pass the font to the font collection
+                pfc.AddMemoryFont(data, (int)fontStream.Length);
+
+                // close the resource stream
+                fontStream.Close();
+
+                // free up the unsafe memory
+                Marshal.FreeCoTaskMem(data);
+            }
+
+            return pfc.Families[0];
         }
 
         private void OrderControls()

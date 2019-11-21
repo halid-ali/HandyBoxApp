@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -142,6 +143,10 @@
     <None Include="Resources\Close.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Courier Prime Bold Italic.ttf" />
+    <None Include="Resources\Courier Prime Bold.ttf" />
+    <None Include="Resources\Courier Prime Italic.ttf" />
+    <Resource Include="Resources\Courier Prime.ttf" />
     <None Include="Resources\Debug-Logo.png" />
   </ItemGroup>
   <ItemGroup>
