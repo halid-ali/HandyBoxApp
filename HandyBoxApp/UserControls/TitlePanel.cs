@@ -104,7 +104,7 @@ namespace HandyBoxApp.UserControls
             TitleLabel.Text = "Handy Box App v2.4  ";
             //TitleLabel.Width = 190 - LogoButton.Width;
             TitleLabel.AutoSize = true;
-            TitleLabel.UseCompatibleTextRendering = true;
+            //TitleLabel.UseCompatibleTextRendering = true;
             TitleLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             TitleLabel.Padding = new Padding(Style.PanelPadding);
             TitleLabel.TextAlign = ContentAlignment.MiddleLeft;
