@@ -109,8 +109,8 @@ namespace HandyBoxApp.UserControls
             TitleLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             TitleLabel.Padding = new Padding(Style.PanelPadding);
             TitleLabel.TextAlign = ContentAlignment.MiddleLeft;
-            TitleLabel.Font = new Font(AddFontFromMemory(), Style.PanelFontSize, FontStyle.Regular);
-            //TitleLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
+            //TitleLabel.Font = new Font(AddFontFromMemory(), Style.PanelFontSize, FontStyle.Regular);
+            TitleLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
             Painter<Black>.Paint(TitleLabel, PaintMode.Dark);
             TitleLabel.MouseDown += DragAndDrop;
 
