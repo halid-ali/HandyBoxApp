@@ -14,19 +14,22 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Constants
 
-        private const int c_WmNclButtonDown = 0xA1;
-        private const int c_HtCaption = 0x2;
+        private readonly int c_WmNclButtonDown = 0xA1;
+        private readonly IntPtr c_HtCaption = (IntPtr)0x2;
 
         #endregion
 
         //################################################################################
-        #region DLL Imports
+        #region Native Methods
 
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+        private class NativeMethods
+        {
+            [DllImport("user32.dll")]
+            internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
+            [DllImport("user32.dll")]
+            internal static extern bool ReleaseCapture();
+        }
 
         #endregion
 
@@ -174,8 +177,8 @@ namespace HandyBoxApp.UserControls
         {
             if (e.Button != MouseButtons.Left) return;
 
-            ReleaseCapture();
-            SendMessage(ParentControl.Handle, c_WmNclButtonDown, c_HtCaption, 0);
+            NativeMethods.ReleaseCapture();
+            NativeMethods.SendMessage(ParentControl.Handle, c_WmNclButtonDown, c_HtCaption, (IntPtr)0);
         }
 
         #endregion

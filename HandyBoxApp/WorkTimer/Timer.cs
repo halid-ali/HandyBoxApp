@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace HandyBoxApp.WorkTimer
 {
-    internal class Timer
+    internal class Timer : IDisposable
     {
         //################################################################################
         #region Fields
@@ -13,6 +13,7 @@ namespace HandyBoxApp.WorkTimer
         private readonly TimeSpan m_BaseWorkhour = new TimeSpan(8, 0, 0);
         private readonly TimeSpan m_MaximumOverwork = new TimeSpan(2, 0, 0);
 
+        private BackgroundWorker m_Worker = new BackgroundWorker();
         private event EventHandler<TimerUpdateEventArgs> TimerUpdate;
 
         #endregion
@@ -58,7 +59,7 @@ namespace HandyBoxApp.WorkTimer
 
         private DateTime DeadlineTime { get; set; }
 
-        private BackgroundWorker Worker { get; } = new BackgroundWorker();
+        private BackgroundWorker Worker => m_Worker;
 
         #endregion
 
@@ -151,6 +152,43 @@ namespace HandyBoxApp.WorkTimer
             IsPaused = false;
         }
 
+        #endregion
+
+        //################################################################################
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                    m_Worker.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~Timer() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
         #endregion
     }
 }

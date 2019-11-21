@@ -104,8 +104,10 @@ namespace HandyBoxApp.CustomComponents
 
             for (int i = 0; i <= 10; i++)
             {
-                options[i] = new MenuItem($"%{i * 10}", TransparencyOptions_Click);
-                options[i].Tag = i * 10;
+                options[i] = new MenuItem($"%{i * 10}", TransparencyOptions_Click)
+                {
+                    Tag = i * 10
+                };
             }
 
             return options;

@@ -227,22 +227,19 @@ namespace HandyBoxApp.UserControls
             }
 
             //verify first digit couple that they represent a valid hour
-            int hourValue;
-            if (!int.TryParse(timerValue.Substring(0, 2), out hourValue))
+            if (!int.TryParse(timerValue.Substring(0, 2), out int hourValue))
             {
                 return false;
             }
 
             //verify second digit couple that they represent a valid minute
-            int minuteValue;
-            if (!int.TryParse(timerValue.Substring(2, 2), out minuteValue))
+            if (!int.TryParse(timerValue.Substring(2, 2), out int minuteValue))
             {
                 return false;
             }
 
             //verify third digit couple that they represent a valid second
-            int secondValue;
-            if (!int.TryParse(timerValue.Substring(4, 2), out secondValue))
+            if (!int.TryParse(timerValue.Substring(4, 2), out int secondValue))
             {
                 return false;
             }
@@ -288,11 +285,9 @@ namespace HandyBoxApp.UserControls
         {
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
 
-            DateTime startTime;
-
             if (e.KeyChar == (char)13)
             {
-                if (VerifyTimerText(TimerText.Text, out startTime))
+                if (VerifyTimerText(TimerText.Text, out DateTime startTime))
                 {
                     StartTimer(startTime);
                 }
