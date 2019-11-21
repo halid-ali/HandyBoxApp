@@ -11,10 +11,9 @@ namespace HandyBoxApp.WorkTimer
 
         private readonly TimeSpan m_LunchBreak = new TimeSpan(0, 45, 0);
         private readonly TimeSpan m_BaseWorkhour = new TimeSpan(8, 0, 0);
-        private readonly TimeSpan m_MaximumOverwork = new TimeSpan(2, 0, 0);
 
-        private bool disposedValue = false; // To detect redundant calls
-        private BackgroundWorker m_Worker = new BackgroundWorker();
+        private bool m_DisposedValue; // To detect redundant calls
+        private readonly BackgroundWorker m_Worker = new BackgroundWorker();
 
         private event EventHandler<TimerUpdateEventArgs> TimerUpdate;
 
@@ -28,7 +27,6 @@ namespace HandyBoxApp.WorkTimer
             StartTime = startTime;
             StartTimeWithLunchBreak = StartTime.Add(m_LunchBreak);
             FinishTime = StartTime.Add(m_BaseWorkhour).Add(m_LunchBreak);
-            DeadlineTime = FinishTime.Add(m_MaximumOverwork);
 
             Worker.WorkerReportsProgress = false;
             Worker.WorkerSupportsCancellation = true;
@@ -55,11 +53,9 @@ namespace HandyBoxApp.WorkTimer
 
         private DateTime StartTime { get; set; }
 
-        private DateTime StartTimeWithLunchBreak { get; set; }
+        private DateTime StartTimeWithLunchBreak { get; }
 
         private DateTime FinishTime { get; set; }
-
-        private DateTime DeadlineTime { get; set; }
 
         private BackgroundWorker Worker => m_Worker;
 
@@ -98,7 +94,7 @@ namespace HandyBoxApp.WorkTimer
 
             while (IsStarted)
             {
-                if (bgWorker.CancellationPending)
+                if (bgWorker != null && bgWorker.CancellationPending)
                 {
                     ResetFlags();
                     IsPaused = true;
@@ -129,7 +125,6 @@ namespace HandyBoxApp.WorkTimer
 
             StartTime = new DateTime();
             FinishTime = new DateTime();
-            DeadlineTime = new DateTime();
         }
 
         #endregion
@@ -161,14 +156,14 @@ namespace HandyBoxApp.WorkTimer
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!m_DisposedValue)
             {
                 if (disposing)
                 {
                     m_Worker.Dispose();
                 }
 
-                disposedValue = true;
+                m_DisposedValue = true;
             }
         }
 
