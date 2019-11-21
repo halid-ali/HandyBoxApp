@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace HandyBoxApp.Utilities
 {
@@ -30,6 +31,13 @@ namespace HandyBoxApp.Utilities
             }
 
             return value.PadLeft(totalWidth, paddingChar);
+        }
+
+        internal static string FormatHour(TimeSpan timeSpan)
+        {
+            return $"{string.Format("{0:D2}", timeSpan.Hours)}:" +
+                   $"{string.Format("{0:D2}", timeSpan.Minutes)}." +
+                   $"{string.Format("{0:D2}", timeSpan.Seconds)}";
         }
     }
 

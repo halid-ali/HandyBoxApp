@@ -3,6 +3,7 @@
     internal enum TimerMode
     {
         Elapsed,
-        Remaining
+        Remaining,
+        Overtime
     }
 }

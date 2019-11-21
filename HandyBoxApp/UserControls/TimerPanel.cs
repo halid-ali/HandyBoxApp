@@ -182,17 +182,27 @@ namespace HandyBoxApp.UserControls
             }
             else
             {
-                if (Mode == TimerMode.Elapsed)
+                if (args.Overtime.Ticks < 0)
                 {
-                    TimerText.Text = $"{string.Format("{0:D2}", args.ElapsedTime.Hours)}:" +
-                                     $"{string.Format("{0:D2}", args.ElapsedTime.Minutes)}." +
-                                     $"{string.Format("{0:D2}", args.ElapsedTime.Seconds)}";
+                    if (Mode == TimerMode.Elapsed)
+                    {
+                        TimerText.Text = Formatter.FormatHour(args.ElapsedTime);
+                    }
+                    else
+                    {
+                        TimerText.Text = Formatter.FormatHour(args.RemainingTime);
+                    }
                 }
                 else
                 {
-                    TimerText.Text = $"{string.Format("{0:D2}", args.RemainingTime.Hours)}:" +
-                                     $"{string.Format("{0:D2}", args.RemainingTime.Minutes)}." +
-                                     $"{string.Format("{0:D2}", args.RemainingTime.Seconds)}";
+                    if (args.Overtime.Hours == 2)
+                    {
+                        StopTimer();
+                        return;
+                    }
+
+                    TimerText.Text = Formatter.FormatHour(args.Overtime);
+                    FunctionText.Text = Formatter.FormatString(Overtime, Pad.Right, 9);
                 }
             }
         }
@@ -269,6 +279,25 @@ namespace HandyBoxApp.UserControls
             WorkTimer = new Timer(startTime);
             WorkTimer.TimerUpdated += UpdateTimer;
             WorkTimer.Start();
+        }
+
+        private void StopTimer()
+        {
+            //adjust timer text
+            TimerText.ReadOnly = true;
+            Painter<Blue>.Paint(TimerText, PaintMode.Normal);
+
+            //adjust function text
+            FunctionText.Text = Formatter.FormatString(Stopped, Pad.Right, 9);
+
+            //adjust function button
+            FunctionButton.SetText("S");
+            Painter<Red>.Paint(FunctionButton, PaintMode.Dark);
+
+            WorkTimer.Stop();
+            WorkTimer.TimerUpdated -= UpdateTimer;
+            WorkTimer.Dispose();
+            WorkTimer = null;
         }
 
         #endregion
