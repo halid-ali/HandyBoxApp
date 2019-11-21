@@ -157,7 +157,7 @@ namespace HandyBoxApp.WorkTimer
         #endregion
 
         //################################################################################
-        #region IDisposable Support
+        #region IDisposable Members
 
         protected virtual void Dispose(bool disposing)
         {
