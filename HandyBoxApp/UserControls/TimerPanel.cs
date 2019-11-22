@@ -249,28 +249,19 @@ namespace HandyBoxApp.UserControls
             startTime = DateTime.MinValue;
 
             //verify digit count
-            if (timerValue.Length != 6)
-            {
-                return false;
-            }
+            if (timerValue.Length != 6) return false;
 
             //verify first digit couple that they represent a valid hour
-            if (!int.TryParse(timerValue.Substring(0, 2), out int hourValue))
-            {
-                return false;
-            }
+            if (!int.TryParse(timerValue.Substring(0, 2), out int hourValue)) return false;
+            if (hourValue < 0 || hourValue > 23) return false;
 
             //verify second digit couple that they represent a valid minute
-            if (!int.TryParse(timerValue.Substring(2, 2), out int minuteValue))
-            {
-                return false;
-            }
+            if (!int.TryParse(timerValue.Substring(2, 2), out int minuteValue)) return false;
+            if (minuteValue < 0 || minuteValue > 59) return false;
 
             //verify third digit couple that they represent a valid second
-            if (!int.TryParse(timerValue.Substring(4, 2), out int secondValue))
-            {
-                return false;
-            }
+            if (!int.TryParse(timerValue.Substring(4, 2), out int secondValue)) return false;
+            if (secondValue < 0 || secondValue > 59) return false;
 
             var year = DateTime.Now.Year;
             var month = DateTime.Now.Month;
