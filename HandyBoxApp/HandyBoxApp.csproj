@@ -76,6 +76,7 @@
     <Compile Include="ColorScheme\Colors\Black.cs" />
     <Compile Include="ColorScheme\Colors\Blue.cs" />
     <Compile Include="ColorScheme\Colors\Green.cs" />
+    <Compile Include="ColorScheme\Colors\None.cs" />
     <Compile Include="ColorScheme\Colors\Red.cs" />
     <Compile Include="ColorScheme\Painter.cs" />
     <Compile Include="ColorScheme\PaintMode.cs" />
@@ -157,6 +158,18 @@
       <Project>{33a76ad9-649c-433c-8707-0526c4c3518e}</Project>
       <Name>HandyBoxApp.StockExchange</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Options.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Pause.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stop.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

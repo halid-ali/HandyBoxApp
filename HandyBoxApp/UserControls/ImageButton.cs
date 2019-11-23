@@ -4,6 +4,7 @@ using HandyBoxApp.CustomComponents;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using HandyBoxApp.ColorScheme.Colors;
 
 namespace HandyBoxApp.UserControls
 {
@@ -19,9 +20,9 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Constructor
 
-        public ImageButton(Action<Control> action, string labelText)
+        public ImageButton(Action<Control> action, Bitmap labelImage = null)
         {
-            InitializeComponent(labelText);
+            InitializeComponent(labelImage);
 
             action?.Invoke(TextLabel);
         }
@@ -38,9 +39,10 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Internal Members
 
-        internal void SetText(string text)
+        internal void SetImage(Bitmap bitmap, Color backColor)
         {
-            TextLabel.Text = text;
+            TextLabel.BackgroundImage = bitmap;
+            SetColor(backColor);
         }
 
         internal void SetToolTip(string toolTipText)
@@ -48,9 +50,9 @@ namespace HandyBoxApp.UserControls
             m_ToolTip.SetToolTip(TextLabel, toolTipText);
         }
 
-        internal void SetColor<T>(PaintMode paintMode) where T : ColorBase, new()
+        internal void SetColor(Color color)
         {
-            Painter<T>.Paint(TextLabel, paintMode);
+            Painter<None>.Paint(TextLabel, color);
         }
 
         #endregion
@@ -58,15 +60,26 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Private Members
 
-        private void InitializeComponent(string labelText)
+        private void InitializeComponent(Bitmap labelImage)
         {
             SuspendLayout();
 
             #region TextLabel
 
+            TextLabel.Text = " ";
             TextLabel.AutoSize = true;
-            TextLabel.Text = labelText;
-            TextLabel.Margin=new Padding(0);
+
+            if (labelImage != null)
+            {
+                TextLabel.BackgroundImage = labelImage;
+                TextLabel.BackgroundImageLayout = ImageLayout.Stretch;
+            }
+            else
+            {
+                TextLabel.Text = "X";
+            }
+
+            TextLabel.Margin = new Padding(0);
             TextLabel.Height = TextLabel.Width;
             TextLabel.TextAlign = ContentAlignment.MiddleCenter;
             TextLabel.Padding = new Padding(Style.PanelPadding);

@@ -100,9 +100,9 @@ namespace HandyBoxApp.UserControls
                 };
             }
 
-            LogoButton = new ImageButton(HideAction, "L") { Margin = new Padding(0, 0, Style.PanelSpacing, 0) };
+            LogoButton = new ImageButton(HideAction, Resources.Logo) { Margin = new Padding(0, 0, Style.PanelSpacing, 0) };
             LogoButton.SetToolTip("Handy Box App v2.4");
-            LogoButton.SetColor<Blue>(PaintMode.Light);
+            LogoButton.SetColor(Color.FromArgb(226, 87, 76));
 
             #endregion
 
@@ -134,9 +134,9 @@ namespace HandyBoxApp.UserControls
                 };
             }
 
-            CloseButton = new ImageButton(CloseAction, "X") { Margin = new Padding(0) };
+            CloseButton = new ImageButton(CloseAction, Resources.Close) { Margin = new Padding(0) };
             CloseButton.SetToolTip("Close");
-            CloseButton.SetColor<Red>(PaintMode.Dark);
+            CloseButton.SetColor(Color.FromArgb(201, 54, 54));
 
             #endregion
 

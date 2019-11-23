@@ -1,6 +1,7 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
+using HandyBoxApp.Properties;
 using HandyBoxApp.StockExchange.EventArgs;
 using HandyBoxApp.StockExchange.Interfaces;
 using HandyBoxApp.StockExchange.Stock;
@@ -139,9 +140,9 @@ namespace HandyBoxApp.UserControls
                 };
             }
 
-            FunctionButton = new ImageButton(SlideAction, ">") { Margin = new Padding(0) };
+            FunctionButton = new ImageButton(SlideAction, Resources.Options) { Margin = new Padding(0) };
             FunctionButton.SetToolTip("Open panel");
-            FunctionButton.SetColor<Red>(PaintMode.Dark);
+            FunctionButton.SetColor(Color.FromArgb(38, 124, 181));
 
             #endregion
 

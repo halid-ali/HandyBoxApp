@@ -7,7 +7,7 @@ using HandyBoxApp.WorkTimer;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-
+using HandyBoxApp.Properties;
 using Timer = HandyBoxApp.WorkTimer.Timer;
 
 namespace HandyBoxApp.UserControls
@@ -131,13 +131,13 @@ namespace HandyBoxApp.UserControls
                         if (WorkTimer.IsStarted)
                         {
                             WorkTimer.Pause();
-                            FunctionButton.SetText("R");
+                            FunctionButton.SetImage(Resources.Play, Color.FromArgb(101, 221, 185));
                             FunctionText.Text = Formatter.FormatTime(TimerMode.Paused, Pad.Right, 9);
                         }
                         else if (WorkTimer.IsPaused)
                         {
                             WorkTimer.Start();
-                            FunctionButton.SetText("P");
+                            FunctionButton.SetImage(Resources.Pause, Color.FromArgb(180, 154, 202));
                             FunctionText.Text = Formatter.FormatTime(Mode, Pad.Right, 9);
                         }
 
@@ -147,9 +147,9 @@ namespace HandyBoxApp.UserControls
                 };
             }
 
-            FunctionButton = new ImageButton(PauseAction, "S") { Margin = new Padding(0) };
+            FunctionButton = new ImageButton(PauseAction, Resources.Stop) { Margin = new Padding(0) };
             FunctionButton.SetToolTip("Open panel");
-            FunctionButton.SetColor<Red>(PaintMode.Dark);
+            FunctionButton.SetColor(Color.FromArgb(251, 123, 118));
 
             #endregion
 
@@ -279,8 +279,7 @@ namespace HandyBoxApp.UserControls
             FunctionText.Text = Formatter.FormatTime(TimerMode.Elapsed, Pad.Right, 9);
 
             //adjust function button
-            FunctionButton.SetText("P");
-            Painter<Red>.Paint(FunctionButton, PaintMode.Normal);
+            FunctionButton.SetImage(Resources.Pause, Color.FromArgb(180, 154, 202));
 
 #if false
             //startTime = DateTime.Now.Subtract(new TimeSpan(8, 44, 57)); //3 seconds before overtime
@@ -306,8 +305,7 @@ namespace HandyBoxApp.UserControls
             FunctionText.Text = Formatter.FormatTime(TimerMode.Stopped, Pad.Right, 9);
 
             //adjust function button
-            FunctionButton.SetText("S");
-            Painter<Red>.Paint(FunctionButton, PaintMode.Dark);
+            FunctionButton.SetImage(Resources.Stop, Color.FromArgb(251, 123, 118));
 
             //adjust mode
             Mode = TimerMode.Elapsed;
