@@ -10,8 +10,10 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Constructor
 
-        public LayoutPanel()
+        public LayoutPanel(Control parentControl)
         {
+            ParentControl = parentControl;
+
             InitializeComponent();
         }
 
@@ -20,7 +22,11 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Properties
 
+        private Control ParentControl { get; }
+
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
+
+        public ControlCollection ControlPanels => ContainerPanel.Controls;
 
         #endregion
 
@@ -29,6 +35,7 @@ namespace HandyBoxApp.UserControls
 
         internal void Add(Control control)
         {
+            control.VisibleChanged += Control_VisibleChanged;
             ContainerPanel.Controls.Add(control);
         }
 
@@ -79,7 +86,10 @@ namespace HandyBoxApp.UserControls
                     ContainerPanel.Width = control.Width;
                 }
 
-                ContainerPanel.Height += control.Height + Style.PanelSpacing;
+                if (control.Visible)
+                {
+                    ContainerPanel.Height += control.Height + Style.PanelSpacing; 
+                }
             }
 
             ContainerPanel.Width += (Style.PanelSpacing + Style.FormBorder) * 2;
@@ -87,6 +97,9 @@ namespace HandyBoxApp.UserControls
 
             Width = ContainerPanel.Width;
             Height = ContainerPanel.Height;
+
+            ParentControl.Width = Width;
+            ParentControl.Height = Height;
         }
 
         #endregion
@@ -95,6 +108,11 @@ namespace HandyBoxApp.UserControls
         #region Event Handlers
 
         private void ContainerPanel_ControlAdded(object sender, ControlEventArgs e)
+        {
+            UpdateContainerPanel();
+        }
+
+        private void Control_VisibleChanged(object sender, System.EventArgs e)
         {
             UpdateContainerPanel();
         }

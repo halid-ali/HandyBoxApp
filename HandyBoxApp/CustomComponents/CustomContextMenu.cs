@@ -1,51 +1,78 @@
 ﻿using HandyBoxApp.Properties;
+using HandyBoxApp.UserControls;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace HandyBoxApp.CustomComponents
 {
     internal class CustomContextMenu : ContextMenu
     {
+        private static CustomContextMenu s_SingletonInstance;
+
         //################################################################################
         #region Fields
 
-        private readonly MainForm m_MainForm;
+        private static MainForm s_MainForm;
 
-        private readonly MenuItem m_Transparency;
-        private readonly MenuItem m_AlwaysOnTop;
-        private readonly MenuItem m_ShowHide;
-        private readonly MenuItem m_Exit;
+        private MenuItem m_Transparency;
+        private MenuItem m_AlwaysOnTop;
+        private MenuItem m_ShowHide;
+        private MenuItem m_Settings;
+        private MenuItem m_Logs;
+        private MenuItem m_About;
+        private MenuItem m_Exit;
 
         #endregion
 
         //################################################################################
         #region Constructor
 
-        public CustomContextMenu(MainForm mainForm)
+        private CustomContextMenu()
+        { }
+
+        #endregion
+
+        public static CustomContextMenu Instance => s_SingletonInstance ?? (s_SingletonInstance = new CustomContextMenu());
+
+        public void SetMenuOwner(MainForm mainForm)
         {
-            m_MainForm = mainForm;
+            s_MainForm = mainForm;
 
             m_ShowHide = new MenuItem("Show/Hide", ShowHide_Click);
             m_AlwaysOnTop = new MenuItem("Always on top", AlwaysOnTop_Click);
             m_Transparency = new MenuItem("Transparency", OpacityOptions());
+
+            m_Settings = new MenuItem("Settings", new[]
+            {
+                new MenuItem("Stocks", GetStockPanels())
+            });
+
+            m_Logs = new MenuItem("Logs", new[]
+            {
+                new MenuItem("Show Logs", ShowLogs),
+                new MenuItem("Clear Logs", ClearLogs)
+            });
+
+            m_About = new MenuItem("About", About);
             m_Exit = new MenuItem("Exit", Exit_Click);
 
-            m_MainForm.VisibleChanged += MainForm_VisibleChanged;
+            s_MainForm.VisibleChanged += MainForm_VisibleChanged;
 
             InitializeComponent();
         }
 
-        #endregion
-
         //################################################################################
         #region Event Handlers
 
-        private void TransparencyOptions_Click(object sender, System.EventArgs e)
+        private void TransparencyOptions_Click(object sender, EventArgs e)
         {
             if (sender is MenuItem menuItem)
             {
                 double opacity = menuItem.Index / 10D;
-                m_MainForm.Opacity = opacity;
+                s_MainForm.Opacity = opacity;
 
                 Settings.Default.Transparency = opacity;
             }
@@ -55,29 +82,57 @@ namespace HandyBoxApp.CustomComponents
             SetOpacityCheckedStatus();
         }
 
-        private void AlwaysOnTop_Click(object sender, System.EventArgs args)
+        private void AlwaysOnTop_Click(object sender, EventArgs args)
         {
-            m_MainForm.TopMost = !m_MainForm.TopMost;
-            m_AlwaysOnTop.Checked = m_MainForm.TopMost;
+            s_MainForm.TopMost = !s_MainForm.TopMost;
+            m_AlwaysOnTop.Checked = s_MainForm.TopMost;
 
-            Settings.Default.OnTop = m_MainForm.TopMost;
+            Settings.Default.OnTop = s_MainForm.TopMost;
             Settings.Default.Save();
         }
 
-        private void ShowHide_Click(object sender, System.EventArgs args)
+        private void ShowHide_Click(object sender, EventArgs args)
         {
-            m_MainForm.Visible = !m_MainForm.Visible;
+            s_MainForm.Visible = !s_MainForm.Visible;
         }
 
-        private void Exit_Click(object sender, System.EventArgs args)
+        private void AppSettings(object sender, EventArgs args)
         {
-            m_MainForm.Close();
+            var menuItem = (MenuItem)sender;
+
+            menuItem.Checked = !menuItem.Checked;
+
+            var panel = (Control)menuItem.Tag;
+            panel.Visible = menuItem.Checked;
+
+            //todo: if any background worker panel is disabled then stop it, if enabled start it.
+            //todo: save settings;
+        }
+
+        private void ShowLogs(object sender, EventArgs args)
+        {
+            //todo: implement show logs
+        }
+
+        private void ClearLogs(object sender, EventArgs args)
+        {
+            //todo: implement clear logs
+        }
+
+        private void About(object sender, EventArgs args)
+        {
+            //todo: create an about panel
+        }
+
+        private void Exit_Click(object sender, EventArgs args)
+        {
+            s_MainForm.Close();
             CustomApplicationContext.Exit();
         }
 
-        private void MainForm_VisibleChanged(object sender, System.EventArgs e)
+        private void MainForm_VisibleChanged(object sender, EventArgs e)
         {
-            m_ShowHide.Text = m_MainForm.Visible ? @"Hide" : @"Show";
+            m_ShowHide.Text = s_MainForm.Visible ? @"Hide" : @"Show";
         }
 
         #endregion
@@ -94,6 +149,10 @@ namespace HandyBoxApp.CustomComponents
             MenuItems.Add(m_ShowHide);
             MenuItems.Add(m_AlwaysOnTop);
             MenuItems.Add(m_Transparency);
+            MenuItems.Add("-");
+            MenuItems.Add(m_Settings);
+            MenuItems.Add(m_Logs);
+            MenuItems.Add(m_About);
             MenuItems.Add("-");
             MenuItems.Add(m_Exit);
         }
@@ -118,13 +177,28 @@ namespace HandyBoxApp.CustomComponents
             var opacitySetting = Settings.Default.Transparency;
             foreach (MenuItem opacityOption in m_Transparency.MenuItems)
             {
-                opacityOption.Checked = false;
+                opacityOption.Checked = Math.Abs((int)opacityOption.Tag / 100D - opacitySetting) < 0.01;
+            }
+        }
 
-                if ((int)opacityOption.Tag / 100D == opacitySetting)
+        private MenuItem[] GetStockPanels()
+        {
+            IList<MenuItem> menuList = new List<MenuItem>();
+
+            foreach (Control panel in s_MainForm.LayoutPanel.ControlPanels)
+            {
+                if (panel is StockPanel)
                 {
-                    opacityOption.Checked = true;
+                    var menuItem = new MenuItem(panel.Name.Split('_')[1], AppSettings)
+                    {
+                        Tag = panel,
+                        Checked = true //todo: read this from settings file
+                    };
+                    menuList.Add(menuItem);
                 }
             }
+
+            return menuList.ToArray();
         }
 
         #endregion

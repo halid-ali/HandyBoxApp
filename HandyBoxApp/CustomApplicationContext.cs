@@ -1,7 +1,7 @@
 ﻿using HandyBoxApp.CustomComponents;
 using HandyBoxApp.Properties;
 using HandyBoxApp.Utilities;
-
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -23,7 +23,8 @@ namespace HandyBoxApp
         public CustomApplicationContext(MainForm mainForm)
         {
             MainForm = mainForm;
-            var customContextMenu = new CustomContextMenu(mainForm);
+            var customContextMenu = CustomContextMenu.Instance;
+            customContextMenu.SetMenuOwner(mainForm);
 
 #if DEBUG
             Bitmap icon = Resources.Debug_Logo;
@@ -68,9 +69,12 @@ namespace HandyBoxApp
             s_NotifyIcon.Text = @"This is a notify icon.";
         }
 
-        private void NotifyIcon_DoubleClick(object sender, System.EventArgs e)
+        private void NotifyIcon_DoubleClick(object sender, EventArgs e)
         {
-            MainForm.Visible = !MainForm.Visible;
+            if (((MouseEventArgs)e).Button == MouseButtons.Left)
+            {
+                MainForm.Visible = !MainForm.Visible; 
+            }
         }
 
         #endregion

@@ -63,6 +63,14 @@ namespace HandyBoxApp.UserControls
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
+        internal CustomContextMenu CustomContextMenu
+        {
+            set
+            {
+                LogoButton.ContextMenu = value;
+            }
+        }
+
         #endregion
 
         //################################################################################
@@ -93,7 +101,6 @@ namespace HandyBoxApp.UserControls
             }
 
             LogoButton = new ImageButton(HideAction, "L") { Margin = new Padding(0, 0, Style.PanelSpacing, 0) };
-            LogoButton.ContextMenu = new CustomContextMenu((MainForm)ParentControl);
             LogoButton.SetToolTip("Handy Box App v2.4");
             LogoButton.SetColor<Blue>(PaintMode.Light);
 

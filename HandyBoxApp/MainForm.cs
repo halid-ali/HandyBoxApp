@@ -1,4 +1,5 @@
-﻿using HandyBoxApp.Properties;
+﻿using HandyBoxApp.CustomComponents;
+using HandyBoxApp.Properties;
 using HandyBoxApp.StockExchange;
 using HandyBoxApp.UserControls;
 
@@ -37,7 +38,7 @@ namespace HandyBoxApp
 
         private TimerPanel HourPanel { get; set; }
 
-        private LayoutPanel LayoutPanel { get; set; }
+        public LayoutPanel LayoutPanel { get; private set; }
 
         #endregion
 
@@ -63,13 +64,13 @@ namespace HandyBoxApp
 
         private void InitializePanels()
         {
-            LayoutPanel = new LayoutPanel();
+            LayoutPanel = new LayoutPanel(this);
             TitlePanel = new TitlePanel(this);
 
             EurTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURTRY"));
             UsdTryStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "USDTRY"));
-            //EurUsdStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURUSD"), 5000);
-            //SiemensStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "SIEMENS"), 10000);
+            EurUsdStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURUSD"), 5000);
+            SiemensStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "SIEMENS"), 10000);
 
             HourPanel = new TimerPanel(this);
 
@@ -77,12 +78,14 @@ namespace HandyBoxApp
 
             LayoutPanel.Add(EurTryStockPanel);
             LayoutPanel.Add(UsdTryStockPanel);
-            //LayoutPanel.Add(EurUsdStockPanel);
-            //LayoutPanel.Add(SiemensStockPanel);
+            LayoutPanel.Add(EurUsdStockPanel);
+            LayoutPanel.Add(SiemensStockPanel);
 
             LayoutPanel.Add(HourPanel);
 
             Controls.Add(LayoutPanel);
+
+            TitlePanel.CustomContextMenu = CustomContextMenu.Instance;
         }
 
         private void SetFormPosition()
