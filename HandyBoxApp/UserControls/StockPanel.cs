@@ -26,6 +26,8 @@ namespace HandyBoxApp.UserControls
             StockService = stockService;
             RefreshRate = refreshRate;
 
+            Worker.WorkerReportsProgress = false;
+            Worker.WorkerSupportsCancellation = true;
             Worker.DoWork += FetchStockData;
             Worker.RunWorkerCompleted += FetchStockDataCompleted;
 
@@ -63,6 +65,24 @@ namespace HandyBoxApp.UserControls
         private ToolTip ToolTip { get; } = new ToolTip();
 
         #endregion
+
+        public void StartStockDataFetching()
+        {
+            if (Worker != null && !Worker.IsBusy)
+            {
+                Worker.RunWorkerAsync();
+            }
+        }
+
+        public void StopStockDataFetching()
+        {
+            Worker?.CancelAsync();
+        }
+
+        public override string ToString()
+        {
+            return StockService.GetStockInfo.Tag;
+        }
 
         //################################################################################
         #region Private Members
@@ -148,6 +168,11 @@ namespace HandyBoxApp.UserControls
 
         private void FetchStockData(object sender, DoWorkEventArgs args)
         {
+            if (Thread.CurrentThread.Name == null)
+            {
+                Thread.CurrentThread.Name = $"Thread_{StockService.GetStockInfo.Tag}";
+            }
+
             IsFetchCancelled = true;
             StockService.StockUpdated += UpdateStockData;
 
@@ -195,16 +220,6 @@ namespace HandyBoxApp.UserControls
                 ToolTip.SetToolTip(ValueLabel, changeRate);
                 PreviousStockData = stockData;
             }
-        }
-
-        private void StartStockDataFetching()
-        {
-            Worker.RunWorkerAsync();
-        }
-
-        private void StopStockDataFetching()
-        {
-
         }
 
         private void OrderControls()

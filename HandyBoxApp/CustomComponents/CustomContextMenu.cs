@@ -3,6 +3,7 @@ using HandyBoxApp.UserControls;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -40,6 +41,12 @@ namespace HandyBoxApp.CustomComponents
         public void SetMenuOwner(MainForm mainForm)
         {
             s_MainForm = mainForm;
+
+            if (Settings.Default.Stocks == null)
+            {
+                Settings.Default.Stocks = new StringCollection();
+                Settings.Default.Save();
+            }
 
             m_ShowHide = new MenuItem("Show/Hide", ShowHide_Click);
             m_AlwaysOnTop = new MenuItem("Always on top", AlwaysOnTop_Click);
@@ -96,17 +103,27 @@ namespace HandyBoxApp.CustomComponents
             s_MainForm.Visible = !s_MainForm.Visible;
         }
 
-        private void AppSettings(object sender, EventArgs args)
+        private void StockOption_Click(object sender, EventArgs args)
         {
             var menuItem = (MenuItem)sender;
 
             menuItem.Checked = !menuItem.Checked;
 
-            var panel = (Control)menuItem.Tag;
+            var panel = (StockPanel)menuItem.Tag;
             panel.Visible = menuItem.Checked;
 
-            //todo: if any background worker panel is disabled then stop it, if enabled start it.
-            //todo: save settings;
+            if (menuItem.Checked)
+            {
+                panel.StartStockDataFetching();
+                Settings.Default.Stocks.Add(panel.ToString());
+            }
+            else
+            {
+                panel.StopStockDataFetching();
+                Settings.Default.Stocks.Remove(panel.ToString());
+            }
+
+            Settings.Default.Save();
         }
 
         private void ShowLogs(object sender, EventArgs args)
@@ -187,13 +204,21 @@ namespace HandyBoxApp.CustomComponents
 
             foreach (Control panel in s_MainForm.LayoutPanel.ControlPanels)
             {
-                if (panel is StockPanel)
+                if (panel is StockPanel stockPanel)
                 {
-                    var menuItem = new MenuItem(panel.Name.Split('_')[1], AppSettings)
+                    var panelName = panel.Name.Split('_')[1];
+                    var menuItem = new MenuItem(panelName, StockOption_Click)
                     {
-                        Tag = panel,
-                        Checked = true //todo: read this from settings file
+                        Tag = stockPanel,
+                        Checked = Settings.Default.Stocks.Contains(panelName)
                     };
+
+                    panel.Visible = Settings.Default.Stocks.Contains(panelName);
+                    if (panel.Visible)
+                    {
+                        stockPanel.StopStockDataFetching();
+                    }
+
                     menuList.Add(menuItem);
                 }
             }
