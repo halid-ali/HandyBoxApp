@@ -20,11 +20,6 @@ namespace HandyBoxApp.UserControls
         #region Constants
 
         private const string Initial = "00:00.00";
-        private const string Elapsed = "Elapsed:";
-        private const string Remains = "Remains:";
-        private const string Stopped = "Stopped:";
-        private const string Paused = "Paused:";
-        private const string Overtime = "Overtime:";
 
         #endregion
 
@@ -82,7 +77,7 @@ namespace HandyBoxApp.UserControls
             #region Timer TextBox
 
             FunctionText.Name = "TimerText";
-            FunctionText.Text = Formatter.FormatString(Stopped, Pad.Right, 9);
+            FunctionText.Text = Formatter.FormatTime(TimerMode.Stopped, Pad.Right, 9);
             FunctionText.AutoSize = true;
             FunctionText.BorderStyle = BorderStyle.None;
             FunctionText.Padding = new Padding(Style.PanelPadding);
@@ -137,11 +132,13 @@ namespace HandyBoxApp.UserControls
                         {
                             WorkTimer.Pause();
                             FunctionButton.SetText("R");
+                            FunctionText.Text = Formatter.FormatTime(TimerMode.Paused, Pad.Right, 9);
                         }
                         else if (WorkTimer.IsPaused)
                         {
                             WorkTimer.Start();
                             FunctionButton.SetText("P");
+                            FunctionText.Text = Formatter.FormatTime(Mode, Pad.Right, 9);
                         }
 
                         TimerText.HideSelection = true;
@@ -203,7 +200,7 @@ namespace HandyBoxApp.UserControls
                     {
                         Mode = TimerMode.Overtime;
                         Painter<Green>.Paint(TimerText, PaintMode.Dark);
-                        FunctionText.Text = Formatter.FormatString(Overtime, Pad.Right, 9);
+                        FunctionText.Text = Formatter.FormatTime(TimerMode.Overtime, Pad.Right, 9);
                     }
 
                     //change color of TimerText if not changed
@@ -279,7 +276,7 @@ namespace HandyBoxApp.UserControls
             Painter<Blue>.Paint(TimerText, PaintMode.Light);
 
             //adjust function text
-            FunctionText.Text = Formatter.FormatString(Elapsed, Pad.Right, 9);
+            FunctionText.Text = Formatter.FormatTime(TimerMode.Elapsed, Pad.Right, 9);
 
             //adjust function button
             FunctionButton.SetText("P");
@@ -306,7 +303,7 @@ namespace HandyBoxApp.UserControls
             Painter<Blue>.Paint(TimerText, PaintMode.Normal);
 
             //adjust function text
-            FunctionText.Text = Formatter.FormatString(Stopped, Pad.Right, 9);
+            FunctionText.Text = Formatter.FormatTime(TimerMode.Stopped, Pad.Right, 9);
 
             //adjust function button
             FunctionButton.SetText("S");
@@ -363,25 +360,20 @@ namespace HandyBoxApp.UserControls
         {
             if (WorkTimer != null && WorkTimer.IsStarted)
             {
-                string modeText;
-
                 if (Mode == TimerMode.Elapsed)
                 {
-                    Mode = TimerMode.Remaining;
-                    modeText = Remains;
+                    Mode = TimerMode.Remains;
                 }
-                else if (Mode == TimerMode.Remaining)
+                else if (Mode == TimerMode.Remains)
                 {
                     Mode = TimerMode.Elapsed;
-                    modeText = Elapsed;
                 }
                 else
                 {
                     Mode = TimerMode.Overtime;
-                    modeText = Overtime;
                 }
 
-                FunctionText.Text = Formatter.FormatString(modeText, Pad.Right, 9);
+                FunctionText.Text = Formatter.FormatTime(Mode, Pad.Right, 9);
             }
         }
 
