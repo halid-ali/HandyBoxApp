@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HandyBoxApp.ColorScheme
@@ -34,6 +35,12 @@ namespace HandyBoxApp.ColorScheme
                 default:
                     throw new InvalidOperationException("Unexpected error occured on Paint");
             }
+        }
+
+        internal static void Paint(Control control, Color color)
+        {
+            control.BackColor = color;
+            control.ForeColor = color;
         }
 
         #endregion
