@@ -27,20 +27,18 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Constructor
 
-        public TimerPanel(Control parentControl)
+        public TimerPanel()
         {
-            ParentControl = parentControl;
-
             InitializeComponent();
             OrderControls();
+
+            StartSavedTimerIfHas();
         }
 
         #endregion
 
         //################################################################################
         #region Properties
-
-        private Control ParentControl { get; }
 
         private Label FunctionText { get; } = new Label();
 
@@ -134,12 +132,18 @@ namespace HandyBoxApp.UserControls
                             WorkTimer.Pause();
                             FunctionButton.SetImage(Resources.Play);
                             FunctionText.Text = Formatter.FormatTime(TimerMode.Paused, Pad.Right, 9);
+
+                            Settings.Default.IsTimerCounting = false;
+                            Settings.Default.Save();
                         }
                         else if (WorkTimer.IsPaused)
                         {
                             WorkTimer.Start();
                             FunctionButton.SetImage(Resources.Pause);
                             FunctionText.Text = Formatter.FormatTime(Mode, Pad.Right, 9);
+
+                            Settings.Default.IsTimerCounting = true;
+                            Settings.Default.Save();
                         }
 
                         TimerText.HideSelection = true;
@@ -187,7 +191,7 @@ namespace HandyBoxApp.UserControls
                 {
                     TimerText.Text = Formatter.FormatHour(Mode == TimerMode.Elapsed ? args.ElapsedTime : args.RemainingTime);
                 }
-                else
+                else //overtime block
                 {
                     //when overtime reaches to 2 hours, stop timer
                     if (args.Overtime.Hours >= 2)
@@ -220,6 +224,13 @@ namespace HandyBoxApp.UserControls
 
                     TimerText.Text = Formatter.FormatHour(args.Overtime);
                 }
+            }
+
+            if (!Settings.Default.IsTimerCounting)
+            {
+                WorkTimer.Pause();
+                FunctionButton.SetImage(Resources.Play);
+                FunctionText.Text = Formatter.FormatTime(TimerMode.Paused, Pad.Right, 9);
             }
         }
 
@@ -268,6 +279,16 @@ namespace HandyBoxApp.UserControls
             startTime = new DateTime(year, month, day, hourValue, minuteValue, secondValue);
 
             return true;
+        }
+
+        private void StartSavedTimerIfHas()
+        {
+            var savedTime = Settings.Default.StartTime;
+
+            if (DateTime.Now.Subtract(savedTime) < TimeSpan.FromDays(1))
+            {
+                StartTimer(savedTime);
+            }
         }
 
         private void StartTimer(DateTime startTime)
@@ -341,6 +362,9 @@ namespace HandyBoxApp.UserControls
 
                 if (VerifyTimerText(timeText, out DateTime startTime))
                 {
+                    Settings.Default.StartTime = startTime;
+                    Settings.Default.Save();
+
                     StartTimer(startTime);
                 }
                 else

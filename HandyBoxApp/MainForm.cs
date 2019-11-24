@@ -72,7 +72,7 @@ namespace HandyBoxApp
             EurUsdStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "EURUSD"), 5000);
             SiemensStockPanel = new StockPanel(this, StockServiceFactory.CreateService("Yahoo", "SIEMENS"), 10000);
 
-            HourPanel = new TimerPanel(this);
+            HourPanel = new TimerPanel();
 
             LayoutPanel.Add(TitlePanel);
 

@@ -80,5 +80,17 @@ namespace HandyBoxApp.Properties {
                 this["StartTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsTimerCounting {
+            get {
+                return ((bool)(this["IsTimerCounting"]));
+            }
+            set {
+                this["IsTimerCounting"] = value;
+            }
+        }
     }
 }
