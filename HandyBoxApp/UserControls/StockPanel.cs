@@ -142,7 +142,7 @@ namespace HandyBoxApp.UserControls
 
             FunctionButton = new ImageButton(SlideAction, Resources.Options) { Margin = new Padding(0) };
             FunctionButton.SetToolTip("Open panel");
-            FunctionButton.SetColor(Color.FromArgb(38, 124, 181));
+            FunctionButton.SetBackgroundColor(Color.FromArgb(38, 124, 181));
 
             #endregion
 

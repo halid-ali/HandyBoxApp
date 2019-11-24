@@ -102,7 +102,7 @@ namespace HandyBoxApp.UserControls
 
             LogoButton = new ImageButton(HideAction, Resources.Logo) { Margin = new Padding(0, 0, Style.PanelSpacing, 0) };
             LogoButton.SetToolTip("Handy Box App v2.4");
-            LogoButton.SetColor(Color.FromArgb(226, 87, 76));
+            LogoButton.SetBackgroundColor(Color.FromArgb(226, 87, 76));
 
             #endregion
 
@@ -136,7 +136,7 @@ namespace HandyBoxApp.UserControls
 
             CloseButton = new ImageButton(CloseAction, Resources.Close) { Margin = new Padding(0) };
             CloseButton.SetToolTip("Close");
-            CloseButton.SetColor(Color.FromArgb(201, 54, 54));
+            CloseButton.SetBackgroundColor(Color.FromArgb(201, 54, 54));
 
             #endregion
 
