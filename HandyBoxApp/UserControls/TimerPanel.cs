@@ -125,29 +125,32 @@ namespace HandyBoxApp.UserControls
             {
                 button.Click += (sender, args) =>
                 {
-                    if (WorkTimer != null)
+                    if (((MouseEventArgs)args).Button == MouseButtons.Left)
                     {
-                        if (WorkTimer.IsStarted)
+                        if (WorkTimer != null)
                         {
-                            WorkTimer.Pause();
-                            FunctionButton.SetImage(Resources.Play);
-                            FunctionText.Text = Formatter.FormatTime(TimerMode.Paused, Pad.Right, 9);
+                            if (WorkTimer.IsStarted)
+                            {
+                                WorkTimer.Pause();
+                                FunctionButton.SetImage(Resources.Play);
+                                FunctionText.Text = Formatter.FormatTime(TimerMode.Paused, Pad.Right, 9);
 
-                            Settings.Default.IsTimerCounting = false;
-                            Settings.Default.Save();
-                        }
-                        else if (WorkTimer.IsPaused)
-                        {
-                            WorkTimer.Start();
-                            FunctionButton.SetImage(Resources.Pause);
-                            FunctionText.Text = Formatter.FormatTime(Mode, Pad.Right, 9);
+                                Settings.Default.IsTimerCounting = false;
+                                Settings.Default.Save();
+                            }
+                            else if (WorkTimer.IsPaused)
+                            {
+                                WorkTimer.Start();
+                                FunctionButton.SetImage(Resources.Pause);
+                                FunctionText.Text = Formatter.FormatTime(Mode, Pad.Right, 9);
 
-                            Settings.Default.IsTimerCounting = true;
-                            Settings.Default.Save();
-                        }
+                                Settings.Default.IsTimerCounting = true;
+                                Settings.Default.Save();
+                            }
 
-                        TimerText.HideSelection = true;
-                        button.Focus();
+                            TimerText.HideSelection = true;
+                            button.Focus();
+                        } 
                     }
                 };
             }
