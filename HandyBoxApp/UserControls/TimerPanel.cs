@@ -7,7 +7,6 @@ using HandyBoxApp.WorkTimer;
 
 using System;
 using System.Drawing;
-using System.Runtime.Remoting.Channels;
 using System.Windows.Forms;
 
 using Timer = HandyBoxApp.WorkTimer.Timer;
@@ -345,7 +344,7 @@ namespace HandyBoxApp.UserControls
                 WorkTimer.Stop();
                 WorkTimer.TimerUpdated -= UpdateTimer;
                 WorkTimer.Dispose();
-                WorkTimer = null; 
+                WorkTimer = null;
             }
 
             Settings.Default.StartTime = DateTime.MinValue;
