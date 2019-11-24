@@ -99,10 +99,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="WorkTimer\Timer.cs" />
-    <Compile Include="WorkTimer\TimerMode.cs" />
+    <Compile Include="WorkTimer\FunctionMode.cs" />
     <Compile Include="UserControls\TimerPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="WorkTimer\TimerHelper.cs" />
     <Compile Include="WorkTimer\TimerUpdateEventArgs.cs" />
     <Compile Include="UserControls\StockPanel.cs">
       <SubType>UserControl</SubType>
