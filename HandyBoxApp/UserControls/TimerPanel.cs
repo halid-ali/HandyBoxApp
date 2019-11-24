@@ -7,6 +7,7 @@ using HandyBoxApp.WorkTimer;
 
 using System;
 using System.Drawing;
+using System.Runtime.Remoting.Channels;
 using System.Windows.Forms;
 
 using Timer = HandyBoxApp.WorkTimer.Timer;
@@ -52,7 +53,7 @@ namespace HandyBoxApp.UserControls
 
         private Timer WorkTimer { get; set; }
 
-        private TimerMode Mode { get; set; } = TimerMode.Elapsed;
+        private TimerMode TimerMode { get; set; } = TimerMode.Elapsed;
 
         #endregion
 
@@ -142,7 +143,7 @@ namespace HandyBoxApp.UserControls
                             {
                                 WorkTimer.Start();
                                 FunctionButton.SetImage(Resources.Pause);
-                                FunctionText.Text = Formatter.FormatTime(Mode, Pad.Right, 9);
+                                FunctionText.Text = Formatter.FormatTime(TimerMode, Pad.Right, 9);
 
                                 Settings.Default.IsTimerCounting = true;
                                 Settings.Default.Save();
@@ -150,12 +151,16 @@ namespace HandyBoxApp.UserControls
 
                             TimerText.HideSelection = true;
                             button.Focus();
-                        } 
+                        }
                     }
                 };
             }
 
-            FunctionButton = new ImageButton(PauseAction, Resources.Stop) { Margin = new Padding(0) };
+            FunctionButton = new ImageButton(PauseAction, Resources.Stop)
+            {
+                Margin = new Padding(0),
+                ContextMenu = new ContextMenu { MenuItems = { new MenuItem("Stop", (s, a) => StopTimer()) } }
+            };
             FunctionButton.SetToolTip("Pause/Resume timer");
             FunctionButton.SetBackgroundColor(Color.FromArgb(152, 0, 47));
 
@@ -192,7 +197,7 @@ namespace HandyBoxApp.UserControls
             {
                 if (args.Overtime.Ticks < 0)
                 {
-                    TimerText.Text = Formatter.FormatHour(Mode == TimerMode.Elapsed ? args.ElapsedTime : args.RemainingTime);
+                    TimerText.Text = Formatter.FormatHour(TimerMode == TimerMode.Elapsed ? args.ElapsedTime : args.RemainingTime);
                 }
                 else //overtime block
                 {
@@ -204,9 +209,9 @@ namespace HandyBoxApp.UserControls
                     }
 
                     //set mode and adjust timer values only once
-                    if (Mode != TimerMode.Overtime)
+                    if (TimerMode != TimerMode.Overtime)
                     {
-                        Mode = TimerMode.Overtime;
+                        TimerMode = TimerMode.Overtime;
                         Painter<Green>.Paint(TimerText, PaintMode.Dark);
                         FunctionText.Text = Formatter.FormatTime(TimerMode.Overtime, Pad.Right, 9);
                     }
@@ -333,12 +338,18 @@ namespace HandyBoxApp.UserControls
             FunctionButton.SetImage(Resources.Stop);
 
             //adjust mode
-            Mode = TimerMode.Elapsed;
+            TimerMode = TimerMode.Elapsed;
 
-            WorkTimer.Stop();
-            WorkTimer.TimerUpdated -= UpdateTimer;
-            WorkTimer.Dispose();
-            WorkTimer = null;
+            if (WorkTimer != null)
+            {
+                WorkTimer.Stop();
+                WorkTimer.TimerUpdated -= UpdateTimer;
+                WorkTimer.Dispose();
+                WorkTimer = null; 
+            }
+
+            Settings.Default.StartTime = DateTime.MinValue;
+            Settings.Default.Save();
         }
 
         #endregion
@@ -386,20 +397,20 @@ namespace HandyBoxApp.UserControls
         {
             if (WorkTimer != null && WorkTimer.IsStarted)
             {
-                if (Mode == TimerMode.Elapsed)
+                if (TimerMode == TimerMode.Elapsed)
                 {
-                    Mode = TimerMode.Remains;
+                    TimerMode = TimerMode.Remains;
                 }
-                else if (Mode == TimerMode.Remains)
+                else if (TimerMode == TimerMode.Remains)
                 {
-                    Mode = TimerMode.Elapsed;
+                    TimerMode = TimerMode.Elapsed;
                 }
                 else
                 {
-                    Mode = TimerMode.Overtime;
+                    TimerMode = TimerMode.Overtime;
                 }
 
-                FunctionText.Text = Formatter.FormatTime(Mode, Pad.Right, 9);
+                FunctionText.Text = Formatter.FormatTime(TimerMode, Pad.Right, 9);
             }
         }
 
