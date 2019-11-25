@@ -55,6 +55,8 @@ namespace HandyBoxApp.UserControls
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
+        private FlowLayoutPanel FunctionContainerPanel { get; } = new FlowLayoutPanel();
+
         private BackgroundWorker Worker { get; } = new BackgroundWorker();
 
         private bool IsFetchCancelled { get; set; }
@@ -146,6 +148,16 @@ namespace HandyBoxApp.UserControls
 
             #endregion
 
+            ContainerPanel.Controls.Add(NameLabel);
+            ContainerPanel.Controls.Add(ValueLabel);
+            ContainerPanel.Controls.Add(FunctionButton);
+
+            #region Function Container Panel
+
+
+
+            #endregion
+
             #region Stock Panel
 
             Name = $"StockPanel_{StockService.GetStockInfo.Tag}";
@@ -157,9 +169,7 @@ namespace HandyBoxApp.UserControls
 
             #endregion
 
-            ContainerPanel.Controls.Add(NameLabel);
-            ContainerPanel.Controls.Add(ValueLabel);
-            ContainerPanel.Controls.Add(FunctionButton);
+            Controls.Add(FunctionContainerPanel);
             Controls.Add(ContainerPanel);
 
             ContainerPanel.ResumeLayout(false);
