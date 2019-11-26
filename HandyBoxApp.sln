@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29306.81
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyBoxApp", "HandyBoxApp\HandyBoxApp.csproj", "{A4C10142-E681-42D8-81A6-160BFDBB10E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyBoxApp.StockExchange", "HandyBoxApp.StockExchange\HandyBoxApp.StockExchange.csproj", "{33A76AD9-649C-433C-8707-0526C4C3518E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandyBoxApp.StockExchange", "HandyBoxApp.StockExchange\HandyBoxApp.StockExchange.csproj", "{33A76AD9-649C-433C-8707-0526C4C3518E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyBoxApp.Logging", "HandyBoxApp.Logging\HandyBoxApp.Logging.csproj", "{78A3035D-2AB4-4ECB-AA2D-A9424CF2EC83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandyBoxApp.Tests", "HandyBoxApp.Tests\HandyBoxApp.Tests.csproj", "{63FE31EA-F21B-4DAD-97A4-B8F8D270E199}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{33A76AD9-649C-433C-8707-0526C4C3518E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33A76AD9-649C-433C-8707-0526C4C3518E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33A76AD9-649C-433C-8707-0526C4C3518E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78A3035D-2AB4-4ECB-AA2D-A9424CF2EC83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78A3035D-2AB4-4ECB-AA2D-A9424CF2EC83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78A3035D-2AB4-4ECB-AA2D-A9424CF2EC83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78A3035D-2AB4-4ECB-AA2D-A9424CF2EC83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63FE31EA-F21B-4DAD-97A4-B8F8D270E199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63FE31EA-F21B-4DAD-97A4-B8F8D270E199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63FE31EA-F21B-4DAD-97A4-B8F8D270E199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63FE31EA-F21B-4DAD-97A4-B8F8D270E199}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
