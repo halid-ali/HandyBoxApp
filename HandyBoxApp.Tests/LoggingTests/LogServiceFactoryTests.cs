@@ -2,6 +2,7 @@
 using HandyBoxApp.Logging.LoggingFormats;
 
 using NUnit.Framework;
+using System;
 
 namespace HandyBoxApp.Tests.LoggingTests
 {
@@ -17,11 +18,11 @@ namespace HandyBoxApp.Tests.LoggingTests
         }
 
         [Test]
-        public void CreateService_XmlLogFormat_ReturnsNewService()
+        public void CreateService_XmlLogFormat_ThrowsException()
         {
-            var txtService = LogServiceFactory.CreateService(LogFormat.Xml);
+            void test() => LogServiceFactory.CreateService(LogFormat.Xml);
 
-            Assert.That(txtService is XmlLogFormat, Is.True);
+            Assert.Throws(typeof(NotImplementedException), test);
         }
     }
 }

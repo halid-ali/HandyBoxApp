@@ -39,16 +39,19 @@ namespace HandyBoxApp.Logging.LoggingFormats
         void ILoggingService.Debug(string message)
         {
             var debugLogEntry = new LogEntry(LogType.Debug, message, null);
+            m_LogEntries.Add(debugLogEntry);
         }
 
         void ILoggingService.Error(string message, Exception exception)
         {
             var errorLogEntry = new LogEntry(LogType.Error, message, exception);
+            m_LogEntries.Add(errorLogEntry);
         }
 
         void ILoggingService.Info(string message)
         {
             var infoLogEntry = new LogEntry(LogType.Info, message, null);
+            m_LogEntries.Add(infoLogEntry);
         }
 
         #endregion

@@ -1,5 +1,6 @@
 ﻿using HandyBoxApp.Logging;
 using NUnit.Framework;
+using System.Linq;
 
 namespace HandyBoxApp.Tests.LoggingTests
 {
@@ -7,12 +8,37 @@ namespace HandyBoxApp.Tests.LoggingTests
     public class TxtLoggingTests
     {
         [Test]
-        public void TxtFormat_LogMessage()
+        public void CreateInfoLog_GetInfoLogs_ReturnsInfoLogs()
         {
-            var log = LogServiceFactory.CreateService(LogFormat.Txt);
-            log.Info("test message");
+            //arrange
 
+            var log = LogServiceFactory.CreateService(LogFormat.Txt);
+
+            //act
+
+            log.Info("test message");
             var logList = log.GetLogs(LogType.Info);
+
+            //assert
+
+            Assert.That(logList.ToArray().Count(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CreateInfoLog_GetErrorLogs_ReturnsZero()
+        {
+            //arrange
+
+            var log = LogServiceFactory.CreateService(LogFormat.Txt);
+
+            //act
+
+            log.Info("test message");
+            var logList = log.GetLogs(LogType.Error);
+
+            //assert
+
+            Assert.That(logList.ToArray().Count(), Is.EqualTo(0));
         }
     }
 }
