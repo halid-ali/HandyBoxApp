@@ -9,9 +9,10 @@ namespace HandyBoxApp.Tests.LoggingTests
         [Test]
         public void TxtFormat_LogMessage()
         {
-            var txtFormat = LogServiceFactory.CreateService(LogFormat.Txt);
+            var log = LogServiceFactory.CreateService(LogFormat.Txt);
+            log.Info("test message");
 
-            txtFormat.LogMessage("test message");
+            var logList = log.GetLogs(LogType.Info);
         }
     }
 }

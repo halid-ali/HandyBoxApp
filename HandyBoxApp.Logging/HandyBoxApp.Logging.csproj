@@ -9,12 +9,4 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Resources\TxtLogs.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\TxtLogs.txt" />
-  </ItemGroup>
-
 </Project>

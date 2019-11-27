@@ -14,7 +14,7 @@ namespace HandyBoxApp.Logging
                     return new TxtLogFormat();
 
                 case LogFormat.Xml:
-                    return new XmlLogFormat();
+                    throw new NotImplementedException();
 
                 default:
                     throw new ArgumentException("Invalid log format.");

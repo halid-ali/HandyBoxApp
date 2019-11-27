@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace HandyBoxApp.Logging.LoggingFormats
@@ -13,30 +14,41 @@ namespace HandyBoxApp.Logging.LoggingFormats
         private const int c_TabSize = 4;
         private const int c_DateTimeLength = 21;
         private const char c_PaddingChar = ' ';
-        private const string c_DateTimeFormat = "dd.MM.yyyy - HH:mm.ss";
+        private const string c_DateTimeFormat = "yyyy.MM.dd - HH:mm.ss";
+        private const string c_LogFileName = "handyboxapp-logs.txt";
+
+        private readonly IList<LogEntry> m_LogEntries = new List<LogEntry>();
 
         #endregion
 
         //################################################################################
         #region ILoggingService Members
 
+        string ILoggingService.LogPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), c_LogFileName);
+
         void ILoggingService.ClearLogs()
         {
             ClearFileContent();
         }
 
-        void ILoggingService.LogException(Exception exception)
+        IEnumerable<LogEntry> ILoggingService.GetLogs(LogType type)
         {
-            var stringBuilder = new StringBuilder();
-            FormatLogException(stringBuilder, exception);
-            LogToFile(stringBuilder);
+            return m_LogEntries.Where(x => x.Type == type);
         }
 
-        void ILoggingService.LogMessage(string message)
+        void ILoggingService.Debug(string message)
         {
-            var stringBuilder = new StringBuilder();
-            FormatLogMessage(stringBuilder, message);
-            LogToFile(stringBuilder);
+            var debugLogEntry = new LogEntry(LogType.Debug, message, null);
+        }
+
+        void ILoggingService.Error(string message, Exception exception)
+        {
+            var errorLogEntry = new LogEntry(LogType.Error, message, exception);
+        }
+
+        void ILoggingService.Info(string message)
+        {
+            var infoLogEntry = new LogEntry(LogType.Info, message, null);
         }
 
         #endregion
@@ -64,16 +76,6 @@ namespace HandyBoxApp.Logging.LoggingFormats
             if (exception.InnerException != null)
             {
                 FormatLogException(stringBuilder, exception.InnerException, level++, true);
-            }
-        }
-
-        private void LogToFile(StringBuilder stringBuilder)
-        {
-            using (Stream fileStream = LogStream)
-            {
-                byte[] buffer = Encoding.ASCII.GetBytes(stringBuilder.ToString());
-                fileStream.Write(buffer, 0, buffer.Length);
-                fileStream.Close();
             }
         }
 

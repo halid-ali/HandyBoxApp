@@ -1,34 +1,10 @@
-﻿using System;
-
-namespace HandyBoxApp.Logging.LoggingFormats
+﻿namespace HandyBoxApp.Logging.LoggingFormats
 {
-    internal class XmlLogFormat : LogFormatBase, ILoggingService
+    internal class XmlLogFormat
     {
-        //################################################################################
-        #region ILoggingService Members
-
-        void ILoggingService.ClearLogs()
+        private XmlLogFormat()
         {
-            ClearFileContent();
+
         }
-
-        void ILoggingService.LogException(Exception exception)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ILoggingService.LogMessage(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        //################################################################################
-        #region Private Members
-
-
-
-        #endregion
     }
 }

@@ -1,13 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace HandyBoxApp.Logging
 {
     public interface ILoggingService
     {
+        string LogPath { get; }
+
         void ClearLogs();
 
-        void LogException(Exception exception);
+        IEnumerable<LogEntry> GetLogs(LogType type);
 
-        void LogMessage(string message);
+        void Debug(string message);
+
+        void Error(string message, Exception exception);
+
+        void Info(string message);
     }
 }
