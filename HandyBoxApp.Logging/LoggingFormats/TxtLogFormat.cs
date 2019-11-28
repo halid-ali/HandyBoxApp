@@ -110,9 +110,9 @@ namespace HandyBoxApp.Logging.LoggingFormats
         private void FormatLogException(StringBuilder stringBuilder, Exception exception, int level)
         {
             stringBuilder.Append(GetEmptyIndent(level));
-            stringBuilder.AppendLine(exception.Message);
-            stringBuilder.Append(GetEmptyIndent(level));
-            stringBuilder.AppendLine(exception.StackTrace);
+            stringBuilder.AppendLine($"\"Exception Message: {exception.Message}\"");
+            stringBuilder.Append(GetEmptyIndent(++level));
+            stringBuilder.AppendLine(exception.StackTrace.Trim());
 
             if (exception.InnerException != null)
             {

@@ -30,13 +30,13 @@ namespace HandyBoxApp.Tests.LoggingTests
         [TearDown]
         public void TearDown()
         {
-            logService.ClearLogs();
+            //logService.ClearLogs();
         }
 
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            File.Delete(logService.LogPath);
+            //File.Delete(logService.LogPath);
         }
 
         #endregion
@@ -195,11 +195,41 @@ namespace HandyBoxApp.Tests.LoggingTests
 
             try
             {
-                throw new ArgumentException("Invalid argument");
+                throw new ArgumentException("invalid argument");
             }
             catch (ArgumentException ex)
             {
                 logService.Error("error message", ex);
+            }
+
+            //act
+
+            var logList = logService.GetLogs(LogType.Error);
+
+            //assert
+
+            Assert.That(logList.ToArray().Count(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CreateErrorLog_WithInnerException_ReturnsErrorLog()
+        {
+            //arrange
+
+            try
+            {
+                throw new ArgumentException("inner exception message");
+            }
+            catch (ArgumentException innerException)
+            {
+                try
+                {
+                    throw new Exception("exception message", innerException);
+                }
+                catch (Exception exception)
+                {
+                    logService.Error("error message", exception);
+                }
             }
 
             //act
