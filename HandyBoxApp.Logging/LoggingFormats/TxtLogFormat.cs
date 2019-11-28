@@ -11,7 +11,7 @@ namespace HandyBoxApp.Logging.LoggingFormats
         //################################################################################
         #region Fields
 
-        private const int c_TabWidth = 4;
+        private const int c_TabWidth = 2;
         private const int c_LogWidth = 9;
         private const int c_DateWidth = 21;
         private const char c_PaddingChar = ' ';
