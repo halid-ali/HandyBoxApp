@@ -27,7 +27,7 @@ namespace HandyBoxApp.Tests.LoggingTests
         [TearDown]
         public void TearDown()
         {
-            //logService.ClearLogs();
+            logService.ClearLogs();
         }
 
         #endregion
