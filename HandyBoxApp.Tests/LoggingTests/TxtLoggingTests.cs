@@ -1,6 +1,9 @@
 ﻿using HandyBoxApp.Logging;
+
 using NUnit.Framework;
+
 using System;
+using System.IO;
 using System.Linq;
 
 namespace HandyBoxApp.Tests.LoggingTests
@@ -21,13 +24,19 @@ namespace HandyBoxApp.Tests.LoggingTests
         [SetUp]
         public void Setup()
         {
-            logService = LogServiceFactory.CreateService(LogFormat.Txt);
+            logService = LogServiceFactory.CreateTestService(LogFormat.Txt, "handyboxapp-test-logs.txt");
         }
 
         [TearDown]
         public void TearDown()
         {
             logService.ClearLogs();
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            File.Delete(logService.LogPath);
         }
 
         #endregion

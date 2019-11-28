@@ -13,9 +13,9 @@ namespace HandyBoxApp.Logging.LoggingFormats
 
         private const int c_TabWidth = 2;
         private const int c_LogWidth = 9;
-        private const int c_DateWidth = 21;
+        private const int c_DateWidth = 27;
         private const char c_PaddingChar = ' ';
-        private const string c_DateTimeFormat = "yyyy.MM.dd - HH:mm.ss";
+        private const string c_DateTimeFormat = "yyyy.MM.dd - HH:mm:ss.fffff";
         private const string c_LogFileName = "handyboxapp-logs.txt";
 
         private readonly string m_LogFilePath;
@@ -23,10 +23,24 @@ namespace HandyBoxApp.Logging.LoggingFormats
 
         #endregion
 
+        //################################################################################
+        #region Constructor
+
         public TxtLogFormat()
         {
             m_LogFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), c_LogFileName);
         }
+
+        /// <summary>
+        /// Testing purpose constructor
+        /// </summary>
+        /// <param name="logFileName">file name of logs will be written</param>
+        public TxtLogFormat(string logFileName)
+        {
+            m_LogFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), logFileName);
+        }
+
+        #endregion
 
         //################################################################################
         #region ILoggingService Members
