@@ -30,13 +30,13 @@ namespace HandyBoxApp.Tests.LoggingTests
         [TearDown]
         public void TearDown()
         {
-            //logService.ClearLogs();
+            logService.ClearLogs();
         }
 
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            //File.Delete(logService.LogPath);
+            File.Delete(logService.LogPath);
         }
 
         #endregion
