@@ -138,34 +138,7 @@ namespace HandyBoxApp.UserControls
 
             void PauseAction(Control button)
             {
-                button.Click += (sender, args) =>
-                {
-                    if (((MouseEventArgs)args).Button == MouseButtons.Left)
-                    {
-                        if (WorkTimer != null)
-                        {
-                            if (WorkTimer.IsStarted)
-                            {
-                                WorkTimer.Pause();
-                                FunctionButton.SetImage(Resources.Play);
-                                FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Paused);
-
-                                Settings.Default.Save();
-                            }
-                            else if (WorkTimer.IsPaused)
-                            {
-                                WorkTimer.Start();
-                                FunctionButton.SetImage(Resources.Pause);
-                                FunctionText.Text = Formatter.FormatTimerFunction(ModeFunction);
-
-                                Settings.Default.Save();
-                            }
-
-                            TimerText.HideSelection = true;
-                            button.Focus();
-                        }
-                    }
-                };
+                button.Click += FunctionButton_Click;
             }
 
             FunctionButton = new ImageButton(PauseAction, Resources.Stop)
@@ -437,6 +410,35 @@ namespace HandyBoxApp.UserControls
                 }
 
                 FunctionText.Text = Formatter.FormatTimerFunction(ModeFunction);
+            }
+        }
+
+        private void FunctionButton_Click(object sender, EventArgs e)
+        {
+            if (((MouseEventArgs)e).Button == MouseButtons.Left)
+            {
+                if (WorkTimer != null)
+                {
+                    if (WorkTimer.IsStarted)
+                    {
+                        WorkTimer.Pause();
+                        FunctionButton.SetImage(Resources.Play);
+                        FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Paused);
+
+                        Settings.Default.Save();
+                    }
+                    else if (WorkTimer.IsPaused)
+                    {
+                        WorkTimer.Start();
+                        FunctionButton.SetImage(Resources.Pause);
+                        FunctionText.Text = Formatter.FormatTimerFunction(ModeFunction);
+
+                        Settings.Default.Save();
+                    }
+
+                    TimerText.HideSelection = true;
+                    ((Control)sender).Focus();
+                }
             }
         }
 
