@@ -90,11 +90,9 @@ namespace HandyBoxApp.WorkTimer
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var bgWorker = sender as BackgroundWorker;
-
             while (IsStarted)
             {
-                if (bgWorker != null && bgWorker.CancellationPending)
+                if (sender is BackgroundWorker bgWorker && bgWorker.CancellationPending)
                 {
                     ResetFlags();
                     IsPaused = true;
