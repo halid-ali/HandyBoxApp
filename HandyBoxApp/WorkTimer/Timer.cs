@@ -16,9 +16,6 @@ namespace HandyBoxApp.WorkTimer
         private readonly BackgroundWorker m_Worker = new BackgroundWorker();
 
         private event EventHandler<TimerUpdateEventArgs> TimerUpdate;
-        private event EventHandler<EventArgs> TimerStart;
-        private event EventHandler<EventArgs> TimerPause;
-        private event EventHandler<EventArgs> TimerStop;
 
         #endregion
 
@@ -54,24 +51,6 @@ namespace HandyBoxApp.WorkTimer
             remove => TimerUpdate -= value;
         }
 
-        internal event EventHandler<EventArgs> TimerStarted
-        {
-            add => TimerStart += value;
-            remove => TimerStart -= value;
-        }
-
-        internal event EventHandler<EventArgs> TimerStopped
-        {
-            add => TimerStop += value;
-            remove => TimerStop -= value;
-        }
-
-        internal event EventHandler<EventArgs> TimerPaused
-        {
-            add => TimerPause += value;
-            remove => TimerPause -= value;
-        }
-
         private DateTime StartTime { get; set; }
 
         private DateTime StartTimeWithLunchBreak { get; }
@@ -89,21 +68,19 @@ namespace HandyBoxApp.WorkTimer
         {
             ResetFlags();
             IsStarted = true;
+
             Worker.RunWorkerAsync();
-            OnTimerStart();
         }
 
         internal void Stop()
         {
             ResetFlags();
             IsStopped = true;
-            OnTimerStop();
         }
 
         internal void Pause()
         {
             Worker.CancelAsync();
-            OnTimerPause();
         }
 
         #endregion
@@ -163,24 +140,6 @@ namespace HandyBoxApp.WorkTimer
 
             var args = new TimerUpdateEventArgs(elapsedTime, remainingTime, overtime);
             Volatile.Read(ref TimerUpdate)?.Invoke(this, args);
-        }
-
-        private void OnTimerStart()
-        {
-            var args = new EventArgs();
-            Volatile.Read(ref TimerStart)?.Invoke(this, args);
-        }
-
-        private void OnTimerPause()
-        {
-            var args = new EventArgs();
-            Volatile.Read(ref TimerPause)?.Invoke(this, args);
-        }
-
-        private void OnTimerStop()
-        {
-            var args = new EventArgs();
-            Volatile.Read(ref TimerStop)?.Invoke(this, args);
         }
 
         private void ResetFlags()

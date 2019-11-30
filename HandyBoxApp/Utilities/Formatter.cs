@@ -35,19 +35,14 @@ namespace HandyBoxApp.Utilities
             return value.PadLeft(totalWidth, paddingChar);
         }
 
-        internal static string FormatTimerFunction(FunctionMode mode)
+        internal static string FormatTime(TimerMode mode, Pad padding, int totalWidth, char paddingChar = Constants.DefaultPaddingChar)
         {
-            return FormatString($"{mode.ToString()}:", Pad.Right, 9);
+            return FormatString($"{mode.ToString()}:", padding, totalWidth, paddingChar);
         }
 
-        internal static string FormatTimeSpan(TimeSpan timeSpan)
+        internal static string FormatHour(TimeSpan timeSpan)
         {
             return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}.{timeSpan.Seconds:D2}";
-        }
-
-        internal static string FormatDateTime(DateTime dateTime)
-        {
-            return $"{dateTime.Hour:D2}:{dateTime.Minute:D2}.{dateTime.Second:D2}";
         }
     }
 

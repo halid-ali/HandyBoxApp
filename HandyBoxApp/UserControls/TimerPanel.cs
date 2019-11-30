@@ -16,12 +16,11 @@ namespace HandyBoxApp.UserControls
     public class TimerPanel : UserControl
     {
         private delegate void TimerUpdateCallback(object sender, TimerUpdateEventArgs args);
-        private delegate void TimerStateChangeCallback(object sender, EventArgs args);
 
         //################################################################################
         #region Constants
 
-        private const string c_Initial = "00:00.00";
+        private const string Initial = "00:00.00";
 
         #endregion
 
@@ -76,7 +75,7 @@ namespace HandyBoxApp.UserControls
 
             #region Timer TextBox
 
-            FunctionText.Name = $"FunctionText";
+            FunctionText.Name = "TimerText";
             FunctionText.Text = Formatter.FormatTime(TimerMode.Stopped, Pad.Right, 9);
             FunctionText.AutoSize = true;
             FunctionText.BorderStyle = BorderStyle.None;
@@ -95,7 +94,7 @@ namespace HandyBoxApp.UserControls
                 Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold)
             };
 
-            TimerText.Text = c_Initial;
+            TimerText.Text = Initial;
             TimerText.ReadOnly = true;
             TimerText.AutoSize = false;
             TimerText.TabStop = false;
@@ -124,7 +123,36 @@ namespace HandyBoxApp.UserControls
 
             void PauseAction(Control button)
             {
-                button.Click += StartPause_Click;
+                button.Click += (sender, args) =>
+                {
+                    if (((MouseEventArgs)args).Button == MouseButtons.Left)
+                    {
+                        if (WorkTimer != null)
+                        {
+                            if (WorkTimer.IsStarted)
+                            {
+                                WorkTimer.Pause();
+                                FunctionButton.SetImage(Resources.Play);
+                                FunctionText.Text = Formatter.FormatTime(TimerMode.Paused, Pad.Right, 9);
+
+                                Settings.Default.IsTimerCounting = false;
+                                Settings.Default.Save();
+                            }
+                            else if (WorkTimer.IsPaused)
+                            {
+                                WorkTimer.Start();
+                                FunctionButton.SetImage(Resources.Pause);
+                                FunctionText.Text = Formatter.FormatTime(TimerMode, Pad.Right, 9);
+
+                                Settings.Default.IsTimerCounting = true;
+                                Settings.Default.Save();
+                            }
+
+                            TimerText.HideSelection = true;
+                            button.Focus();
+                        }
+                    }
+                };
             }
 
             FunctionButton = new ImageButton(PauseAction, Resources.Stop)
@@ -157,35 +185,59 @@ namespace HandyBoxApp.UserControls
             ResumeLayout(false);
         }
 
-        private void OvertimeChecks(TimeSpan overtime)
+        private void UpdateTimer(object sender, TimerUpdateEventArgs args)
         {
-            //when overtime reaches to 2 hours, stop timer
-            if (overtime.Hours >= 2)
+            if (FunctionText.InvokeRequired)
             {
-                StopTimer();
-                return;
+                TimerUpdateCallback callback = UpdateTimer;
+                Invoke(callback, this, args);
+            }
+            else
+            {
+                if (args.Overtime.Ticks < 0)
+                {
+                    TimerText.Text = Formatter.FormatHour(TimerMode == TimerMode.Elapsed ? args.ElapsedTime : args.RemainingTime);
+                }
+                else //overtime block
+                {
+                    //when overtime reaches to 2 hours, stop timer
+                    if (args.Overtime.Hours >= 2)
+                    {
+                        StopTimer();
+                        return;
+                    }
+
+                    //set mode and adjust timer values only once
+                    if (TimerMode != TimerMode.Overtime)
+                    {
+                        TimerMode = TimerMode.Overtime;
+                        Painter<Green>.Paint(TimerText, PaintMode.Dark);
+                        FunctionText.Text = Formatter.FormatTime(TimerMode.Overtime, Pad.Right, 9);
+                    }
+
+                    //change color of TimerText if not changed
+                    if (args.Overtime > TimeSpan.FromMinutes(90))
+                    {
+                        Painter<Red>.Paint(TimerText, PaintMode.Dark);
+                    }
+
+                    //display reminder after 90 minutes of overtime for every defined time slot
+                    if (args.Overtime.Minutes % Constants.TimerReminderInterval == 0 &&
+                        args.Overtime.Seconds == 0)
+                    {
+                        var message = $"Last {60 - args.Overtime.Minutes} minutes for leaving the office.";
+                        BalloonTip.Show("Work Hour Deadline", message, ToolTipIcon.Info, 2000);
+                    }
+
+                    TimerText.Text = Formatter.FormatHour(args.Overtime);
+                }
             }
 
-            //set mode and adjust timer values only once
-            if (TimerMode != TimerMode.Overtime)
+            if (!Settings.Default.IsTimerCounting)
             {
-                TimerMode = TimerMode.Overtime;
-                Painter<Green>.Paint(TimerText, PaintMode.Dark);
-                FunctionText.Text = Formatter.FormatTime(TimerMode.Overtime, Pad.Right, 9);
-            }
-
-            //change color of TimerText if not changed
-            if (overtime > TimeSpan.FromMinutes(90))
-            {
-                Painter<Red>.Paint(TimerText, PaintMode.Dark);
-            }
-
-            //display reminder after 90 minutes of overtime for every defined time slot
-            if (overtime.Minutes % Constants.TimerReminderInterval == 0 &&
-                overtime.Seconds == 0)
-            {
-                var message = $"Last {60 - overtime.Minutes} minutes for leaving the office.";
-                BalloonTip.Show("Work Hour Deadline", message, ToolTipIcon.Info, 2000);
+                WorkTimer.Pause();
+                FunctionButton.SetImage(Resources.Play);
+                FunctionText.Text = Formatter.FormatTime(TimerMode.Paused, Pad.Right, 9);
             }
         }
 
@@ -268,16 +320,13 @@ namespace HandyBoxApp.UserControls
 
             WorkTimer = new Timer(startTime);
             WorkTimer.TimerUpdated += UpdateTimer;
-            WorkTimer.TimerStarted += TimerStart;
-            WorkTimer.TimerStopped += TimerStop;
-            WorkTimer.TimerPaused += TimerPause;
             WorkTimer.Start();
         }
 
         private void StopTimer()
         {
             //adjust timer text
-            TimerText.Text = c_Initial;
+            TimerText.Text = Initial;
             TimerText.ReadOnly = true;
             Painter<Blue>.Paint(TimerText, PaintMode.Normal);
 
@@ -294,9 +343,6 @@ namespace HandyBoxApp.UserControls
             {
                 WorkTimer.Stop();
                 WorkTimer.TimerUpdated -= UpdateTimer;
-                WorkTimer.TimerStarted -= TimerStart;
-                WorkTimer.TimerStopped -= TimerStop;
-                WorkTimer.TimerPaused -= TimerPause;
                 WorkTimer.Dispose();
                 WorkTimer = null;
             }
@@ -308,94 +354,7 @@ namespace HandyBoxApp.UserControls
         #endregion
 
         //################################################################################
-        #region Timer Event Handlers
-
-        private void UpdateTimer(object sender, TimerUpdateEventArgs args)
-        {
-            if (FunctionText.InvokeRequired)
-            {
-                TimerUpdateCallback callback = UpdateTimer;
-                Invoke(callback, this, args);
-            }
-            else
-            {
-                if (args.Overtime.Ticks < 0)
-                {
-                    TimerText.Text = Formatter.FormatHour(TimerMode == TimerMode.Elapsed ? args.ElapsedTime : args.RemainingTime);
-                }
-                else
-                {
-                    OvertimeChecks(args.Overtime);
-                    TimerText.Text = Formatter.FormatHour(args.Overtime);
-                }
-            }
-
-            if (!Settings.Default.IsTimerCounting)
-            {
-                WorkTimer.Pause();
-                FunctionButton.SetImage(Resources.Play);
-                FunctionText.Text = Formatter.FormatTime(TimerMode.Paused, Pad.Right, 9);
-            }
-        }
-
-        private void TimerStart(object sender, EventArgs args)
-        {
-            //adjust function text
-            //adjust timer text
-            //adjust function button
-            //adjust settings
-
-            if (FunctionText.InvokeRequired)
-            {
-                TimerStateChangeCallback callback = TimerStart;
-                Invoke(callback, this, args);
-            }
-            else
-            {
-
-            }
-        }
-
-        private void TimerStop(object sender, EventArgs args)
-        {
-            //adjust function text
-            //adjust timer text
-            //adjust function button
-            //adjust settings
-
-            if (FunctionText.InvokeRequired)
-            {
-                TimerStateChangeCallback callback = TimerStart;
-                Invoke(callback, this, args);
-            }
-            else
-            {
-
-            }
-        }
-
-        private void TimerPause(object sender, EventArgs args)
-        {
-            //adjust function text
-            //adjust timer text
-            //adjust function button
-            //adjust settings
-
-            if (FunctionText.InvokeRequired)
-            {
-                TimerStateChangeCallback callback = TimerStart;
-                Invoke(callback, this, args);
-            }
-            else
-            {
-
-            }
-        }
-
-        #endregion
-
-        //################################################################################
-        #region Form Event Handlers
+        #region Event Handlers
 
         private void TimerText_DoubleClick(object sender, EventArgs e)
         {
@@ -423,7 +382,7 @@ namespace HandyBoxApp.UserControls
                 }
                 else
                 {
-                    TimerText.Text = c_Initial;
+                    TimerText.Text = Initial;
                 }
             }
         }
@@ -451,37 +410,6 @@ namespace HandyBoxApp.UserControls
                 }
 
                 FunctionText.Text = Formatter.FormatTime(TimerMode, Pad.Right, 9);
-            }
-        }
-
-        private void StartPause_Click(object sender, EventArgs e)
-        {
-            if (((MouseEventArgs)e).Button == MouseButtons.Left)
-            {
-                if (WorkTimer != null)
-                {
-                    if (WorkTimer.IsStarted)
-                    {
-                        WorkTimer.Pause();
-                        FunctionButton.SetImage(Resources.Play);
-                        FunctionText.Text = Formatter.FormatTime(TimerMode.Paused, Pad.Right, 9);
-
-                        Settings.Default.IsTimerCounting = false;
-                        Settings.Default.Save();
-                    }
-                    else if (WorkTimer.IsPaused)
-                    {
-                        WorkTimer.Start();
-                        FunctionButton.SetImage(Resources.Pause);
-                        FunctionText.Text = Formatter.FormatTime(TimerMode, Pad.Right, 9);
-
-                        Settings.Default.IsTimerCounting = true;
-                        Settings.Default.Save();
-                    }
-
-                    TimerText.HideSelection = true;
-                    ((Control)sender).Focus();
-                }
             }
         }
 
