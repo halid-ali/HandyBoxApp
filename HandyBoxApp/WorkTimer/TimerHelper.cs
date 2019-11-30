@@ -139,6 +139,13 @@ namespace HandyBoxApp.WorkTimer
             File.AppendAllLines(path, new[] { "########################################" });
         }
 
+        internal void WriteTimerAction(string log)
+        {
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "timer-action.txt");
+
+            File.AppendAllLines(path, new[] { $"{log}" });
+        }
+
         #endregion
     }
 }

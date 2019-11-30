@@ -41,7 +41,7 @@ namespace HandyBoxApp.UserControls
             InitializeComponent();
             OrderControls();
 
-            StartSavedTimerIfHas();
+            InitializeTimerSettingsAndStartTimer();
         }
 
         #endregion
@@ -150,7 +150,6 @@ namespace HandyBoxApp.UserControls
                                 FunctionButton.SetImage(Resources.Play);
                                 FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Paused);
 
-                                Settings.Default.IsTimerCounting = false;
                                 Settings.Default.Save();
                             }
                             else if (WorkTimer.IsPaused)
@@ -159,7 +158,6 @@ namespace HandyBoxApp.UserControls
                                 FunctionButton.SetImage(Resources.Pause);
                                 FunctionText.Text = Formatter.FormatTimerFunction(ModeFunction);
 
-                                Settings.Default.IsTimerCounting = true;
                                 Settings.Default.Save();
                             }
 
@@ -219,7 +217,7 @@ namespace HandyBoxApp.UserControls
             Width = ContainerPanel.Width;
         }
 
-        private void StartSavedTimerIfHas()
+        private void InitializeTimerSettingsAndStartTimer()
         {
             var savedTime = Settings.Default.StartTime;
 
@@ -336,13 +334,6 @@ namespace HandyBoxApp.UserControls
                     TimerText.Text = Formatter.FormatTimeSpan(args.Overtime);
                 }
             }
-
-            if (!Settings.Default.IsTimerCounting)
-            {
-                WorkTimer.Pause();
-                FunctionButton.SetImage(Resources.Play);
-                FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Paused);
-            }
         }
 
         private void Timer_Start(object sender, EventArgs args)
@@ -355,6 +346,7 @@ namespace HandyBoxApp.UserControls
             else
             {
                 //todo: timer start
+                m_TimerHelper.WriteTimerAction($"Timer Started:{ElapsedTime}");
             }
         }
 
@@ -368,6 +360,7 @@ namespace HandyBoxApp.UserControls
             else
             {
                 //todo: timer start
+                m_TimerHelper.WriteTimerAction($"Timer Stopped:{ElapsedTime}");
             }
         }
 
@@ -381,6 +374,7 @@ namespace HandyBoxApp.UserControls
             else
             {
                 //todo: timer start
+                m_TimerHelper.WriteTimerAction($"Timer Paused:{ElapsedTime}");
             }
         }
 
