@@ -15,10 +15,16 @@ namespace HandyBoxApp.UserControls
 {
     public class TimerPanel : UserControl
     {
+        //################################################################################
+        #region Delegates
+
         private delegate void TimerUpdateCallback(object sender, TimerUpdateEventArgs args);
+        private delegate void TimerStateChangeCallback(object sender, EventArgs args);
+
+        #endregion
 
         //################################################################################
-        #region Constants
+        #region Fields
 
         private const string c_Initial = "00:00:00";
         private readonly TimerHelper m_TimerHelper = new TimerHelper();
@@ -186,11 +192,98 @@ namespace HandyBoxApp.UserControls
             ResumeLayout(false);
         }
 
-        private void UpdateTimer(object sender, TimerUpdateEventArgs args)
+        private void OrderControls()
         {
-            if (FunctionText.InvokeRequired)
+            ContainerPanel.Width = ContainerPanel.Controls.Count * 2 - 1;
+            ContainerPanel.Height = 0;
+
+            foreach (Control control in ContainerPanel.Controls)
             {
-                TimerUpdateCallback callback = UpdateTimer;
+                if (control.PreferredSize.Height > ContainerPanel.Height)
+                {
+                    ContainerPanel.Height = control.PreferredSize.Height;
+                }
+
+                ContainerPanel.Width += control.Width - Style.PanelSpacing;
+            }
+
+            Height = ContainerPanel.Height;
+            Width = ContainerPanel.Width;
+        }
+
+        private void StartSavedTimerIfHas()
+        {
+            var savedTime = Settings.Default.StartTime;
+
+            if (DateTime.Now.Subtract(savedTime) < TimeSpan.FromDays(1))
+            {
+                StartTimer(savedTime);
+            }
+        }
+
+        private void StartTimer(DateTime startTime)
+        {
+            startTime = m_TimerHelper.GetTestingStartTime(startTime, 0);
+
+            //adjust timer text
+            TimerText.ReadOnly = true;
+            Painter<Blue>.Paint(TimerText, PaintMode.Light);
+
+            //adjust function text
+            FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Elapsed);
+
+            //adjust function button
+            FunctionButton.SetImage(Resources.Pause);
+
+            WorkTimer = new Timer(startTime);
+            WorkTimer.TimerUpdated += Timer_Update;
+            WorkTimer.TimerStarted += Timer_Start;
+            WorkTimer.TimerStopped += Timer_Stop;
+            WorkTimer.TimerPaused += Timer_Pause;
+            WorkTimer.Start();
+        }
+
+        private void StopTimer()
+        {
+            //adjust timer text
+            TimerText.Text = c_Initial;
+            TimerText.ReadOnly = true;
+            Painter<Blue>.Paint(TimerText, PaintMode.Normal);
+
+            //adjust function text
+            FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Stopped);
+
+            //adjust function button
+            FunctionButton.SetImage(Resources.Stop);
+
+            //adjust mode
+            ModeFunction = FunctionMode.Elapsed;
+
+            if (WorkTimer != null)
+            {
+                WorkTimer.Stop();
+                WorkTimer.TimerUpdated -= Timer_Update;
+                WorkTimer.TimerStarted -= Timer_Start;
+                WorkTimer.TimerStopped -= Timer_Stop;
+                WorkTimer.TimerPaused -= Timer_Pause;
+                WorkTimer.Dispose();
+                WorkTimer = null;
+            }
+
+            Settings.Default.StartTime = DateTime.MinValue;
+            Settings.Default.Save();
+        }
+
+        #endregion
+
+        //################################################################################
+        #region Timer Event Handlers
+
+        private void Timer_Update(object sender, TimerUpdateEventArgs args)
+        {
+            if (InvokeRequired)
+            {
+                TimerUpdateCallback callback = Timer_Update;
                 Invoke(callback, this, args);
             }
             else
@@ -242,86 +335,49 @@ namespace HandyBoxApp.UserControls
             }
         }
 
-        private void OrderControls()
+        private void Timer_Start(object sender, EventArgs args)
         {
-            ContainerPanel.Width = ContainerPanel.Controls.Count * 2 - 1;
-            ContainerPanel.Height = 0;
-
-            foreach (Control control in ContainerPanel.Controls)
+            if (InvokeRequired)
             {
-                if (control.PreferredSize.Height > ContainerPanel.Height)
-                {
-                    ContainerPanel.Height = control.PreferredSize.Height;
-                }
-
-                ContainerPanel.Width += control.Width - Style.PanelSpacing;
+                TimerStateChangeCallback callback = Timer_Start;
+                Invoke(callback, this, args);
             }
-
-            Height = ContainerPanel.Height;
-            Width = ContainerPanel.Width;
-        }
-
-        private void StartSavedTimerIfHas()
-        {
-            var savedTime = Settings.Default.StartTime;
-
-            if (DateTime.Now.Subtract(savedTime) < TimeSpan.FromDays(1))
+            else
             {
-                StartTimer(savedTime);
+                //todo: timer start
             }
         }
 
-        private void StartTimer(DateTime startTime)
+        private void Timer_Stop(object sender, EventArgs args)
         {
-            startTime = m_TimerHelper.GetTestingStartTime(startTime, 0);
-
-            //adjust timer text
-            TimerText.ReadOnly = true;
-            Painter<Blue>.Paint(TimerText, PaintMode.Light);
-
-            //adjust function text
-            FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Elapsed);
-
-            //adjust function button
-            FunctionButton.SetImage(Resources.Pause);
-
-            WorkTimer = new Timer(startTime);
-            WorkTimer.TimerUpdated += UpdateTimer;
-            WorkTimer.Start();
+            if (InvokeRequired)
+            {
+                TimerStateChangeCallback callback = Timer_Stop;
+                Invoke(callback, this, args);
+            }
+            else
+            {
+                //todo: timer start
+            }
         }
 
-        private void StopTimer()
+        private void Timer_Pause(object sender, EventArgs args)
         {
-            //adjust timer text
-            TimerText.Text = c_Initial;
-            TimerText.ReadOnly = true;
-            Painter<Blue>.Paint(TimerText, PaintMode.Normal);
-
-            //adjust function text
-            FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Stopped);
-
-            //adjust function button
-            FunctionButton.SetImage(Resources.Stop);
-
-            //adjust mode
-            ModeFunction = FunctionMode.Elapsed;
-
-            if (WorkTimer != null)
+            if (InvokeRequired)
             {
-                WorkTimer.Stop();
-                WorkTimer.TimerUpdated -= UpdateTimer;
-                WorkTimer.Dispose();
-                WorkTimer = null;
+                TimerStateChangeCallback callback = Timer_Pause;
+                Invoke(callback, this, args);
             }
-
-            Settings.Default.StartTime = DateTime.MinValue;
-            Settings.Default.Save();
+            else
+            {
+                //todo: timer start
+            }
         }
 
         #endregion
 
         //################################################################################
-        #region Event Handlers
+        #region Form Event Handlers
 
         private void TimerText_DoubleClick(object sender, EventArgs e)
         {
