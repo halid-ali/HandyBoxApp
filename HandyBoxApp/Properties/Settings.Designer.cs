@@ -102,21 +102,6 @@ namespace HandyBoxApp.Properties
 
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsTimerCounting
-        {
-            get
-            {
-                return ((bool)(this["IsTimerCounting"]));
-            }
-            set
-            {
-                this["IsTimerCounting"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Elapsed")]
         public global::HandyBoxApp.WorkTimer.FunctionMode ModeFunction
         {
