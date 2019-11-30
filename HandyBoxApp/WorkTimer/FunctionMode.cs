@@ -3,10 +3,12 @@
 namespace HandyBoxApp.WorkTimer
 {
     [Serializable]
-    internal enum TimerMode
+    internal enum FunctionMode
     {
-        Started,
+        Elapsed,
+        Remains,
         Stopped,
-        Paused
+        Paused,
+        Overtime
     }
 }
