@@ -1,5 +1,8 @@
 ﻿
+using HandyBoxApp.Properties;
+
 using System;
+using System.IO;
 
 namespace HandyBoxApp.WorkTimer
 {
@@ -116,22 +119,25 @@ namespace HandyBoxApp.WorkTimer
             }
         }
 
-        //internal void WriteSettings(string caller)
-        //{
-        //    var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "settings.txt");
+        internal void WriteSettings(string caller)
+        {
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "settings.txt");
 
-        //    //clear file content
-        //    File.AppendAllLines(path, new[] { $"CALLER: {caller}" });
-        //    File.AppendAllLines(path, new[] { "----------------------------------------" });
+            //clear file content
+            File.WriteAllText(path, string.Empty);
 
-        //    //write settings
-        //    File.AppendAllLines(path, new[] { $"StartTime: {Settings.Default.StartTime}" });
-        //    File.AppendAllLines(path, new[] { $"PauseTime: {Settings.Default.PauseTime}" });
-        //    File.AppendAllLines(path, new[] { $"IsElapsed: {Settings.Default.IsElapsedMode}" });
-        //    File.AppendAllLines(path, new[] { $"FunctionMode: {Settings.Default.TimerMode}" });
-        //    File.AppendAllLines(path, new[] { $"FunctionMode: {Settings.Default.FunctionMode}" });
-        //    File.AppendAllLines(path, new[] { "########################################" });
-        //}
+            //write settings
+            File.AppendAllLines(path, new[] { $"CALLER: {caller}" });
+            File.AppendAllLines(path, new[] { "----------------------------------------" });
+
+            File.AppendAllLines(path, new[] { $"StartTime: {Settings.Default.StartTime}" });
+            File.AppendAllLines(path, new[] { $"PauseTime: {Settings.Default.PauseTime}" });
+            File.AppendAllLines(path, new[] { $"IsElapsed: {Settings.Default.IsElapsedMode}" });
+            File.AppendAllLines(path, new[] { $"FunctionMode: {Settings.Default.ModeTimer}" });
+            File.AppendAllLines(path, new[] { $"FunctionMode: {Settings.Default.ModeFunction}" });
+
+            File.AppendAllLines(path, new[] { "########################################" });
+        }
 
         #endregion
     }

@@ -120,7 +120,7 @@ namespace HandyBoxApp.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool IsElapsed {
+        public bool IsElapsedMode {
             get {
                 return ((bool)(this["IsElapsed"]));
             }

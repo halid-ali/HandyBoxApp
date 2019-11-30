@@ -36,6 +36,8 @@ namespace HandyBoxApp.UserControls
 
         public TimerPanel()
         {
+            m_TimerHelper.WriteSettings("CONSTRUCTOR");
+
             InitializeComponent();
             OrderControls();
 
@@ -60,6 +62,12 @@ namespace HandyBoxApp.UserControls
         private Timer WorkTimer { get; set; }
 
         private FunctionMode ModeFunction { get; set; } = FunctionMode.Elapsed;
+
+        private TimerMode ModeTimer { get; set; }
+
+        private TimeSpan ElapsedTime { get; set; }
+
+        private TimeSpan RemainingTime { get; set; }
 
         #endregion
 
@@ -290,7 +298,9 @@ namespace HandyBoxApp.UserControls
             {
                 if (args.Overtime.Ticks < 0)
                 {
-                    TimerText.Text = Formatter.FormatTimeSpan(ModeFunction == FunctionMode.Elapsed ? args.ElapsedTime : args.RemainingTime);
+                    ElapsedTime = args.ElapsedTime;
+                    RemainingTime = args.RemainingTime;
+                    TimerText.Text = Formatter.FormatTimeSpan(ModeFunction == FunctionMode.Elapsed ? ElapsedTime : RemainingTime);
                 }
                 else //overtime block
                 {

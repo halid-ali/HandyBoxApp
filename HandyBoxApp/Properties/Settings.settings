@@ -26,7 +26,7 @@
     <Setting Name="ModeTimer" Type="HandyBoxApp.WorkTimer.TimerMode" Scope="User">
       <Value Profile="(Default)">Stopped</Value>
     </Setting>
-    <Setting Name="IsElapsed" Type="System.Boolean" Scope="User">
+    <Setting Name="IsElapsedMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="PauseTime" Type="System.TimeSpan" Scope="User">
