@@ -12,7 +12,7 @@ namespace HandyBoxApp.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.2.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -90,6 +90,54 @@ namespace HandyBoxApp.Properties {
             }
             set {
                 this["IsTimerCounting"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Elapsed")]
+        public global::HandyBoxApp.WorkTimer.FunctionMode ModeFunction {
+            get {
+                return ((global::HandyBoxApp.WorkTimer.FunctionMode)(this["ModeFunction"]));
+            }
+            set {
+                this["ModeFunction"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Stopped")]
+        public global::HandyBoxApp.WorkTimer.TimerMode ModeTimer {
+            get {
+                return ((global::HandyBoxApp.WorkTimer.TimerMode)(this["ModeTimer"]));
+            }
+            set {
+                this["ModeTimer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsElapsed {
+            get {
+                return ((bool)(this["IsElapsed"]));
+            }
+            set {
+                this["IsElapsed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:00:00")]
+        public global::System.TimeSpan PauseTime {
+            get {
+                return ((global::System.TimeSpan)(this["PauseTime"]));
+            }
+            set {
+                this["PauseTime"] = value;
             }
         }
     }

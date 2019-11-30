@@ -42,12 +42,12 @@ namespace HandyBoxApp.Utilities
 
         internal static string FormatTimeSpan(TimeSpan timeSpan)
         {
-            return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}.{timeSpan.Seconds:D2}";
+            return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
         }
 
         internal static string FormatDateTime(DateTime dateTime)
         {
-            return $"{dateTime.Hour:D2}:{dateTime.Minute:D2}.{dateTime.Second:D2}";
+            return $"{dateTime.Hour:D2}:{dateTime.Minute:D2}:{dateTime.Second:D2}";
         }
     }
 

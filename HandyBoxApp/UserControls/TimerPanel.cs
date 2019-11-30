@@ -20,7 +20,7 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Constants
 
-        private const string c_Initial = "00:00.00";
+        private const string c_Initial = "00:00:00";
         private readonly TimerHelper m_TimerHelper = new TimerHelper();
 
         #endregion

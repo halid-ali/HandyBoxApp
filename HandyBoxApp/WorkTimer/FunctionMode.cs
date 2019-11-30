@@ -3,7 +3,7 @@
 namespace HandyBoxApp.WorkTimer
 {
     [Serializable]
-    internal enum FunctionMode
+    public enum FunctionMode
     {
         Elapsed,
         Remains,
