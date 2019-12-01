@@ -36,8 +36,6 @@ namespace HandyBoxApp.UserControls
 
         public TimerPanel()
         {
-            m_TimerHelper.WriteSettings("CONSTRUCTOR");
-
             InitializeComponent();
             OrderControls();
 
@@ -359,7 +357,6 @@ namespace HandyBoxApp.UserControls
                 TimerStartAdjustments();
 
                 //todo: log timer start
-                m_TimerHelper.WriteTimerAction($"Start: {Formatter.FormatDateTime(WorkTimer.StartTime)}, {ModeFunction}");
             }
         }
 
@@ -381,7 +378,6 @@ namespace HandyBoxApp.UserControls
                 TimerPauseAdjustments();
 
                 //todo: log timer pause
-                m_TimerHelper.WriteTimerAction($"Pause: {TimerText.Text}, {ModeFunction}");
             }
         }
 
@@ -406,7 +402,6 @@ namespace HandyBoxApp.UserControls
                 TimerStopAdjustments();
 
                 //todo: log timer stop
-                m_TimerHelper.WriteTimerAction($"Stop: {TimerText.Text}, {ModeFunction}");
             }
         }
 

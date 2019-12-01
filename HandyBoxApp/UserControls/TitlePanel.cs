@@ -5,8 +5,6 @@ using HandyBoxApp.Properties;
 
 using System;
 using System.Drawing;
-using System.Drawing.Text;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -17,8 +15,8 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Constants
 
-        private readonly int c_WmNclButtonDown = 0xA1;
-        private readonly IntPtr c_HtCaption = (IntPtr)0x2;
+        private readonly int m_WmNclButtonDown = 0xA1;
+        private readonly IntPtr m_HtCaption = (IntPtr)0x2;
 
         #endregion
 
@@ -108,15 +106,13 @@ namespace HandyBoxApp.UserControls
 
             #region Title Label
 
-            TitleLabel.Name = "TitleLabel";
-            TitleLabel.Text = "Handy Box App v2.4  ";
+            TitleLabel.Name = $"TitleLabel";
+            TitleLabel.Text = $@"Handy Box App v2.4  ";
             //TitleLabel.Width = 190 - LogoButton.Width;
             TitleLabel.AutoSize = true;
-            //TitleLabel.UseCompatibleTextRendering = true;
             TitleLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             TitleLabel.Padding = new Padding(Style.PanelPadding);
             TitleLabel.TextAlign = ContentAlignment.MiddleLeft;
-            //TitleLabel.Font = new Font(AddFontFromMemory(), Style.PanelFontSize, FontStyle.Regular);
             TitleLabel.Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold);
             Painter<Black>.Paint(TitleLabel, PaintMode.Dark);
             TitleLabel.MouseDown += DragAndDrop;
@@ -161,37 +157,6 @@ namespace HandyBoxApp.UserControls
             ResumeLayout(false);
         }
 
-        private FontFamily AddFontFromMemory()
-        {
-            var privateFontCollection = new PrivateFontCollection();
-
-            using (var fontStream = new MemoryStream(Resources.Courier_Prime))
-            {
-                // create an unsafe memory block for the font data
-                IntPtr data = Marshal.AllocCoTaskMem((int)fontStream.Length);
-
-                // create a buffer to read in to
-                byte[] fontdata = new byte[fontStream.Length];
-
-                // read the font data from the resource
-                fontStream.Read(fontdata, 0, (int)fontStream.Length);
-
-                // copy the bytes to the unsafe memory block
-                Marshal.Copy(fontdata, 0, data, (int)fontStream.Length);
-
-                // pass the font to the font collection
-                privateFontCollection.AddMemoryFont(data, (int)fontStream.Length);
-
-                // close the resource stream
-                fontStream.Close();
-
-                // free up the unsafe memory
-                Marshal.FreeCoTaskMem(data);
-            }
-
-            return privateFontCollection.Families[0];
-        }
-
         private void OrderControls()
         {
             ContainerPanel.Width = ContainerPanel.Controls.Count * 2 - 1;
@@ -222,7 +187,7 @@ namespace HandyBoxApp.UserControls
             if (e.Button != MouseButtons.Left) return;
 
             NativeMethods.ReleaseCapture();
-            NativeMethods.SendMessage(ParentControl.Handle, c_WmNclButtonDown, c_HtCaption, (IntPtr)0);
+            NativeMethods.SendMessage(ParentControl.Handle, m_WmNclButtonDown, m_HtCaption, (IntPtr)0);
         }
 
         #endregion
