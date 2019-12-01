@@ -17,8 +17,14 @@
     <Setting Name="StartTime" Type="System.DateTime" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="IsTimerCounting" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+    <Setting Name="ModeFunction" Type="HandyBoxApp.WorkTimer.FunctionMode" Scope="User">
+      <Value Profile="(Default)">Elapsed</Value>
+    </Setting>
+    <Setting Name="ModeTimer" Type="HandyBoxApp.WorkTimer.TimerMode" Scope="User">
+      <Value Profile="(Default)">Stopped</Value>
+    </Setting>
+    <Setting Name="PauseTime" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:00</Value>
     </Setting>
   </Settings>
 </SettingsFile>
