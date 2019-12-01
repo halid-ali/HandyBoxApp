@@ -200,7 +200,7 @@ namespace HandyBoxApp.UserControls
             switch (ModeTimer)
             {
                 case TimerMode.Started:
-                    StartTimer(m_TimerHelper.GetTestingStartTime(startTime, 6));
+                    StartTimer(m_TimerHelper.GetTestingStartTime(startTime, 0)); //testing purpose
                     break;
 
                 case TimerMode.Paused:
