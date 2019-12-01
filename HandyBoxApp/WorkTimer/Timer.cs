@@ -42,11 +42,7 @@ namespace HandyBoxApp.WorkTimer
         //################################################################################
         #region Properties
 
-        internal bool IsStarted { get; private set; }
-
-        internal bool IsStopped { get; private set; }
-
-        internal bool IsPaused { get; private set; }
+        private bool IsStarted { get; set; }
 
         internal event EventHandler<TimerUpdateEventArgs> TimerUpdated
         {
@@ -72,7 +68,7 @@ namespace HandyBoxApp.WorkTimer
             remove => TimerPause -= value;
         }
 
-        private DateTime StartTime { get; set; }
+        internal DateTime StartTime { get; private set; }
 
         private DateTime StartTimeWithLunchBreak { get; }
 
@@ -87,7 +83,6 @@ namespace HandyBoxApp.WorkTimer
 
         internal void Start()
         {
-            ResetFlags();
             IsStarted = true;
             Worker.RunWorkerAsync();
             OnTimerStart();
@@ -95,15 +90,14 @@ namespace HandyBoxApp.WorkTimer
 
         internal void Stop()
         {
-            ResetFlags();
-            IsStopped = true;
+            IsStarted = false;
             OnTimerStop();
         }
 
         internal void Pause()
         {
-            OnTimerPause();
             Worker.CancelAsync();
+            OnTimerPause();
         }
 
         #endregion
@@ -113,12 +107,14 @@ namespace HandyBoxApp.WorkTimer
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (!(sender is BackgroundWorker bgWorker))
+                throw new ArgumentException(nameof(sender));
+
             while (IsStarted)
             {
-                if (sender is BackgroundWorker bgWorker && bgWorker.CancellationPending)
+                if (bgWorker.CancellationPending)
                 {
-                    ResetFlags();
-                    IsPaused = true;
+                    IsStarted = false;
                     e.Cancel = true;
                     return;
                 }
@@ -140,9 +136,6 @@ namespace HandyBoxApp.WorkTimer
             {
                 //log error
             }
-
-            ResetFlags();
-            IsStopped = true;
 
             StartTime = new DateTime();
             FinishTime = new DateTime();
@@ -179,13 +172,6 @@ namespace HandyBoxApp.WorkTimer
         {
             var args = new EventArgs();
             Volatile.Read(ref TimerStop)?.Invoke(this, args);
-        }
-
-        private void ResetFlags()
-        {
-            IsStarted = false;
-            IsStopped = false;
-            IsPaused = false;
         }
 
         #endregion

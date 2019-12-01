@@ -7,8 +7,6 @@ namespace HandyBoxApp.WorkTimer
     {
         Elapsed,
         Remains,
-        Stopped,
-        Paused,
         Overtime
     }
 }

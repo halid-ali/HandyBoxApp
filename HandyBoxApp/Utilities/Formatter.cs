@@ -1,6 +1,4 @@
-﻿using HandyBoxApp.WorkTimer;
-
-using System;
+﻿using System;
 using System.Globalization;
 
 namespace HandyBoxApp.Utilities
@@ -35,9 +33,9 @@ namespace HandyBoxApp.Utilities
             return value.PadLeft(totalWidth, paddingChar);
         }
 
-        internal static string FormatTimerFunction(FunctionMode mode)
+        internal static string FormatMode(string mode)
         {
-            return FormatString($"{mode.ToString()}:", Pad.Right, 9);
+            return FormatString($"{mode}:", Pad.Right, 9);
         }
 
         internal static string FormatTimeSpan(TimeSpan timeSpan)

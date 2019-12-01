@@ -26,7 +26,7 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Fields
 
-        private const string c_Initial = "00:00:00";
+        private const string c_InitialTime = "00:00:00";
         private readonly TimerHelper m_TimerHelper = new TimerHelper();
 
         #endregion
@@ -41,7 +41,9 @@ namespace HandyBoxApp.UserControls
             InitializeComponent();
             OrderControls();
 
-            InitializeTimerSettingsAndStartTimer();
+            var savedTime = Settings.Default.StartTime;
+            var savedMode = Settings.Default.ModeTimer;
+            InitializeSettingsAndStartTimer(savedTime, savedMode);
         }
 
         #endregion
@@ -69,6 +71,8 @@ namespace HandyBoxApp.UserControls
 
         private TimeSpan RemainingTime { get; set; }
 
+        private TimeSpan OverTime { get; set; } = new TimeSpan(0, 0, 0);
+
         #endregion
 
         //################################################################################
@@ -90,8 +94,8 @@ namespace HandyBoxApp.UserControls
 
             #region Timer TextBox
 
-            FunctionText.Name = "TimerText";
-            FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Stopped);
+            FunctionText.Name = $"TimerText";
+            FunctionText.Text = Formatter.FormatMode($"{TimerMode.Stopped}");
             FunctionText.AutoSize = true;
             FunctionText.BorderStyle = BorderStyle.None;
             FunctionText.Padding = new Padding(Style.PanelPadding);
@@ -109,7 +113,7 @@ namespace HandyBoxApp.UserControls
                 Font = new Font(new FontFamily(Style.FontName), Style.PanelFontSize, FontStyle.Bold)
             };
 
-            TimerText.Text = c_Initial;
+            TimerText.Text = c_InitialTime;
             TimerText.ReadOnly = true;
             TimerText.AutoSize = false;
             TimerText.TabStop = false;
@@ -190,30 +194,64 @@ namespace HandyBoxApp.UserControls
             Width = ContainerPanel.Width;
         }
 
-        private void InitializeTimerSettingsAndStartTimer()
+        private void InitializeSettingsAndStartTimer(DateTime startTime, TimerMode timerMode)
         {
-            var savedTime = Settings.Default.StartTime;
+            ModeTimer = timerMode;
+            ModeFunction = Settings.Default.ModeFunction;
 
-            if (DateTime.Now.Subtract(savedTime) < TimeSpan.FromDays(1))
+            switch (ModeTimer)
             {
-                StartTimer(savedTime);
+                case TimerMode.Started:
+                    StartTimer(m_TimerHelper.GetTestingStartTime(startTime, 6));
+                    break;
+
+                case TimerMode.Paused:
+                    TimerText.Text = Formatter.FormatTimeSpan(Settings.Default.PauseTime);
+                    TimerPauseAdjustments();
+                    break;
+
+                case TimerMode.Stopped:
+                    TimerStopAdjustments();
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void TimerStartAdjustments()
+        {
+            FunctionText.Text = Formatter.FormatMode($"{ModeFunction}");
+            TimerText.ReadOnly = true;
+            Painter<Blue>.Paint(TimerText, PaintMode.Light);
+            FunctionButton.SetImage(Resources.Pause);
+        }
+
+        private void TimerPauseAdjustments()
+        {
+            FunctionText.Text = Formatter.FormatMode($"{ModeTimer}");
+            TimerText.ReadOnly = true;
+            Painter<Blue>.Paint(TimerText, PaintMode.Normal);
+            FunctionButton.SetImage(Resources.Play);
+        }
+
+        private void TimerStopAdjustments()
+        {
+            FunctionText.Text = Formatter.FormatMode($"{ModeTimer}");
+            TimerText.ReadOnly = true;
+            TimerText.Text = c_InitialTime;
+            Painter<Blue>.Paint(TimerText, PaintMode.Dark);
+            FunctionButton.SetImage(Resources.Stop);
+        }
+
+        private void TimerOvertimeAdjustments()
+        {
+            FunctionText.Text = Formatter.FormatMode($"{ModeFunction}");
+            TimerText.ReadOnly = true;
         }
 
         private void StartTimer(DateTime startTime)
         {
-            startTime = m_TimerHelper.GetTestingStartTime(startTime, 0);
-
-            //adjust timer text
-            TimerText.ReadOnly = true;
-            Painter<Blue>.Paint(TimerText, PaintMode.Light);
-
-            //adjust function text
-            FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Elapsed);
-
-            //adjust function button
-            FunctionButton.SetImage(Resources.Pause);
-
             WorkTimer = new Timer(startTime);
             WorkTimer.TimerUpdated += Timer_Update;
             WorkTimer.TimerStarted += Timer_Start;
@@ -224,20 +262,6 @@ namespace HandyBoxApp.UserControls
 
         private void StopTimer()
         {
-            //adjust timer text
-            TimerText.Text = c_Initial;
-            TimerText.ReadOnly = true;
-            Painter<Blue>.Paint(TimerText, PaintMode.Normal);
-
-            //adjust function text
-            FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Stopped);
-
-            //adjust function button
-            FunctionButton.SetImage(Resources.Stop);
-
-            //adjust mode
-            ModeFunction = FunctionMode.Elapsed;
-
             if (WorkTimer != null)
             {
                 WorkTimer.Stop();
@@ -248,9 +272,6 @@ namespace HandyBoxApp.UserControls
                 WorkTimer.Dispose();
                 WorkTimer = null;
             }
-
-            Settings.Default.StartTime = DateTime.MinValue;
-            Settings.Default.Save();
         }
 
         #endregion
@@ -275,8 +296,19 @@ namespace HandyBoxApp.UserControls
                 }
                 else //overtime block
                 {
+                    OverTime = args.Overtime;
+
+                    if (ModeFunction != FunctionMode.Overtime)
+                    {
+                        ModeFunction = FunctionMode.Overtime;
+                        Settings.Default.ModeFunction = ModeFunction;
+                        Settings.Default.Save();
+
+                        TimerOvertimeAdjustments();
+                    }
+
                     //when overtime reaches to 2 hours, stop timer
-                    if (args.Overtime.Hours >= 2)
+                    if (OverTime.Hours >= 2)
                     {
                         StopTimer();
                         return;
@@ -287,24 +319,24 @@ namespace HandyBoxApp.UserControls
                     {
                         ModeFunction = FunctionMode.Overtime;
                         Painter<Green>.Paint(TimerText, PaintMode.Dark);
-                        FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Overtime);
+                        FunctionText.Text = Formatter.FormatMode($"{FunctionMode.Overtime}");
                     }
 
                     //change color of TimerText if not changed
-                    if (args.Overtime > TimeSpan.FromMinutes(90))
+                    if (OverTime > TimeSpan.FromMinutes(90))
                     {
                         Painter<Red>.Paint(TimerText, PaintMode.Dark);
                     }
 
                     //display reminder after 90 minutes of overtime for every defined time slot
-                    if (args.Overtime.Minutes % Constants.TimerReminderInterval == 0 &&
-                        args.Overtime.Seconds == 0)
+                    if (OverTime.Minutes % Constants.TimerReminderInterval == 0 &&
+                        OverTime.Seconds == 0)
                     {
-                        var message = $"Last {60 - args.Overtime.Minutes} minutes for leaving the office.";
+                        var message = $"Last {60 - OverTime.Minutes} minutes for leaving the office.";
                         BalloonTip.Show("Work Hour Deadline", message, ToolTipIcon.Info, 2000);
                     }
 
-                    TimerText.Text = Formatter.FormatTimeSpan(args.Overtime);
+                    TimerText.Text = Formatter.FormatTimeSpan(OverTime);
                 }
             }
         }
@@ -318,22 +350,16 @@ namespace HandyBoxApp.UserControls
             }
             else
             {
-                //todo: timer start
-                m_TimerHelper.WriteTimerAction($"Timer Started:{ElapsedTime}");
-            }
-        }
+                ModeTimer = TimerMode.Started;
+                Settings.Default.ModeTimer = ModeTimer;
+                Settings.Default.ModeFunction = ModeFunction;
+                Settings.Default.StartTime = WorkTimer.StartTime;
+                Settings.Default.Save();
 
-        private void Timer_Stop(object sender, EventArgs args)
-        {
-            if (InvokeRequired)
-            {
-                TimerStateChangeCallback callback = Timer_Stop;
-                Invoke(callback, this, args);
-            }
-            else
-            {
-                //todo: timer start
-                m_TimerHelper.WriteTimerAction($"Timer Stopped:{ElapsedTime}");
+                TimerStartAdjustments();
+
+                //todo: log timer start
+                m_TimerHelper.WriteTimerAction($"Start: {Formatter.FormatDateTime(WorkTimer.StartTime)}, {ModeFunction}");
             }
         }
 
@@ -346,8 +372,41 @@ namespace HandyBoxApp.UserControls
             }
             else
             {
-                //todo: timer start
-                m_TimerHelper.WriteTimerAction($"Timer Paused:{ElapsedTime}");
+                ModeTimer = TimerMode.Paused;
+                Settings.Default.ModeTimer = ModeTimer;
+                Settings.Default.ModeFunction = ModeFunction;
+                Settings.Default.PauseTime = TimeSpan.Parse(TimerText.Text);
+                Settings.Default.Save();
+
+                TimerPauseAdjustments();
+
+                //todo: log timer pause
+                m_TimerHelper.WriteTimerAction($"Pause: {TimerText.Text}, {ModeFunction}");
+            }
+        }
+
+        private void Timer_Stop(object sender, EventArgs args)
+        {
+            if (InvokeRequired)
+            {
+                TimerStateChangeCallback callback = Timer_Stop;
+                Invoke(callback, this, args);
+            }
+            else
+            {
+                ModeTimer = TimerMode.Stopped;
+                ModeFunction = FunctionMode.Elapsed; //default function mode
+
+                Settings.Default.ModeTimer = ModeTimer;
+                Settings.Default.ModeFunction = ModeFunction;
+                Settings.Default.StartTime = DateTime.MinValue;
+                Settings.Default.PauseTime = TimeSpan.MinValue;
+                Settings.Default.Save();
+
+                TimerStopAdjustments();
+
+                //todo: log timer stop
+                m_TimerHelper.WriteTimerAction($"Stop: {TimerText.Text}, {ModeFunction}");
             }
         }
 
@@ -358,7 +417,10 @@ namespace HandyBoxApp.UserControls
 
         private void TimerText_DoubleClick(object sender, EventArgs e)
         {
-            TimerText.ReadOnly = false;
+            if (ModeTimer != TimerMode.Started)
+            {
+                TimerText.ReadOnly = false;
+            }
         }
 
         private void TimerText_KeyPress(object sender, KeyPressEventArgs e)
@@ -368,21 +430,18 @@ namespace HandyBoxApp.UserControls
 
             if (e.KeyChar == (char)13)
             {
-                if (WorkTimer != null && (WorkTimer.IsStarted || WorkTimer.IsPaused))
+                if (ModeTimer == TimerMode.Paused)
                 {
                     StopTimer();
                 }
 
                 if (m_TimerHelper.ValidateTime(timeText, out DateTime startTime))
                 {
-                    Settings.Default.StartTime = startTime;
-                    Settings.Default.Save();
-
-                    StartTimer(startTime);
+                    InitializeSettingsAndStartTimer(startTime, TimerMode.Started);
                 }
                 else
                 {
-                    TimerText.Text = c_Initial;
+                    TimerText.Text = c_InitialTime;
                 }
             }
         }
@@ -394,7 +453,7 @@ namespace HandyBoxApp.UserControls
 
         private void FunctionText_DoubleClick(object sender, EventArgs e)
         {
-            if (WorkTimer != null && WorkTimer.IsStarted)
+            if (ModeTimer == TimerMode.Started)
             {
                 if (ModeFunction == FunctionMode.Elapsed)
                 {
@@ -409,7 +468,10 @@ namespace HandyBoxApp.UserControls
                     ModeFunction = FunctionMode.Overtime;
                 }
 
-                FunctionText.Text = Formatter.FormatTimerFunction(ModeFunction);
+                FunctionText.Text = Formatter.FormatMode($"{ModeFunction}");
+
+                Settings.Default.ModeFunction = ModeFunction;
+                Settings.Default.Save();
             }
         }
 
@@ -417,23 +479,15 @@ namespace HandyBoxApp.UserControls
         {
             if (((MouseEventArgs)e).Button == MouseButtons.Left)
             {
-                if (WorkTimer != null)
+                if (ModeTimer != TimerMode.Stopped)
                 {
-                    if (WorkTimer.IsStarted)
+                    if (ModeTimer == TimerMode.Started)
                     {
                         WorkTimer.Pause();
-                        FunctionButton.SetImage(Resources.Play);
-                        FunctionText.Text = Formatter.FormatTimerFunction(FunctionMode.Paused);
-
-                        Settings.Default.Save();
                     }
-                    else if (WorkTimer.IsPaused)
+                    else if (ModeTimer == TimerMode.Paused)
                     {
-                        WorkTimer.Start();
-                        FunctionButton.SetImage(Resources.Pause);
-                        FunctionText.Text = Formatter.FormatTimerFunction(ModeFunction);
-
-                        Settings.Default.Save();
+                        InitializeSettingsAndStartTimer(Settings.Default.StartTime, TimerMode.Started);
                     }
 
                     TimerText.HideSelection = true;

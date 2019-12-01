@@ -1,5 +1,4 @@
-﻿
-using HandyBoxApp.Properties;
+﻿using HandyBoxApp.Properties;
 
 using System;
 using System.IO;
@@ -34,60 +33,6 @@ namespace HandyBoxApp.WorkTimer
             startTime = new DateTime(year, month, day, hourValue, minuteValue, secondValue);
 
             return true;
-        }
-
-        internal bool CheckConsistency(DateTime startTime, TimerMode modeTimer, FunctionMode modeFunction, out bool isNewStart)
-        {
-            isNewStart = true;
-
-            switch (modeTimer)
-            {
-                case TimerMode.Stopped:
-                    {
-                        if (modeFunction == FunctionMode.Stopped)
-                        {
-                            if (startTime.Equals(DateTime.MinValue))
-                            {
-                                return true;
-                            }
-                        }
-
-                        break;
-                    }
-
-                case TimerMode.Started:
-                    {
-                        if (modeFunction == FunctionMode.Elapsed || modeFunction == FunctionMode.Remains || modeFunction == FunctionMode.Overtime)
-                        {
-                            if (startTime.Date.Equals(DateTime.Now.Date))
-                            {
-                                isNewStart = false;
-                                return true;
-                            }
-                        }
-
-                        break;
-                    }
-
-                case TimerMode.Paused:
-                    {
-                        if (modeFunction == FunctionMode.Paused)
-                        {
-                            if (startTime.Date.Equals(DateTime.Now.Date))
-                            {
-                                isNewStart = false;
-                                return true;
-                            }
-                        }
-
-                        break;
-                    }
-
-                default:
-                    throw new ArgumentException("Invalid timer mode.");
-            }
-
-            return false;
         }
 
         #region Testing Members
@@ -132,8 +77,7 @@ namespace HandyBoxApp.WorkTimer
 
             File.AppendAllLines(path, new[] { $"StartTime: {Settings.Default.StartTime}" });
             File.AppendAllLines(path, new[] { $"PauseTime: {Settings.Default.PauseTime}" });
-            File.AppendAllLines(path, new[] { $"IsElapsed: {Settings.Default.IsElapsedMode}" });
-            File.AppendAllLines(path, new[] { $"FunctionMode: {Settings.Default.ModeTimer}" });
+            File.AppendAllLines(path, new[] { $"TimerMode: {Settings.Default.ModeTimer}" });
             File.AppendAllLines(path, new[] { $"FunctionMode: {Settings.Default.ModeFunction}" });
 
             File.AppendAllLines(path, new[] { "########################################" });
