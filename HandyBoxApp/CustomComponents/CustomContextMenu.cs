@@ -4,6 +4,7 @@ using HandyBoxApp.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -128,12 +129,15 @@ namespace HandyBoxApp.CustomComponents
 
         private void ShowLogs(object sender, EventArgs args)
         {
-            //todo: implement show logs
+            var notepadPath = @"C:\Windows\notepad.exe";
+            var logPath = s_MainForm.Log.LogPath;
+
+            Process.Start(notepadPath, logPath);
         }
 
         private void ClearLogs(object sender, EventArgs args)
         {
-            //todo: implement clear logs
+            s_MainForm.Log.ClearLogs();
         }
 
         private void About(object sender, EventArgs args)

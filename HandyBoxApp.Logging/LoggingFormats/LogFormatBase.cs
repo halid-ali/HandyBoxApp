@@ -4,17 +4,19 @@ namespace HandyBoxApp.Logging.LoggingFormats
 {
     internal class LogFormatBase
     {
-        protected void WriteLogs(string logs, string path)
+        private static object m_LockObject = new object();
+
+        protected static void WriteLogs(string logs, string path)
         {
-            lock (this)
+            lock (m_LockObject)
             {
                 File.AppendAllText(path, logs);
             }
         }
 
-        protected void DeleteLogs(string path)
+        protected static void DeleteLogs(string path)
         {
-            lock (this)
+            lock (m_LockObject)
             {
                 File.WriteAllText(path, string.Empty);
             }

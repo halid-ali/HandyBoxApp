@@ -1,4 +1,5 @@
 ﻿using HandyBoxApp.CustomComponents;
+using HandyBoxApp.Logging;
 using HandyBoxApp.Properties;
 using HandyBoxApp.StockExchange;
 using HandyBoxApp.UserControls;
@@ -19,6 +20,8 @@ namespace HandyBoxApp
 
             InitializeComponent();
             InitializePanels();
+
+            Log.Info("HandyBoxApp loaded.");
         }
 
         #endregion
@@ -39,6 +42,8 @@ namespace HandyBoxApp
         private TimerPanel HourPanel { get; set; }
 
         public LayoutPanel LayoutPanel { get; private set; }
+
+        public ILoggingService Log { get; } = LogServiceFactory.CreateService(LogFormat.Txt);
 
         #endregion
 
