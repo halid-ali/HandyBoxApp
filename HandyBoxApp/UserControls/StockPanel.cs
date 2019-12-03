@@ -1,6 +1,7 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
+using HandyBoxApp.Logging;
 using HandyBoxApp.Properties;
 using HandyBoxApp.StockExchange.EventArgs;
 using HandyBoxApp.StockExchange.Interfaces;
@@ -32,6 +33,11 @@ namespace HandyBoxApp.UserControls
             Worker.DoWork += FetchStockData;
             Worker.RunWorkerCompleted += FetchStockDataCompleted;
 
+            Log = ((MainForm)ParentControl).Log;
+            //todo: IStockService doesn't provide information about stock's status.
+            //that's why in logs all stocks are listed even if they are invisible.
+            Log.Info($"{stockService.GetStockInfo.Name} Stack panel is loaded.");
+
             InitializeComponent();
             OrderControls();
 
@@ -55,7 +61,7 @@ namespace HandyBoxApp.UserControls
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
-        private BackgroundWorker Worker { get; } = new BackgroundWorker();
+        private BackgroundWorker Worker { get; } = new BackgroundWorker(); //todo: exclude backgroundworker from this class. eg. Timer
 
         private bool IsFetchCancelled { get; set; }
 
@@ -65,7 +71,12 @@ namespace HandyBoxApp.UserControls
 
         private ToolTip ToolTip { get; } = new ToolTip();
 
+        private ILoggingService Log { get; }
+
         #endregion
+
+        //################################################################################
+        #region Public Members
 
         public void StartStockDataFetching()
         {
@@ -84,6 +95,8 @@ namespace HandyBoxApp.UserControls
         {
             return StockService.GetStockInfo.Tag;
         }
+
+        #endregion
 
         //################################################################################
         #region Private Members
@@ -193,7 +206,7 @@ namespace HandyBoxApp.UserControls
 
         private void FetchStockDataCompleted(object sender, RunWorkerCompletedEventArgs args)
         {
-
+            //todo: implement fetch stock data complete
         }
 
         private void UpdateStockData(object sender, StockUpdateEventArgs args)
