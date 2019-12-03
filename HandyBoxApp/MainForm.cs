@@ -17,11 +17,10 @@ namespace HandyBoxApp
         public MainForm()
         {
             Closing += OnFormClosed;
+            Log.Info("HandyBoxApp is loaded.");
 
             InitializeComponent();
             InitializePanels();
-
-            Log.Info("HandyBoxApp loaded.");
         }
 
         #endregion

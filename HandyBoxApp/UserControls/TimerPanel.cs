@@ -1,6 +1,7 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
+using HandyBoxApp.Logging;
 using HandyBoxApp.Properties;
 using HandyBoxApp.Utilities;
 using HandyBoxApp.WorkTimer;
@@ -39,6 +40,8 @@ namespace HandyBoxApp.UserControls
             InitializeComponent();
             OrderControls();
 
+            Log.Info("WorkTimer is loaded.");
+
             var savedTime = Settings.Default.StartTime;
             var savedMode = Settings.Default.ModeTimer;
             InitializeSettingsAndStartTimer(savedTime, savedMode);
@@ -70,6 +73,8 @@ namespace HandyBoxApp.UserControls
         private TimeSpan RemainingTime { get; set; }
 
         private TimeSpan OverTime { get; set; } = new TimeSpan(0, 0, 0);
+
+        private ILoggingService Log { get; } = LogServiceFactory.CreateService(LogFormat.Txt);
 
         #endregion
 
@@ -143,10 +148,16 @@ namespace HandyBoxApp.UserControls
                 button.Click += FunctionButton_Click;
             }
 
+            void ManualStopAction(object sender, EventArgs args)
+            {
+                Log.Info("Stop has been triggered manually. WorkTimer will stop.");
+                StopTimer();
+            }
+
             FunctionButton = new ImageButton(PauseAction, Resources.Stop)
             {
                 Margin = new Padding(0),
-                ContextMenu = new ContextMenu { MenuItems = { new MenuItem("Stop", (s, a) => StopTimer()) } }
+                ContextMenu = new ContextMenu { MenuItems = { new MenuItem("Stop", (s, a) => ManualStopAction(s, a)) } }
             };
             FunctionButton.SetToolTip("Pause/Resume timer");
             FunctionButton.SetBackgroundColor(Color.FromArgb(152, 0, 47));
@@ -200,15 +211,18 @@ namespace HandyBoxApp.UserControls
             switch (ModeTimer)
             {
                 case TimerMode.Started:
+                    Log.Info("WorkTimer in Start mode");
                     StartTimer(m_TimerHelper.GetTestingStartTime(startTime, 0)); //testing purpose
                     break;
 
                 case TimerMode.Paused:
+                    Log.Info("WorkTimer in Pause mode");
                     TimerText.Text = Formatter.FormatTimeSpan(Settings.Default.PauseTime);
                     TimerPauseAdjustments();
                     break;
 
                 case TimerMode.Stopped:
+                    Log.Info("WorkTimer in Stop mode");
                     TimerStopAdjustments();
                     break;
 
@@ -296,8 +310,10 @@ namespace HandyBoxApp.UserControls
                 {
                     OverTime = args.Overtime;
 
+                    //set mode and adjust timer values only once
                     if (ModeFunction != FunctionMode.Overtime)
                     {
+                        Log.Info("WorkTimer in Overtime mode");
                         ModeFunction = FunctionMode.Overtime;
                         Settings.Default.ModeFunction = ModeFunction;
                         Settings.Default.Save();
@@ -308,16 +324,9 @@ namespace HandyBoxApp.UserControls
                     //when overtime reaches to 2 hours, stop timer
                     if (OverTime.Hours >= 2)
                     {
+                        Log.Info("Deadline has been reached. WorkTimer will stop.");
                         StopTimer();
                         return;
-                    }
-
-                    //set mode and adjust timer values only once
-                    if (ModeFunction != FunctionMode.Overtime)
-                    {
-                        ModeFunction = FunctionMode.Overtime;
-                        Painter<Green>.Paint(TimerText, PaintMode.Dark);
-                        FunctionText.Text = Formatter.FormatMode($"{FunctionMode.Overtime}");
                     }
 
                     //change color of TimerText if not changed
@@ -330,7 +339,10 @@ namespace HandyBoxApp.UserControls
                     if (OverTime.Minutes % Constants.TimerReminderInterval == 0 &&
                         OverTime.Seconds == 0)
                     {
-                        var message = $"Last {60 - OverTime.Minutes} minutes for leaving the office.";
+                        var lastMinutes = 60 - OverTime.Minutes;
+                        Log.Debug($"Approaching deadline: Last {lastMinutes} minutes.");
+
+                        var message = $"Last {lastMinutes} minutes for leaving the office.";
                         BalloonTip.Show("Work Hour Deadline", message, ToolTipIcon.Info, 2000);
                     }
 
@@ -356,7 +368,9 @@ namespace HandyBoxApp.UserControls
 
                 TimerStartAdjustments();
 
-                //todo: log timer start
+                Log.Info("WorkTimer has been started.");
+                Log.Info($"Start date/time: {WorkTimer.StartTime}");
+                Log.Info($"Function mode : {ModeFunction}");
             }
         }
 
@@ -377,7 +391,10 @@ namespace HandyBoxApp.UserControls
 
                 TimerPauseAdjustments();
 
-                //todo: log timer pause
+                Log.Info("WorkTimer has been paused.");
+                Log.Info($"Start time: {WorkTimer.StartTime.TimeOfDay}");
+                Log.Info($"Pause time: {Settings.Default.PauseTime}");
+                Log.Info($"Function mode : {ModeFunction}");
             }
         }
 
@@ -401,7 +418,7 @@ namespace HandyBoxApp.UserControls
 
                 TimerStopAdjustments();
 
-                //todo: log timer stop
+                Log.Info("WorkTimer has been stopped.");
             }
         }
 
@@ -436,6 +453,7 @@ namespace HandyBoxApp.UserControls
                 }
                 else
                 {
+                    Log.Error($"Time entered could not be verified. Value: {{{timeText}}}", null);
                     TimerText.Text = c_InitialTime;
                 }
             }
@@ -452,10 +470,12 @@ namespace HandyBoxApp.UserControls
             {
                 if (ModeFunction == FunctionMode.Elapsed)
                 {
+                    Log.Info("WorkTimer function is changed as 'Remains'");
                     ModeFunction = FunctionMode.Remains;
                 }
                 else if (ModeFunction == FunctionMode.Remains)
                 {
+                    Log.Info("WorkTimer function is changed as 'Elapsed'");
                     ModeFunction = FunctionMode.Elapsed;
                 }
                 else
