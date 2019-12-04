@@ -333,17 +333,17 @@ namespace HandyBoxApp.UserControls
                     if (OverTime > TimeSpan.FromMinutes(90))
                     {
                         Painter<Red>.Paint(TimerText, PaintMode.Dark);
-                    }
 
-                    //display reminder after 90 minutes of overtime for every defined time slot
-                    if (OverTime.Minutes % Constants.TimerReminderInterval == 0 &&
-                        OverTime.Seconds == 0)
-                    {
-                        var lastMinutes = 60 - OverTime.Minutes;
-                        Log.Debug($"Approaching deadline: Last {lastMinutes} minutes.");
+                        //display reminder after 90 minutes of overtime for every defined time slot
+                        if (OverTime.Minutes % Constants.TimerReminderInterval == 0 &&
+                            OverTime.Seconds == 0)
+                        {
+                            var lastMinutes = 60 - OverTime.Minutes;
+                            Log.Debug($"Approaching deadline: Last {lastMinutes} minutes.");
 
-                        var message = $"Last {lastMinutes} minutes for leaving the office.";
-                        BalloonTip.Show("Work Hour Deadline", message, ToolTipIcon.Info, 2000);
+                            var message = $"Last {lastMinutes} minutes for leaving the office.";
+                            BalloonTip.Show("Work Hour Deadline", message, ToolTipIcon.Info, 2000);
+                        }
                     }
 
                     TimerText.Text = Formatter.FormatTimeSpan(OverTime);
