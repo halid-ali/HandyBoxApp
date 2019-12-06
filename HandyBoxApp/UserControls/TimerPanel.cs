@@ -81,6 +81,8 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Private Members
 
+        #region Timer Panel Initialization
+
         private void InitializeComponent()
         {
             ContainerPanel.SuspendLayout();
@@ -203,6 +205,10 @@ namespace HandyBoxApp.UserControls
             Width = ContainerPanel.Width;
         }
 
+        #endregion
+
+        #region Timer Start/Stop and Initialization
+
         private void InitializeSettingsAndStartTimer(DateTime startTime, TimerMode timerMode)
         {
             ModeTimer = timerMode;
@@ -230,6 +236,34 @@ namespace HandyBoxApp.UserControls
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        private void StartTimer(DateTime startTime)
+        {
+            WorkTimer = new Timer(startTime);
+            WorkTimer.TimerUpdated += Timer_Update;
+            WorkTimer.TimerStarted += Timer_Start;
+            WorkTimer.TimerStopped += Timer_Stop;
+            WorkTimer.TimerPaused += Timer_Pause;
+            WorkTimer.Start();
+        }
+
+        private void StopTimer()
+        {
+            if (WorkTimer != null)
+            {
+                WorkTimer.Stop();
+                WorkTimer.TimerUpdated -= Timer_Update;
+                WorkTimer.TimerStarted -= Timer_Start;
+                WorkTimer.TimerStopped -= Timer_Stop;
+                WorkTimer.TimerPaused -= Timer_Pause;
+                WorkTimer.Dispose();
+                WorkTimer = null;
+            }
+        }
+
+        #endregion
+
+        #region Timer Panel Adjustments
 
         private void TimerStartAdjustments()
         {
@@ -262,27 +296,44 @@ namespace HandyBoxApp.UserControls
             TimerText.ReadOnly = true;
         }
 
-        private void StartTimer(DateTime startTime)
-        {
-            WorkTimer = new Timer(startTime);
-            WorkTimer.TimerUpdated += Timer_Update;
-            WorkTimer.TimerStarted += Timer_Start;
-            WorkTimer.TimerStopped += Timer_Stop;
-            WorkTimer.TimerPaused += Timer_Pause;
-            WorkTimer.Start();
-        }
+        #endregion
 
-        private void StopTimer()
+        private void CheckOvertime()
         {
-            if (WorkTimer != null)
+            //set mode and adjust timer values only once
+            if (ModeFunction != FunctionMode.Overtime)
             {
-                WorkTimer.Stop();
-                WorkTimer.TimerUpdated -= Timer_Update;
-                WorkTimer.TimerStarted -= Timer_Start;
-                WorkTimer.TimerStopped -= Timer_Stop;
-                WorkTimer.TimerPaused -= Timer_Pause;
-                WorkTimer.Dispose();
-                WorkTimer = null;
+                Log.Info("WorkTimer in Overtime mode");
+                ModeFunction = FunctionMode.Overtime;
+                Settings.Default.ModeFunction = ModeFunction;
+                Settings.Default.Save();
+
+                TimerOvertimeAdjustments();
+            }
+
+            //when overtime reaches to 2 hours, stop timer
+            if (OverTime.Hours >= 2)
+            {
+                Log.Info("Deadline has been reached. WorkTimer will stop.");
+                StopTimer();
+                return;
+            }
+
+            //change color of TimerText if not changed
+            if (OverTime > TimeSpan.FromMinutes(90))
+            {
+                Painter<Red>.Paint(TimerText, PaintMode.Dark);
+
+                //display reminder after 90 minutes of overtime for every defined time slot
+                if (OverTime.Minutes % Constants.TimerReminderInterval == 0 &&
+                    OverTime.Seconds == 0)
+                {
+                    var lastMinutes = 60 - OverTime.Minutes;
+                    Log.Debug($"Approaching deadline: Last {lastMinutes} minutes.");
+
+                    var message = $"Last {lastMinutes} minutes for leaving the office.";
+                    BalloonTip.Show("Work Hour Deadline", message, ToolTipIcon.Info, 2000);
+                }
             }
         }
 
@@ -309,43 +360,7 @@ namespace HandyBoxApp.UserControls
                 else //overtime block
                 {
                     OverTime = args.Overtime;
-
-                    //set mode and adjust timer values only once
-                    if (ModeFunction != FunctionMode.Overtime)
-                    {
-                        Log.Info("WorkTimer in Overtime mode");
-                        ModeFunction = FunctionMode.Overtime;
-                        Settings.Default.ModeFunction = ModeFunction;
-                        Settings.Default.Save();
-
-                        TimerOvertimeAdjustments();
-                    }
-
-                    //when overtime reaches to 2 hours, stop timer
-                    if (OverTime.Hours >= 2)
-                    {
-                        Log.Info("Deadline has been reached. WorkTimer will stop.");
-                        StopTimer();
-                        return;
-                    }
-
-                    //change color of TimerText if not changed
-                    if (OverTime > TimeSpan.FromMinutes(90))
-                    {
-                        Painter<Red>.Paint(TimerText, PaintMode.Dark);
-
-                        //display reminder after 90 minutes of overtime for every defined time slot
-                        if (OverTime.Minutes % Constants.TimerReminderInterval == 0 &&
-                            OverTime.Seconds == 0)
-                        {
-                            var lastMinutes = 60 - OverTime.Minutes;
-                            Log.Debug($"Approaching deadline: Last {lastMinutes} minutes.");
-
-                            var message = $"Last {lastMinutes} minutes for leaving the office.";
-                            BalloonTip.Show("Work Hour Deadline", message, ToolTipIcon.Info, 2000);
-                        }
-                    }
-
+                    CheckOvertime();
                     TimerText.Text = Formatter.FormatTimeSpan(OverTime);
                 }
             }
