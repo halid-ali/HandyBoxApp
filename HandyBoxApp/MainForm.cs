@@ -59,6 +59,8 @@ namespace HandyBoxApp
         {
             Settings.Default.LastLocation = Location;
             Settings.Default.Save();
+
+            Log.Info("HandyBoxApp is closed.");
         }
 
         #endregion

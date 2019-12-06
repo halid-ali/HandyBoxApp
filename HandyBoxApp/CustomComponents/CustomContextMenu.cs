@@ -110,18 +110,19 @@ namespace HandyBoxApp.CustomComponents
 
             menuItem.Checked = !menuItem.Checked;
 
-            var panel = (StockPanel)menuItem.Tag;
-            panel.Visible = menuItem.Checked;
+            var stockPanel = (StockPanel)menuItem.Tag;
+            var isChecked = menuItem.Checked;
+            stockPanel.Visible = isChecked;
 
-            if (menuItem.Checked)
+            if (isChecked)
             {
-                panel.StartStockDataFetching();
-                Settings.Default.Stocks.Add(panel.ToString());
+                stockPanel.StartStockDataFetching();
+                Settings.Default.Stocks.Add(stockPanel.ToString());
             }
             else
             {
-                panel.StopStockDataFetching();
-                Settings.Default.Stocks.Remove(panel.ToString());
+                stockPanel.StopStockDataFetching();
+                Settings.Default.Stocks.Remove(stockPanel.ToString());
             }
 
             Settings.Default.Save();
@@ -217,8 +218,14 @@ namespace HandyBoxApp.CustomComponents
                         Checked = Settings.Default.Stocks.Contains(panelName)
                     };
 
-                    panel.Visible = Settings.Default.Stocks.Contains(panelName);
-                    if (panel.Visible)
+                    var isVisible = Settings.Default.Stocks.Contains(panelName);
+                    stockPanel.Visible = isVisible;
+
+                    if (isVisible)
+                    {
+                        stockPanel.StartStockDataFetching();
+                    }
+                    else
                     {
                         stockPanel.StopStockDataFetching();
                     }

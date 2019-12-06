@@ -34,14 +34,9 @@ namespace HandyBoxApp.UserControls
             Worker.RunWorkerCompleted += FetchStockDataCompleted;
 
             Log = ((MainForm)ParentControl).Log;
-            //todo: IStockService doesn't provide information about stock's status.
-            //that's why in logs all stocks are listed even if they are invisible.
-            Log.Info($"{stockService.GetStockInfo.Name} Stack panel is loaded.");
 
             InitializeComponent();
             OrderControls();
-
-            StartStockDataFetching();
         }
 
         #endregion
@@ -63,7 +58,7 @@ namespace HandyBoxApp.UserControls
 
         private BackgroundWorker Worker { get; } = new BackgroundWorker(); //todo: exclude backgroundworker from this class. eg. Timer
 
-        private bool IsFetchCancelled { get; set; }
+        private bool IsFetchStarted { get; set; }
 
         private StockData PreviousStockData { get; set; }
 
@@ -88,7 +83,7 @@ namespace HandyBoxApp.UserControls
 
         public void StopStockDataFetching()
         {
-            Worker?.CancelAsync();
+            Worker.CancelAsync();
         }
 
         public override string ToString()
@@ -187,13 +182,22 @@ namespace HandyBoxApp.UserControls
                 Thread.CurrentThread.Name = $"Thread_{StockService.GetStockInfo.Tag}";
             }
 
-            IsFetchCancelled = true;
+            IsFetchStarted = true;
             StockService.StockUpdated += UpdateStockData;
+
+            Log.Info($"{ToString()} stock data fetching has been started.");
 
             try
             {
-                while (IsFetchCancelled)
+                while (IsFetchStarted)
                 {
+                    if (Worker.CancellationPending)
+                    {
+                        IsFetchStarted = false;
+                        args.Cancel = true;
+                        return;
+                    }
+
                     StockService.GetStockData();
                     Thread.Sleep(RefreshRate);
                 }
@@ -201,12 +205,23 @@ namespace HandyBoxApp.UserControls
             finally
             {
                 StockService.StockUpdated -= UpdateStockData;
+                IsFetchStarted = false;
             }
         }
 
         private void FetchStockDataCompleted(object sender, RunWorkerCompletedEventArgs args)
         {
-            //todo: implement fetch stock data complete
+            IsFetchStarted = false;
+
+            if (args.Cancelled)
+            {
+                Log.Info($"{ToString()} stock data fetching has been cancelled.");
+            }
+
+            if (args.Error != null)
+            {
+                Log.Error("Stock data fetch has been ended up with an error.", args.Error);
+            }
         }
 
         private void UpdateStockData(object sender, StockUpdateEventArgs args)

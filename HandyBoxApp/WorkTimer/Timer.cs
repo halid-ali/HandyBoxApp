@@ -136,7 +136,7 @@ namespace HandyBoxApp.WorkTimer
 
             if (e.Error != null)
             {
-                m_Log.Error("Timer worker thread end up with an error.", e.Error);
+                m_Log.Error("Timer worker has been ended up with an error.", e.Error);
             }
 
             StartTime = new DateTime();
