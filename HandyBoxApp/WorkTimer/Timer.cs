@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HandyBoxApp.Logging;
+using System;
 using System.ComponentModel;
 using System.Threading;
 
@@ -14,6 +15,7 @@ namespace HandyBoxApp.WorkTimer
 
         private bool m_DisposedValue; // To detect redundant calls
         private readonly BackgroundWorker m_Worker = new BackgroundWorker();
+        private readonly ILoggingService m_Log = LogServiceFactory.CreateService(LogFormat.Txt);
 
         private event EventHandler<TimerUpdateEventArgs> TimerUpdate;
         private event EventHandler<EventArgs> TimerStart;
@@ -128,13 +130,13 @@ namespace HandyBoxApp.WorkTimer
         {
             if (e.Cancelled)
             {
-                //log pause
+                //pause
                 return;
             }
 
             if (e.Error != null)
             {
-                //log error
+                m_Log.Error("Timer worker thread end up with an error.", e.Error);
             }
 
             StartTime = new DateTime();
