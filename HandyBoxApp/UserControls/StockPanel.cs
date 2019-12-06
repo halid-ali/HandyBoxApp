@@ -195,7 +195,7 @@ namespace HandyBoxApp.UserControls
                     {
                         IsFetchStarted = false;
                         args.Cancel = true;
-                        return;
+                        break;
                     }
 
                     StockService.GetStockData();
