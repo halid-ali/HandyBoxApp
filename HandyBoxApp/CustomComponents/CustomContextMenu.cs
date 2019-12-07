@@ -4,6 +4,7 @@ using HandyBoxApp.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -109,18 +110,19 @@ namespace HandyBoxApp.CustomComponents
 
             menuItem.Checked = !menuItem.Checked;
 
-            var panel = (StockPanel)menuItem.Tag;
-            panel.Visible = menuItem.Checked;
+            var stockPanel = (StockPanel)menuItem.Tag;
+            var isChecked = menuItem.Checked;
+            stockPanel.Visible = isChecked;
 
-            if (menuItem.Checked)
+            if (isChecked)
             {
-                panel.StartStockDataFetching();
-                Settings.Default.Stocks.Add(panel.ToString());
+                stockPanel.StartStockDataFetching();
+                Settings.Default.Stocks.Add(stockPanel.ToString());
             }
             else
             {
-                panel.StopStockDataFetching();
-                Settings.Default.Stocks.Remove(panel.ToString());
+                stockPanel.StopStockDataFetching();
+                Settings.Default.Stocks.Remove(stockPanel.ToString());
             }
 
             Settings.Default.Save();
@@ -128,12 +130,15 @@ namespace HandyBoxApp.CustomComponents
 
         private void ShowLogs(object sender, EventArgs args)
         {
-            //todo: implement show logs
+            var notepadPath = @"C:\Windows\notepad.exe";
+            var logPath = s_MainForm.Log.LogPath;
+
+            Process.Start(notepadPath, logPath);
         }
 
         private void ClearLogs(object sender, EventArgs args)
         {
-            //todo: implement clear logs
+            s_MainForm.Log.ClearLogs();
         }
 
         private void About(object sender, EventArgs args)
@@ -213,8 +218,14 @@ namespace HandyBoxApp.CustomComponents
                         Checked = Settings.Default.Stocks.Contains(panelName)
                     };
 
-                    panel.Visible = Settings.Default.Stocks.Contains(panelName);
-                    if (panel.Visible)
+                    var isVisible = Settings.Default.Stocks.Contains(panelName);
+                    stockPanel.Visible = isVisible;
+
+                    if (isVisible)
+                    {
+                        stockPanel.StartStockDataFetching();
+                    }
+                    else
                     {
                         stockPanel.StopStockDataFetching();
                     }

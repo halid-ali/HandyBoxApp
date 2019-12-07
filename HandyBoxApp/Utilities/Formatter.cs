@@ -1,6 +1,4 @@
-﻿using HandyBoxApp.WorkTimer;
-
-using System;
+﻿using System;
 using System.Globalization;
 
 namespace HandyBoxApp.Utilities
@@ -35,14 +33,19 @@ namespace HandyBoxApp.Utilities
             return value.PadLeft(totalWidth, paddingChar);
         }
 
-        internal static string FormatTime(TimerMode mode, Pad padding, int totalWidth, char paddingChar = Constants.DefaultPaddingChar)
+        internal static string FormatMode(string mode)
         {
-            return FormatString($"{mode.ToString()}:", padding, totalWidth, paddingChar);
+            return FormatString($"{mode}:", Pad.Right, 9);
         }
 
-        internal static string FormatHour(TimeSpan timeSpan)
+        internal static string FormatTimeSpan(TimeSpan timeSpan)
         {
-            return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}.{timeSpan.Seconds:D2}";
+            return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
+        }
+
+        internal static string FormatDateTime(DateTime dateTime)
+        {
+            return $"{dateTime.Hour:D2}:{dateTime.Minute:D2}:{dateTime.Second:D2}";
         }
     }
 

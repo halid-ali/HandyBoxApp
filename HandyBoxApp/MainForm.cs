@@ -1,4 +1,5 @@
 ﻿using HandyBoxApp.CustomComponents;
+using HandyBoxApp.Logging;
 using HandyBoxApp.Properties;
 using HandyBoxApp.StockExchange;
 using HandyBoxApp.UserControls;
@@ -16,6 +17,7 @@ namespace HandyBoxApp
         public MainForm()
         {
             Closing += OnFormClosed;
+            Log.Info("HandyBoxApp is loaded.");
 
             InitializeComponent();
             InitializePanels();
@@ -40,6 +42,8 @@ namespace HandyBoxApp
 
         public LayoutPanel LayoutPanel { get; private set; }
 
+        public ILoggingService Log { get; } = LogServiceFactory.CreateService(LogFormat.Txt);
+
         #endregion
 
         //################################################################################
@@ -55,6 +59,8 @@ namespace HandyBoxApp
         {
             Settings.Default.LastLocation = Location;
             Settings.Default.Save();
+
+            Log.Info("HandyBoxApp is closed.");
         }
 
         #endregion

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HandyBoxApp.Logging;
+using System;
 using System.ComponentModel;
 using System.Threading;
 
@@ -14,8 +15,12 @@ namespace HandyBoxApp.WorkTimer
 
         private bool m_DisposedValue; // To detect redundant calls
         private readonly BackgroundWorker m_Worker = new BackgroundWorker();
+        private readonly ILoggingService m_Log = LogServiceFactory.CreateService(LogFormat.Txt);
 
         private event EventHandler<TimerUpdateEventArgs> TimerUpdate;
+        private event EventHandler<EventArgs> TimerStart;
+        private event EventHandler<EventArgs> TimerPause;
+        private event EventHandler<EventArgs> TimerStop;
 
         #endregion
 
@@ -39,11 +44,7 @@ namespace HandyBoxApp.WorkTimer
         //################################################################################
         #region Properties
 
-        internal bool IsStarted { get; private set; }
-
-        internal bool IsStopped { get; private set; }
-
-        internal bool IsPaused { get; private set; }
+        private bool IsStarted { get; set; }
 
         internal event EventHandler<TimerUpdateEventArgs> TimerUpdated
         {
@@ -51,7 +52,25 @@ namespace HandyBoxApp.WorkTimer
             remove => TimerUpdate -= value;
         }
 
-        private DateTime StartTime { get; set; }
+        internal event EventHandler<EventArgs> TimerStarted
+        {
+            add => TimerStart += value;
+            remove => TimerStart -= value;
+        }
+
+        internal event EventHandler<EventArgs> TimerStopped
+        {
+            add => TimerStop += value;
+            remove => TimerStop -= value;
+        }
+
+        internal event EventHandler<EventArgs> TimerPaused
+        {
+            add => TimerPause += value;
+            remove => TimerPause -= value;
+        }
+
+        internal DateTime StartTime { get; private set; }
 
         private DateTime StartTimeWithLunchBreak { get; }
 
@@ -66,21 +85,21 @@ namespace HandyBoxApp.WorkTimer
 
         internal void Start()
         {
-            ResetFlags();
             IsStarted = true;
-
             Worker.RunWorkerAsync();
+            OnTimerStart();
         }
 
         internal void Stop()
         {
-            ResetFlags();
-            IsStopped = true;
+            IsStarted = false;
+            OnTimerStop();
         }
 
         internal void Pause()
         {
             Worker.CancelAsync();
+            OnTimerPause();
         }
 
         #endregion
@@ -90,14 +109,14 @@ namespace HandyBoxApp.WorkTimer
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var bgWorker = sender as BackgroundWorker;
+            if (!(sender is BackgroundWorker bgWorker))
+                throw new ArgumentException(nameof(sender));
 
             while (IsStarted)
             {
-                if (bgWorker != null && bgWorker.CancellationPending)
+                if (bgWorker.CancellationPending)
                 {
-                    ResetFlags();
-                    IsPaused = true;
+                    IsStarted = false;
                     e.Cancel = true;
                     return;
                 }
@@ -111,17 +130,14 @@ namespace HandyBoxApp.WorkTimer
         {
             if (e.Cancelled)
             {
-                //log pause
+                //pause
                 return;
             }
 
             if (e.Error != null)
             {
-                //log error
+                m_Log.Error("Timer worker has been ended up with an error.", e.Error);
             }
-
-            ResetFlags();
-            IsStopped = true;
 
             StartTime = new DateTime();
             FinishTime = new DateTime();
@@ -142,11 +158,22 @@ namespace HandyBoxApp.WorkTimer
             Volatile.Read(ref TimerUpdate)?.Invoke(this, args);
         }
 
-        private void ResetFlags()
+        private void OnTimerStart()
         {
-            IsStarted = false;
-            IsStopped = false;
-            IsPaused = false;
+            var args = new EventArgs();
+            Volatile.Read(ref TimerStart)?.Invoke(this, args);
+        }
+
+        private void OnTimerPause()
+        {
+            var args = new EventArgs();
+            Volatile.Read(ref TimerPause)?.Invoke(this, args);
+        }
+
+        private void OnTimerStop()
+        {
+            var args = new EventArgs();
+            Volatile.Read(ref TimerStop)?.Invoke(this, args);
         }
 
         #endregion

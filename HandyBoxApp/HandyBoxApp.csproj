@@ -99,10 +99,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="WorkTimer\Timer.cs" />
-    <Compile Include="WorkTimer\TimerMode.cs" />
+    <Compile Include="WorkTimer\TimerHelper.cs" />
+    <Compile Include="WorkTimer\FunctionMode.cs" />
     <Compile Include="UserControls\TimerPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="WorkTimer\TimerMode.cs" />
     <Compile Include="WorkTimer\TimerUpdateEventArgs.cs" />
     <Compile Include="UserControls\StockPanel.cs">
       <SubType>UserControl</SubType>
@@ -138,7 +140,6 @@
   <ItemGroup>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Resources\Close.png" />
   </ItemGroup>
@@ -153,6 +154,10 @@
     <None Include="Resources\Logo.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HandyBoxApp.Logging\HandyBoxApp.Logging.csproj">
+      <Project>{78a3035d-2ab4-4ecb-aa2d-a9424cf2ec83}</Project>
+      <Name>HandyBoxApp.Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HandyBoxApp.StockExchange\HandyBoxApp.StockExchange.csproj">
       <Project>{33a76ad9-649c-433c-8707-0526c4c3518e}</Project>
       <Name>HandyBoxApp.StockExchange</Name>

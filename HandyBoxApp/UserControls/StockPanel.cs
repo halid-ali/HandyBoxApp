@@ -1,6 +1,7 @@
 ﻿using HandyBoxApp.ColorScheme;
 using HandyBoxApp.ColorScheme.Colors;
 using HandyBoxApp.CustomComponents;
+using HandyBoxApp.Logging;
 using HandyBoxApp.Properties;
 using HandyBoxApp.StockExchange.EventArgs;
 using HandyBoxApp.StockExchange.Interfaces;
@@ -32,10 +33,10 @@ namespace HandyBoxApp.UserControls
             Worker.DoWork += FetchStockData;
             Worker.RunWorkerCompleted += FetchStockDataCompleted;
 
+            Log = ((MainForm)ParentControl).Log;
+
             InitializeComponent();
             OrderControls();
-
-            StartStockDataFetching();
         }
 
         #endregion
@@ -55,9 +56,9 @@ namespace HandyBoxApp.UserControls
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
-        private BackgroundWorker Worker { get; } = new BackgroundWorker();
+        private BackgroundWorker Worker { get; } = new BackgroundWorker(); //todo: exclude backgroundworker from this class. eg. Timer
 
-        private bool IsFetchCancelled { get; set; }
+        private bool IsFetchStarted { get; set; }
 
         private StockData PreviousStockData { get; set; }
 
@@ -65,7 +66,12 @@ namespace HandyBoxApp.UserControls
 
         private ToolTip ToolTip { get; } = new ToolTip();
 
+        private ILoggingService Log { get; }
+
         #endregion
+
+        //################################################################################
+        #region Public Members
 
         public void StartStockDataFetching()
         {
@@ -77,13 +83,15 @@ namespace HandyBoxApp.UserControls
 
         public void StopStockDataFetching()
         {
-            Worker?.CancelAsync();
+            Worker.CancelAsync();
         }
 
         public override string ToString()
         {
             return StockService.GetStockInfo.Tag;
         }
+
+        #endregion
 
         //################################################################################
         #region Private Members
@@ -174,13 +182,22 @@ namespace HandyBoxApp.UserControls
                 Thread.CurrentThread.Name = $"Thread_{StockService.GetStockInfo.Tag}";
             }
 
-            IsFetchCancelled = true;
+            IsFetchStarted = true;
             StockService.StockUpdated += UpdateStockData;
+
+            Log.Info($"{ToString()} stock data fetching has been started.");
 
             try
             {
-                while (IsFetchCancelled)
+                while (IsFetchStarted)
                 {
+                    if (Worker.CancellationPending)
+                    {
+                        IsFetchStarted = false;
+                        args.Cancel = true;
+                        break;
+                    }
+
                     StockService.GetStockData();
                     Thread.Sleep(RefreshRate);
                 }
@@ -188,12 +205,23 @@ namespace HandyBoxApp.UserControls
             finally
             {
                 StockService.StockUpdated -= UpdateStockData;
+                IsFetchStarted = false;
             }
         }
 
         private void FetchStockDataCompleted(object sender, RunWorkerCompletedEventArgs args)
         {
+            IsFetchStarted = false;
 
+            if (args.Cancelled)
+            {
+                Log.Info($"{ToString()} stock data fetching has been cancelled.");
+            }
+
+            if (args.Error != null)
+            {
+                Log.Error("Stock data fetch has been ended up with an error.", args.Error);
+            }
         }
 
         private void UpdateStockData(object sender, StockUpdateEventArgs args)
