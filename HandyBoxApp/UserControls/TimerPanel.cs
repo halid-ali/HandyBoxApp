@@ -52,6 +52,16 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Properties
 
+        internal FunctionMode ModeFunction { get; private set; } = FunctionMode.Elapsed;
+
+        internal TimerMode ModeTimer { get; private set; }
+
+        internal TimeSpan ElapsedTime { get; private set; }
+
+        internal TimeSpan RemainingTime { get; private set; }
+
+        internal TimeSpan OverTime { get; private set; } = new TimeSpan(0, 0, 0);
+
         private Label FunctionText { get; } = new Label();
 
         private TextBox TimerText { get; } = new TextBox();
@@ -64,17 +74,17 @@ namespace HandyBoxApp.UserControls
 
         private Timer WorkTimer { get; set; }
 
-        private FunctionMode ModeFunction { get; set; } = FunctionMode.Elapsed;
-
-        private TimerMode ModeTimer { get; set; }
-
-        private TimeSpan ElapsedTime { get; set; }
-
-        private TimeSpan RemainingTime { get; set; }
-
-        private TimeSpan OverTime { get; set; } = new TimeSpan(0, 0, 0);
-
         private ILoggingService Log { get; } = LogServiceFactory.CreateService(LogFormat.Txt);
+
+        #endregion
+
+        //################################################################################
+        #region Public Members
+
+        public override string ToString()
+        {
+            return $"{ModeFunction}: {TimerText.Text}";
+        }
 
         #endregion
 
@@ -159,7 +169,7 @@ namespace HandyBoxApp.UserControls
             FunctionButton = new ImageButton(PauseAction, Resources.Stop)
             {
                 Margin = new Padding(0),
-                ContextMenu = new ContextMenu { MenuItems = { new MenuItem("Stop", (s, a) => ManualStopAction(s, a)) } }
+                ContextMenu = new ContextMenu { MenuItems = { new MenuItem("Stop", ManualStopAction) } }
             };
             FunctionButton.SetToolTip("Pause/Resume timer");
             FunctionButton.SetBackgroundColor(Color.FromArgb(152, 0, 47));

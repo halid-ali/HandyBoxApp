@@ -44,9 +44,17 @@ namespace HandyBoxApp.UserControls
         //################################################################################
         #region Properties
 
-        private Control ParentControl { get; }
+        private ILoggingService Log { get; }
 
         private IStockService StockService { get; }
+
+        private StockData PreviousStockData { get; set; }
+
+        private bool IsFetchStarted { get; set; }
+
+        private int RefreshRate { get; }
+
+        private Control ParentControl { get; }
 
         private Label NameLabel { get; } = new Label();
 
@@ -56,17 +64,9 @@ namespace HandyBoxApp.UserControls
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
-        private BackgroundWorker Worker { get; } = new BackgroundWorker(); //todo: exclude backgroundworker from this class. eg. Timer
-
-        private bool IsFetchStarted { get; set; }
-
-        private StockData PreviousStockData { get; set; }
-
-        private int RefreshRate { get; }
+        private BackgroundWorker Worker { get; } = new BackgroundWorker(); //todo: exclude background worker from this class. eg. Timer
 
         private ToolTip ToolTip { get; } = new ToolTip();
-
-        private ILoggingService Log { get; }
 
         #endregion
 
@@ -84,6 +84,14 @@ namespace HandyBoxApp.UserControls
         public void StopStockDataFetching()
         {
             Worker.CancelAsync();
+        }
+
+        public string GetStockInformation()
+        {
+            var currencyValue = Formatter.FormatCurrency(PreviousStockData.ActualData, Pad.Left, 10);
+            var changeRateValue = Formatter.FormatChangeRate(PreviousStockData.ChangeRate, Pad.Left, 0, false);
+
+            return $"{StockService.GetStockInfo.Name}: {currencyValue} - {changeRateValue}";
         }
 
         public override string ToString()
@@ -112,9 +120,8 @@ namespace HandyBoxApp.UserControls
 
             #region Name Label
 
-            NameLabel.Name = "NameLabel";
+            NameLabel.Name = $"NameLabel";
             NameLabel.Text = Formatter.FormatString(StockService.GetStockInfo.Name, Pad.Right, 9);
-            //NameLabel.Width = 90;
             NameLabel.AutoSize = true;
             NameLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             NameLabel.Padding = new Padding(Style.PanelPadding);
@@ -126,9 +133,8 @@ namespace HandyBoxApp.UserControls
 
             #region Value Label
 
-            ValueLabel.Name = "ValueLabel";
+            ValueLabel.Name = $"ValueLabel";
             ValueLabel.Text = Formatter.FormatString("#,#### TL", Pad.Left, 12);
-            //ValueLabel.Width = 100;
             ValueLabel.AutoSize = true;
             ValueLabel.Margin = new Padding(0, 0, Style.PanelSpacing, 0);
             ValueLabel.Padding = new Padding(Style.PanelPadding);

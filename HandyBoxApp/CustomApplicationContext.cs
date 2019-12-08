@@ -1,6 +1,8 @@
 ﻿using HandyBoxApp.CustomComponents;
 using HandyBoxApp.Properties;
+using HandyBoxApp.UserControls;
 using HandyBoxApp.Utilities;
+
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -32,7 +34,7 @@ namespace HandyBoxApp
             Bitmap icon = Resources.Logo;
 #endif
 
-            s_NotifyIcon = new NotifyIcon()
+            s_NotifyIcon = new NotifyIcon
             {
                 //todo: badge icon for notify icon if anything occured eg. crash, update etc.
                 //todo: also show balloon tips if any update or crash occured
@@ -65,15 +67,33 @@ namespace HandyBoxApp
 
         private void NotifyIcon_MouseMouse(object sender, MouseEventArgs e)
         {
-            //todo: show currency and working hour info
-            s_NotifyIcon.Text = @"This is a notify icon.";
+            var currencyInfos = string.Empty;
+            var workHourInfo = string.Empty;
+
+            foreach (Control panel in ((MainForm)MainForm).LayoutPanel.ControlPanels)
+            {
+                if (panel is StockPanel stockPanel && panel.Visible)
+                {
+                    if (stockPanel.GetStockInformation().Contains("EUR/TRY"))
+                    {
+                        currencyInfos += $"{stockPanel.GetStockInformation()}\n"; 
+                    }
+                }
+
+                if (panel is TimerPanel timerPanel)
+                {
+                    workHourInfo = $"{timerPanel}";
+                }
+            }
+
+            s_NotifyIcon.Text = $@"{currencyInfos}{workHourInfo}";
         }
 
         private void NotifyIcon_DoubleClick(object sender, EventArgs e)
         {
             if (((MouseEventArgs)e).Button == MouseButtons.Left)
             {
-                MainForm.Visible = !MainForm.Visible; 
+                MainForm.Visible = !MainForm.Visible;
             }
         }
 

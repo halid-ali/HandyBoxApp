@@ -16,9 +16,10 @@ namespace HandyBoxApp.Utilities
             return FormatString(result, padding, totalWidth);
         }
 
-        internal static string FormatChangeRate(double value, Pad padding, int totalWidth)
+        internal static string FormatChangeRate(double value, Pad padding, int totalWidth, bool withTitle = true)
         {
-            var result = $"Change rate: %{value:F4}";
+            var title = withTitle ? "Change rate: " : "";
+            var result = $"{title}%{value:F4}";
 
             return FormatString(result, padding, totalWidth);
         }
