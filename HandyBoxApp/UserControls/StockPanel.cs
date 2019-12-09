@@ -64,6 +64,8 @@ namespace HandyBoxApp.UserControls
 
         private FlowLayoutPanel ContainerPanel { get; } = new FlowLayoutPanel();
 
+        private FlowLayoutPanel SlidePanel { get; } = new FlowLayoutPanel();
+
         private BackgroundWorker Worker { get; } = new BackgroundWorker(); //todo: exclude background worker from this class. eg. Timer
 
         private ToolTip ToolTip { get; } = new ToolTip();
@@ -103,6 +105,8 @@ namespace HandyBoxApp.UserControls
 
         //################################################################################
         #region Private Members
+
+        private bool m_IsSlide;
 
         private void InitializeComponent()
         {
@@ -150,7 +154,19 @@ namespace HandyBoxApp.UserControls
             {
                 button.Click += (sender, args) =>
                 {
+                    m_IsSlide = !m_IsSlide;
+                    ContainerPanel.SuspendLayout();
 
+                    for (int i = 0; i < SlidePanel.Width; i++)
+                    {
+                        var x = m_IsSlide ? SlidePanel.Location.X + 1 : SlidePanel.Location.X - 1;
+                        var y = SlidePanel.Location.Y;
+
+                        SlidePanel.Location = new Point(x, y);
+                    }
+
+                    ContainerPanel.ResumeLayout(false);
+                    ContainerPanel.PerformLayout();
                 };
             }
 
@@ -174,6 +190,22 @@ namespace HandyBoxApp.UserControls
             ContainerPanel.Controls.Add(NameLabel);
             ContainerPanel.Controls.Add(ValueLabel);
             ContainerPanel.Controls.Add(FunctionButton);
+
+            #region Slide Panel
+
+            SlidePanel.Width = ContainerPanel.PreferredSize.Width - FunctionButton.Width - Style.PanelSpacing;
+            SlidePanel.Height = ContainerPanel.PreferredSize.Height;
+            SlidePanel.BackColor = Color.Coral;
+            SlidePanel.BringToFront();
+
+            SlidePanel.Margin = new Padding(0);
+            SlidePanel.Padding = new Padding(0);
+            SlidePanel.Location = new Point(-SlidePanel.Width, 0);
+            SlidePanel.FlowDirection = FlowDirection.LeftToRight;
+
+            #endregion
+
+            Controls.Add(SlidePanel);
             Controls.Add(ContainerPanel);
 
             ContainerPanel.ResumeLayout(false);
