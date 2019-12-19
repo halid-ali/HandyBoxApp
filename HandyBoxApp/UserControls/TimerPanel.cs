@@ -162,8 +162,11 @@ namespace HandyBoxApp.UserControls
 
             void ManualStopAction(object sender, EventArgs args)
             {
+                if (ModeTimer == TimerMode.Stopped) return;
+
                 Log.Info("Stop has been triggered manually. WorkTimer will stop.");
                 StopTimer();
+                TimerStopAdjustments();
             }
 
             FunctionButton = new ImageButton(PauseAction, Resources.Stop)

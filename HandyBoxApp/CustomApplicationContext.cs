@@ -72,7 +72,7 @@ namespace HandyBoxApp
 
             foreach (Control panel in ((MainForm)MainForm).LayoutPanel.ControlPanels)
             {
-                if (panel is StockPanel stockPanel && panel.Visible)
+                if (panel is StockPanel stockPanel)
                 {
                     if (stockPanel.GetStockInformation().Contains("EUR/TRY"))
                     {
