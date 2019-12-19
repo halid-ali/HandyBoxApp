@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -14,9 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.16" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.17" />
   </ItemGroup>
-
-  <Target Name="EnsureNuGetPackageBuildImports"></Target>
 
 </Project>
