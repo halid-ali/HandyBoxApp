@@ -9,4 +9,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
+  <Target Name="EnsureNuGetPackageBuildImports"></Target>
+
 </Project>
